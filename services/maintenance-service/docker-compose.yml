@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  maintenance-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-maintenance-service
+    ports:
+      - '3018:3018'
+    environment:
+      APP_PORT: 3018
+      DB_HOST: maintenance-postgres
+      DB_USERNAME: nddtp_maintenance
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_maintenance
+      REDIS_HOST: maintenance-redis
+      REDIS_DB: 17
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@maintenance-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      maintenance-postgres:
+        condition: service_healthy
+      maintenance-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-maintenance-network
+
+  maintenance-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_maintenance
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_maintenance
+    ports:
+      - '5450:5432'
+    volumes:
+      - maintenance-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-maintenance-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_maintenance']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  maintenance-redis:
+    image: redis:7-alpine
+    ports:
+      - '6397:6379'
+    networks:
+      - nddtp-maintenance-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  maintenance-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5690:5672'
+      - '15690:15672'
+    networks:
+      - nddtp-maintenance-network
+
+networks:
+  nddtp-maintenance-network:
+    driver: bridge
+
+volumes:
+  maintenance-postgres-data:
