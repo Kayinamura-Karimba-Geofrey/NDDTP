@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  fleet-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-fleet-service
+    ports:
+      - '3017:3017'
+    environment:
+      APP_PORT: 3017
+      DB_HOST: fleet-postgres
+      DB_USERNAME: nddtp_fleet
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_fleet
+      REDIS_HOST: fleet-redis
+      REDIS_DB: 16
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@fleet-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      fleet-postgres:
+        condition: service_healthy
+      fleet-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-fleet-network
+
+  fleet-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_fleet
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_fleet
+    ports:
+      - '5449:5432'
+    volumes:
+      - fleet-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-fleet-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_fleet']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fleet-redis:
+    image: redis:7-alpine
+    ports:
+      - '6396:6379'
+    networks:
+      - nddtp-fleet-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fleet-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5689:5672'
+      - '15689:15672'
+    networks:
+      - nddtp-fleet-network
+
+networks:
+  nddtp-fleet-network:
+    driver: bridge
+
+volumes:
+  fleet-postgres-data:
