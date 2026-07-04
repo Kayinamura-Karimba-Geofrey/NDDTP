@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  recruitment-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-recruitment-service
+    ports:
+      - '3007:3007'
+    environment:
+      APP_PORT: 3007
+      DB_HOST: recruitment-postgres
+      DB_USERNAME: nddtp_recruitment
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_recruitment
+      REDIS_HOST: recruitment-redis
+      REDIS_DB: 6
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@recruitment-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      recruitment-postgres:
+        condition: service_healthy
+      recruitment-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-recruitment-network
+
+  recruitment-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_recruitment
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_recruitment
+    ports:
+      - '5439:5432'
+    volumes:
+      - recruitment-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-recruitment-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_recruitment']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  recruitment-redis:
+    image: redis:7-alpine
+    ports:
+      - '6386:6379'
+    networks:
+      - nddtp-recruitment-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  recruitment-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5679:5672'
+      - '15679:15672'
+    networks:
+      - nddtp-recruitment-network
+
+networks:
+  nddtp-recruitment-network:
+    driver: bridge
+
+volumes:
+  recruitment-postgres-data:
