@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  welfare-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-welfare-service
+    ports:
+      - '3009:3009'
+    environment:
+      APP_PORT: 3009
+      DB_HOST: welfare-postgres
+      DB_USERNAME: nddtp_welfare
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_welfare
+      REDIS_HOST: welfare-redis
+      REDIS_DB: 8
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@welfare-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      welfare-postgres:
+        condition: service_healthy
+      welfare-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-welfare-network
+
+  welfare-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_welfare
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_welfare
+    ports:
+      - '5441:5432'
+    volumes:
+      - welfare-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-welfare-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_welfare']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  welfare-redis:
+    image: redis:7-alpine
+    ports:
+      - '6388:6379'
+    networks:
+      - nddtp-welfare-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  welfare-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5681:5672'
+      - '15681:15672'
+    networks:
+      - nddtp-welfare-network
+
+networks:
+  nddtp-welfare-network:
+    driver: bridge
+
+volumes:
+  welfare-postgres-data:

@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  medical-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-medical-service
+    ports:
+      - '3010:3010'
+    environment:
+      APP_PORT: 3010
+      DB_HOST: medical-postgres
+      DB_USERNAME: nddtp_medical
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_medical
+      REDIS_HOST: medical-redis
+      REDIS_DB: 9
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@medical-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      medical-postgres:
+        condition: service_healthy
+      medical-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-medical-network
+
+  medical-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_medical
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_medical
+    ports:
+      - '5442:5432'
+    volumes:
+      - medical-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-medical-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_medical']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  medical-redis:
+    image: redis:7-alpine
+    ports:
+      - '6389:6379'
+    networks:
+      - nddtp-medical-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  medical-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5682:5672'
+      - '15682:15672'
+    networks:
+      - nddtp-medical-network
+
+networks:
+  nddtp-medical-network:
+    driver: bridge
+
+volumes:
+  medical-postgres-data:
