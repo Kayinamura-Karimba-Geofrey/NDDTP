@@ -1,0 +1,102 @@
+version: '3.9'
+
+services:
+  authorization-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-authorization-service
+    restart: unless-stopped
+    ports:
+      - '3002:3002'
+    environment:
+      NODE_ENV: production
+      APP_PORT: 3002
+      DB_HOST: authz-postgres
+      DB_PORT: 5432
+      DB_USERNAME: nddtp_authorization
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_authorization
+      REDIS_HOST: authz-redis
+      REDIS_PORT: 6379
+      REDIS_DB: 1
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@authz-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+      JWT_ISSUER: nddtp-auth-service
+      JWT_AUDIENCE: nddtp-platform
+    depends_on:
+      authz-postgres:
+        condition: service_healthy
+      authz-redis:
+        condition: service_healthy
+      authz-rabbitmq:
+        condition: service_healthy
+    networks:
+      - nddtp-authz-network
+    volumes:
+      - authz-logs:/app/logs
+
+  authz-postgres:
+    image: postgres:16-alpine
+    container_name: nddtp-authz-postgres
+    environment:
+      POSTGRES_USER: nddtp_authorization
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_authorization
+    ports:
+      - '5434:5432'
+    volumes:
+      - authz-postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - nddtp-authz-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_authorization -d nddtp_authorization']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  authz-redis:
+    image: redis:7-alpine
+    container_name: nddtp-authz-redis
+    command: redis-server --appendonly yes
+    ports:
+      - '6381:6379'
+    volumes:
+      - authz-redis-data:/data
+    networks:
+      - nddtp-authz-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  authz-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: nddtp-authz-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5674:5672'
+      - '15674:15672'
+    volumes:
+      - authz-rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - nddtp-authz-network
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  nddtp-authz-network:
+    driver: bridge
+
+volumes:
+  authz-postgres-data:
+  authz-redis-data:
+  authz-rabbitmq-data:
+  authz-logs:
