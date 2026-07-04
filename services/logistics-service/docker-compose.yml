@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  logistics-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-logistics-service
+    ports:
+      - '3015:3015'
+    environment:
+      APP_PORT: 3015
+      DB_HOST: logistics-postgres
+      DB_USERNAME: nddtp_logistics
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_logistics
+      REDIS_HOST: logistics-redis
+      REDIS_DB: 14
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@logistics-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      logistics-postgres:
+        condition: service_healthy
+      logistics-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-logistics-network
+
+  logistics-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_logistics
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_logistics
+    ports:
+      - '5447:5432'
+    volumes:
+      - logistics-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-logistics-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_logistics']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  logistics-redis:
+    image: redis:7-alpine
+    ports:
+      - '6394:6379'
+    networks:
+      - nddtp-logistics-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  logistics-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5687:5672'
+      - '15687:15672'
+    networks:
+      - nddtp-logistics-network
+
+networks:
+  nddtp-logistics-network:
+    driver: bridge
+
+volumes:
+  logistics-postgres-data:
