@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  auth-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-auth-service
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      APP_PORT: 3001
+      DB_HOST: auth-postgres
+      DB_PORT: 5432
+      DB_USERNAME: nddtp_auth
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_auth
+      REDIS_HOST: auth-redis
+      REDIS_PORT: 6379
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@auth-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change_me_refresh_secret_min_32_chars_long}
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+      auth-redis:
+        condition: service_healthy
+      auth-rabbitmq:
+        condition: service_healthy
+    networks:
+      - nddtp-auth-network
+    volumes:
+      - auth-logs:/app/logs
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3001/api/v1/health/live']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  auth-postgres:
+    image: postgres:16-alpine
+    container_name: nddtp-auth-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nddtp_auth
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_auth
+    ports:
+      - '5433:5432'
+    volumes:
+      - auth-postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - nddtp-auth-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_auth -d nddtp_auth']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-redis:
+    image: redis:7-alpine
+    container_name: nddtp-auth-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - '6380:6379'
+    volumes:
+      - auth-redis-data:/data
+    networks:
+      - nddtp-auth-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: nddtp-auth-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5673:5672'
+      - '15673:15672'
+    volumes:
+      - auth-rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - nddtp-auth-network
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  nddtp-auth-network:
+    driver: bridge
+    name: nddtp-auth-network
+
+volumes:
+  auth-postgres-data:
+  auth-redis-data:
+  auth-rabbitmq-data:
+  auth-logs:
