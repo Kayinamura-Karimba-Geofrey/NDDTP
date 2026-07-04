@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  leave-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-leave-service
+    ports:
+      - '3008:3008'
+    environment:
+      APP_PORT: 3008
+      DB_HOST: leave-postgres
+      DB_USERNAME: nddtp_leave
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_leave
+      REDIS_HOST: leave-redis
+      REDIS_DB: 7
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@leave-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      leave-postgres:
+        condition: service_healthy
+      leave-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-leave-network
+
+  leave-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_leave
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_leave
+    ports:
+      - '5440:5432'
+    volumes:
+      - leave-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-leave-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_leave']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  leave-redis:
+    image: redis:7-alpine
+    ports:
+      - '6387:6379'
+    networks:
+      - nddtp-leave-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  leave-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5680:5672'
+      - '15680:15672'
+    networks:
+      - nddtp-leave-network
+
+networks:
+  nddtp-leave-network:
+    driver: bridge
+
+volumes:
+  leave-postgres-data:
