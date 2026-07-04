@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  performance-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-performance-service
+    ports:
+      - '3012:3012'
+    environment:
+      APP_PORT: 3012
+      DB_HOST: performance-postgres
+      DB_USERNAME: nddtp_performance
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_performance
+      REDIS_HOST: performance-redis
+      REDIS_DB: 11
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@performance-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      performance-postgres:
+        condition: service_healthy
+      performance-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-performance-network
+
+  performance-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_performance
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_performance
+    ports:
+      - '5444:5432'
+    volumes:
+      - performance-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-performance-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_performance']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  performance-redis:
+    image: redis:7-alpine
+    ports:
+      - '6391:6379'
+    networks:
+      - nddtp-performance-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  performance-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5684:5672'
+      - '15684:15672'
+    networks:
+      - nddtp-performance-network
+
+networks:
+  nddtp-performance-network:
+    driver: bridge
+
+volumes:
+  performance-postgres-data:
