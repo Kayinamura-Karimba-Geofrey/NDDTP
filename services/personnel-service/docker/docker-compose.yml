@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  personnel-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-personnel-service
+    ports:
+      - '3006:3006'
+    environment:
+      APP_PORT: 3006
+      DB_HOST: personnel-postgres
+      DB_USERNAME: nddtp_personnel
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_personnel
+      REDIS_HOST: personnel-redis
+      REDIS_DB: 5
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@personnel-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      personnel-postgres:
+        condition: service_healthy
+      personnel-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-personnel-network
+
+  personnel-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_personnel
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_personnel
+    ports:
+      - '5438:5432'
+    volumes:
+      - personnel-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-personnel-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_personnel']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  personnel-redis:
+    image: redis:7-alpine
+    ports:
+      - '6385:6379'
+    networks:
+      - nddtp-personnel-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  personnel-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5678:5672'
+      - '15678:15672'
+    networks:
+      - nddtp-personnel-network
+
+networks:
+  nddtp-personnel-network:
+    driver: bridge
+
+volumes:
+  personnel-postgres-data:
