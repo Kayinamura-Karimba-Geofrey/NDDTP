@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  announcement-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-announcement-service
+    ports:
+      - '3028:3028'
+    environment:
+      APP_PORT: 3028
+      DB_HOST: announcement-postgres
+      DB_USERNAME: nddtp_announcement
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_announcement
+      REDIS_HOST: announcement-redis
+      REDIS_DB: 27
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@announcement-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      announcement-postgres:
+        condition: service_healthy
+      announcement-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-announcement-network
+
+  announcement-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_announcement
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_announcement
+    ports:
+      - '5460:5432'
+    volumes:
+      - announcement-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-announcement-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_announcement']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  announcement-redis:
+    image: redis:7-alpine
+    ports:
+      - '6407:6379'
+    networks:
+      - nddtp-announcement-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  announcement-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5700:5672'
+      - '15700:15672'
+    networks:
+      - nddtp-announcement-network
+
+networks:
+  nddtp-announcement-network:
+    driver: bridge
+
+volumes:
+  announcement-postgres-data:
