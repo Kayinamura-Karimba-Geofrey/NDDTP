@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  search-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-search-service
+    ports:
+      - '3029:3029'
+    environment:
+      APP_PORT: 3029
+      DB_HOST: search-postgres
+      DB_USERNAME: nddtp_search
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_search
+      REDIS_HOST: search-redis
+      REDIS_DB: 28
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@search-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      search-postgres:
+        condition: service_healthy
+      search-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-search-network
+
+  search-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_search
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_search
+    ports:
+      - '5461:5432'
+    volumes:
+      - search-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-search-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_search']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  search-redis:
+    image: redis:7-alpine
+    ports:
+      - '6408:6379'
+    networks:
+      - nddtp-search-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  search-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5701:5672'
+      - '15701:15672'
+    networks:
+      - nddtp-search-network
+
+networks:
+  nddtp-search-network:
+    driver: bridge
+
+volumes:
+  search-postgres-data:
