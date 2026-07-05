@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  ai-assistant-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-ai-assistant-service
+    ports:
+      - '3035:3035'
+    environment:
+      APP_PORT: 3035
+      DB_HOST: aiassistant-postgres
+      DB_USERNAME: nddtp_ai_assistant
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_ai_assistant
+      REDIS_HOST: aiassistant-redis
+      REDIS_DB: 34
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@aiassistant-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      aiassistant-postgres:
+        condition: service_healthy
+      aiassistant-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-aiassistant-network
+
+  aiassistant-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_ai_assistant
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_ai_assistant
+    ports:
+      - '5467:5432'
+    volumes:
+      - aiassistant-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-aiassistant-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_ai_assistant']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  aiassistant-redis:
+    image: redis:7-alpine
+    ports:
+      - '6414:6379'
+    networks:
+      - nddtp-aiassistant-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  aiassistant-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5707:5672'
+      - '15707:15672'
+    networks:
+      - nddtp-aiassistant-network
+
+networks:
+  nddtp-aiassistant-network:
+    driver: bridge
+
+volumes:
+  aiassistant-postgres-data:
