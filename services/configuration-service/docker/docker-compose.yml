@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  configuration-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-configuration-service
+    ports:
+      - '3030:3030'
+    environment:
+      APP_PORT: 3030
+      DB_HOST: configuration-postgres
+      DB_USERNAME: nddtp_configuration
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_configuration
+      REDIS_HOST: configuration-redis
+      REDIS_DB: 29
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@configuration-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      configuration-postgres:
+        condition: service_healthy
+      configuration-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-configuration-network
+
+  configuration-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_configuration
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_configuration
+    ports:
+      - '5462:5432'
+    volumes:
+      - configuration-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-configuration-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_configuration']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  configuration-redis:
+    image: redis:7-alpine
+    ports:
+      - '6409:6379'
+    networks:
+      - nddtp-configuration-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  configuration-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5702:5672'
+      - '15702:15672'
+    networks:
+      - nddtp-configuration-network
+
+networks:
+  nddtp-configuration-network:
+    driver: bridge
+
+volumes:
+  configuration-postgres-data:
