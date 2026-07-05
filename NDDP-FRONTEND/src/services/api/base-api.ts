@@ -1,9 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { API_GATEWAY_URL, TOKEN_KEYS } from '@/constants/app';
+import { API_SERVICE_BASE } from '@/constants/services';
+import type { ServiceKey } from '@/constants/services';
+import { TOKEN_KEYS } from '@/constants/app';
+import { unwrapApiResponse } from '@/utils/api-response';
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: API_GATEWAY_URL,
+export interface ServiceFetchArgs extends FetchArgs {
+  service: ServiceKey;
+  skipAuthRedirect?: boolean;
+}
+
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: API_SERVICE_BASE,
   prepareHeaders: (headers) => {
     const token =
       sessionStorage.getItem(TOKEN_KEYS.ACCESS) ?? localStorage.getItem(TOKEN_KEYS.ACCESS);
@@ -13,15 +21,72 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+function resolveUrl(args: string | ServiceFetchArgs): string {
+  if (typeof args === 'string') return args;
+  const path = args.url ?? '';
+  return `/${args.service}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+function isPublicAuthPath(url: string): boolean {
+  return (
+    url.includes('/auth/login') ||
+    url.includes('/auth/mfa/verify') ||
+    url.includes('/auth/refresh') ||
+    url.includes('/auth/forgot-password') ||
+    url.includes('/auth/reset-password')
+  );
+}
+
+const baseQueryWithReauth: BaseQueryFn<string | ServiceFetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
   extraOptions,
 ) => {
-  const result = await baseQuery(args, api, extraOptions);
-  if (result.error?.status === 401) {
-    window.location.href = '/auth/session-expired';
+  const url = resolveUrl(args);
+  const skipRedirect = typeof args !== 'string' && args.skipAuthRedirect;
+
+  let result = await rawBaseQuery(
+    typeof args === 'string' ? args : { ...args, url },
+    api,
+    extraOptions,
+  );
+
+  if (result.error?.status === 401 && !skipRedirect && !isPublicAuthPath(url)) {
+    const refreshToken =
+      sessionStorage.getItem(TOKEN_KEYS.REFRESH) ?? localStorage.getItem(TOKEN_KEYS.REFRESH);
+
+    if (refreshToken) {
+      const refreshResult = await rawBaseQuery(
+        {
+          url: '/auth/auth/refresh',
+          method: 'POST',
+          body: { refreshToken },
+        },
+        api,
+        extraOptions,
+      );
+
+      if (refreshResult.data) {
+        const tokens = unwrapApiResponse<{
+          accessToken: string;
+          refreshToken: string;
+        }>(refreshResult.data);
+        const storage = localStorage.getItem(TOKEN_KEYS.REFRESH) ? localStorage : sessionStorage;
+        storage.setItem(TOKEN_KEYS.ACCESS, tokens.accessToken);
+        storage.setItem(TOKEN_KEYS.REFRESH, tokens.refreshToken);
+        result = await rawBaseQuery(
+          typeof args === 'string' ? args : { ...args, url },
+          api,
+          extraOptions,
+        );
+      }
+    }
+
+    if (result.error?.status === 401) {
+      window.location.href = '/auth/session-expired';
+    }
   }
+
   return result;
 };
 
@@ -36,6 +101,15 @@ export const baseApi = createApi({
     'Notification',
     'Profile',
     'Search',
+    'Module',
   ],
   endpoints: () => ({}),
 });
+
+export function serviceQuery(
+  service: ServiceKey,
+  path: string,
+  options?: Omit<ServiceFetchArgs, 'service' | 'url'>,
+): ServiceFetchArgs {
+  return { service, url: path, ...options };
+}

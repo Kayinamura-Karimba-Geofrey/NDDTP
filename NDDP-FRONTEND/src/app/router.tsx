@@ -15,15 +15,15 @@ const ForbiddenPage = lazy(() => import('@/modules/authentication/pages/ErrorPag
 const NotFoundPage = lazy(() => import('@/modules/authentication/pages/ErrorPages').then((m) => ({ default: m.NotFoundPage })));
 const ServerErrorPage = lazy(() => import('@/modules/authentication/pages/ErrorPages').then((m) => ({ default: m.ServerErrorPage })));
 const DashboardPage = lazy(() => import('@/modules/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })));
-const ModulePlaceholder = lazy(() => import('@/components/shared/ModulePlaceholder').then((m) => ({ default: m.ModulePlaceholder })));
+const ServiceListPage = lazy(() => import('@/components/shared/ServiceListPage').then((m) => ({ default: m.ServiceListPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
 );
 
-const moduleRoute = (path: string, title: string, description: string, service: string): RouteObject => ({
+const moduleRoute = (path: string, moduleKey: string): RouteObject => ({
   path,
-  element: wrap(<ModulePlaceholder title={title} description={description} module={service} />),
+  element: wrap(<ServiceListPage moduleKey={moduleKey} />),
 });
 
 export const router = createBrowserRouter([
@@ -47,36 +47,36 @@ export const router = createBrowserRouter([
     element: wrap(<ProtectedRoute><MainLayout /></ProtectedRoute>),
     children: [
       { path: 'dashboard', element: wrap(<DashboardPage />) },
-      moduleRoute('profile', 'My Profile', 'Manage your personal information and preferences.', 'user'),
-      moduleRoute('users/*', 'User Management', 'Manage platform users, departments, and access.', 'user'),
-      moduleRoute('personnel/*', 'Personnel', 'HR records, ranks, assignments, and qualifications.', 'personnel'),
-      moduleRoute('recruitment/*', 'Recruitment', 'Job postings, applications, and interviews.', 'recruitment'),
-      moduleRoute('leave/*', 'Leave Management', 'Leave requests, balances, and approvals.', 'leave'),
-      moduleRoute('welfare/*', 'Welfare', 'Benefits programs, claims, and dependents.', 'welfare'),
-      moduleRoute('medical/*', 'Medical Services', 'Appointments, records, fitness, and certificates.', 'medical'),
-      moduleRoute('training/*', 'Training', 'Courses, sessions, enrollments, and certifications.', 'training'),
-      moduleRoute('performance/*', 'Performance', 'Cycles, goals, reviews, and improvement plans.', 'performance'),
-      moduleRoute('assets/*', 'Assets', 'Asset categories, assignments, movements, and audits.', 'asset'),
-      moduleRoute('inventory/*', 'Inventory', 'Warehouses, stock levels, movements, and requests.', 'inventory'),
-      moduleRoute('logistics/*', 'Logistics', 'Locations, routes, shipments, and tracking.', 'logistics'),
-      moduleRoute('procurement/*', 'Procurement', 'Vendors, requisitions, orders, and receipts.', 'procurement'),
-      moduleRoute('fleet/*', 'Fleet', 'Vehicles, assignments, trips, and inspections.', 'fleet'),
-      moduleRoute('maintenance/*', 'Maintenance', 'Work orders, tasks, and maintenance logs.', 'maintenance'),
-      moduleRoute('facilities/*', 'Facilities', 'Facilities, spaces, and bookings.', 'facilities'),
-      moduleRoute('finance/*', 'Finance', 'Budgets, allocations, and expenditures.', 'finance'),
-      moduleRoute('visitors/*', 'Visitors', 'Sites, visitors, visits, and check-in.', 'visitor'),
-      moduleRoute('workflow/*', 'Workflow', 'Definitions, instances, tasks, and approvals.', 'workflow'),
-      moduleRoute('calendar/*', 'Calendar', 'Calendars, events, and attendees.', 'calendar'),
-      moduleRoute('reports/*', 'Reports', 'Report definitions, requests, and outputs.', 'reporting'),
-      moduleRoute('analytics/*', 'Analytics', 'Metrics, dashboards, and queries.', 'analytics'),
-      moduleRoute('business-intelligence/*', 'Business Intelligence', 'Datasets, models, and BI reports.', 'business-intelligence'),
-      moduleRoute('notifications/*', 'Notifications', 'Email, SMS, push, and in-app notifications.', 'notification'),
-      moduleRoute('messaging/*', 'Messaging', 'Channels, messages, and delivery.', 'messaging'),
-      moduleRoute('search/*', 'Search', 'Indexes, documents, and queries.', 'search'),
-      moduleRoute('ai-assistant/*', 'AI Assistant', 'Agents, conversations, and messages.', 'ai-assistant'),
-      moduleRoute('settings/*', 'Settings', 'Platform and user preferences.', 'configuration'),
-      moduleRoute('administration/*', 'Administration', 'System administration and configuration.', 'configuration'),
-      moduleRoute('audit-logs/*', 'Audit Logs', 'Compliance audit logging and security events.', 'audit'),
+      moduleRoute('profile', 'user'),
+      moduleRoute('users/*', 'users'),
+      moduleRoute('personnel/*', 'personnel'),
+      moduleRoute('recruitment/*', 'recruitment'),
+      moduleRoute('leave/*', 'leave'),
+      moduleRoute('welfare/*', 'welfare'),
+      moduleRoute('medical/*', 'medical'),
+      moduleRoute('training/*', 'training'),
+      moduleRoute('performance/*', 'performance'),
+      moduleRoute('assets/*', 'asset'),
+      moduleRoute('inventory/*', 'inventory'),
+      moduleRoute('logistics/*', 'logistics'),
+      moduleRoute('procurement/*', 'procurement'),
+      moduleRoute('fleet/*', 'fleet'),
+      moduleRoute('maintenance/*', 'maintenance'),
+      moduleRoute('facilities/*', 'facilities'),
+      moduleRoute('finance/*', 'finance'),
+      moduleRoute('visitors/*', 'visitor'),
+      moduleRoute('workflow/*', 'workflow'),
+      moduleRoute('calendar/*', 'calendar'),
+      moduleRoute('reports/*', 'reporting'),
+      moduleRoute('analytics/*', 'analytics'),
+      moduleRoute('business-intelligence/*', 'business-intelligence'),
+      moduleRoute('notifications/*', 'notification'),
+      moduleRoute('messaging/*', 'messaging'),
+      moduleRoute('search/*', 'search'),
+      moduleRoute('ai-assistant/*', 'ai-assistant'),
+      moduleRoute('settings/*', 'settings'),
+      moduleRoute('administration/*', 'configuration'),
+      moduleRoute('audit-logs/*', 'audit'),
     ],
   },
   { path: '*', element: <Navigate to="/404" replace /> },

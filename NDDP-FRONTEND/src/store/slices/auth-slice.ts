@@ -61,6 +61,7 @@ const authSlice = createSlice({
       localStorage.removeItem(TOKEN_KEYS.ACCESS);
       localStorage.removeItem(TOKEN_KEYS.REFRESH);
       localStorage.removeItem(TOKEN_KEYS.USER);
+      localStorage.removeItem(TOKEN_KEYS.MFA);
       state.user = null;
       state.tokens = null;
       state.isAuthenticated = false;

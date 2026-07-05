@@ -1,9 +1,11 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { API_GATEWAY_URL, TOKEN_KEYS } from '@/constants/app';
+import { API_SERVICE_BASE } from '@/constants/services';
+import { TOKEN_KEYS } from '@/constants/app';
 import type { ApiError } from '@/types';
+import { unwrapApiResponse } from '@/utils/api-response';
 
 const api = axios.create({
-  baseURL: API_GATEWAY_URL,
+  baseURL: API_SERVICE_BASE,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -46,12 +48,13 @@ api.interceptors.response.use(
       try {
         const refreshToken =
           sessionStorage.getItem(TOKEN_KEYS.REFRESH) ?? localStorage.getItem(TOKEN_KEYS.REFRESH);
-        const { data } = await axios.post(`${API_GATEWAY_URL}/auth/refresh`, { refreshToken });
-        const newToken = data.accessToken as string;
+        const { data } = await axios.post(`${API_SERVICE_BASE}/auth/auth/refresh`, { refreshToken });
+        const tokens = unwrapApiResponse<{ accessToken: string; refreshToken: string }>(data);
         const storage = localStorage.getItem(TOKEN_KEYS.REFRESH) ? localStorage : sessionStorage;
-        storage.setItem(TOKEN_KEYS.ACCESS, newToken);
-        processQueue(newToken);
-        if (original.headers) original.headers.Authorization = `Bearer ${newToken}`;
+        storage.setItem(TOKEN_KEYS.ACCESS, tokens.accessToken);
+        storage.setItem(TOKEN_KEYS.REFRESH, tokens.refreshToken);
+        processQueue(tokens.accessToken);
+        if (original.headers) original.headers.Authorization = `Bearer ${tokens.accessToken}`;
         return api(original);
       } catch {
         sessionStorage.clear();
@@ -73,7 +76,19 @@ export default api;
 
 export function getApiErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    return error.response?.data?.message ?? error.message ?? 'An unexpected error occurred';
+    const data = error.response?.data;
+    if (typeof data === 'object' && data !== null && 'message' in data) {
+      const msg = (data as { message: unknown }).message;
+      if (typeof msg === 'string') return msg;
+      if (Array.isArray(msg)) return msg.join(', ');
+    }
+    return error.message ?? 'An unexpected error occurred';
+  }
+  if (error && typeof error === 'object' && 'data' in error) {
+    const data = (error as { data: unknown }).data;
+    if (typeof data === 'object' && data !== null && 'message' in data) {
+      return String((data as { message: string }).message);
+    }
   }
   if (error instanceof Error) return error.message;
   return 'An unexpected error occurred';

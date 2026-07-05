@@ -39,6 +39,10 @@ export function LoginPage() {
         navigate(ROUTES.OTP);
         return;
       }
+      if (!result.user || !result.tokens) {
+        toast.error('Login failed');
+        return;
+      }
       dispatch(setCredentials({ user: result.user, tokens: result.tokens, remember: data.rememberMe }));
       toast.success(`Welcome back, ${result.user.firstName}`);
       navigate(ROUTES.DASHBOARD);
