@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  messaging-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-messaging-service
+    ports:
+      - '3027:3027'
+    environment:
+      APP_PORT: 3027
+      DB_HOST: messaging-postgres
+      DB_USERNAME: nddtp_messaging
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_messaging
+      REDIS_HOST: messaging-redis
+      REDIS_DB: 26
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@messaging-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      messaging-postgres:
+        condition: service_healthy
+      messaging-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-messaging-network
+
+  messaging-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_messaging
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_messaging
+    ports:
+      - '5459:5432'
+    volumes:
+      - messaging-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-messaging-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_messaging']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  messaging-redis:
+    image: redis:7-alpine
+    ports:
+      - '6406:6379'
+    networks:
+      - nddtp-messaging-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  messaging-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5699:5672'
+      - '15699:15672'
+    networks:
+      - nddtp-messaging-network
+
+networks:
+  nddtp-messaging-network:
+    driver: bridge
+
+volumes:
+  messaging-postgres-data:
