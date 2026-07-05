@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  monitoring-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-monitoring-service
+    ports:
+      - '3034:3034'
+    environment:
+      APP_PORT: 3034
+      DB_HOST: monitoring-postgres
+      DB_USERNAME: nddtp_monitoring
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_monitoring
+      REDIS_HOST: monitoring-redis
+      REDIS_DB: 33
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@monitoring-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      monitoring-postgres:
+        condition: service_healthy
+      monitoring-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-monitoring-network
+
+  monitoring-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_monitoring
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_monitoring
+    ports:
+      - '5466:5432'
+    volumes:
+      - monitoring-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-monitoring-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_monitoring']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  monitoring-redis:
+    image: redis:7-alpine
+    ports:
+      - '6413:6379'
+    networks:
+      - nddtp-monitoring-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  monitoring-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5706:5672'
+      - '15706:15672'
+    networks:
+      - nddtp-monitoring-network
+
+networks:
+  nddtp-monitoring-network:
+    driver: bridge
+
+volumes:
+  monitoring-postgres-data:
