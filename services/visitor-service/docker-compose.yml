@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  visitor-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-visitor-service
+    ports:
+      - '3021:3021'
+    environment:
+      APP_PORT: 3021
+      DB_HOST: visitor-postgres
+      DB_USERNAME: nddtp_visitor
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_visitor
+      REDIS_HOST: visitor-redis
+      REDIS_DB: 20
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@visitor-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      visitor-postgres:
+        condition: service_healthy
+      visitor-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-visitor-network
+
+  visitor-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_visitor
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_visitor
+    ports:
+      - '5453:5432'
+    volumes:
+      - visitor-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-visitor-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_visitor']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  visitor-redis:
+    image: redis:7-alpine
+    ports:
+      - '6400:6379'
+    networks:
+      - nddtp-visitor-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  visitor-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5693:5672'
+      - '15693:15672'
+    networks:
+      - nddtp-visitor-network
+
+networks:
+  nddtp-visitor-network:
+    driver: bridge
+
+volumes:
+  visitor-postgres-data:
