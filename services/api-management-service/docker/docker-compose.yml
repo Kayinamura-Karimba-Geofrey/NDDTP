@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  api-management-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-api-management-service
+    ports:
+      - '3032:3032'
+    environment:
+      APP_PORT: 3032
+      DB_HOST: apimanagement-postgres
+      DB_USERNAME: nddtp_api_management
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_api_management
+      REDIS_HOST: apimanagement-redis
+      REDIS_DB: 31
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@apimanagement-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      apimanagement-postgres:
+        condition: service_healthy
+      apimanagement-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-apimanagement-network
+
+  apimanagement-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_api_management
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_api_management
+    ports:
+      - '5464:5432'
+    volumes:
+      - apimanagement-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-apimanagement-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_api_management']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  apimanagement-redis:
+    image: redis:7-alpine
+    ports:
+      - '6411:6379'
+    networks:
+      - nddtp-apimanagement-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  apimanagement-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5704:5672'
+      - '15704:15672'
+    networks:
+      - nddtp-apimanagement-network
+
+networks:
+  nddtp-apimanagement-network:
+    driver: bridge
+
+volumes:
+  apimanagement-postgres-data:
