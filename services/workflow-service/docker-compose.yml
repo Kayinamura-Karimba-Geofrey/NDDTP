@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  workflow-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-workflow-service
+    ports:
+      - '3022:3022'
+    environment:
+      APP_PORT: 3022
+      DB_HOST: workflow-postgres
+      DB_USERNAME: nddtp_workflow
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_workflow
+      REDIS_HOST: workflow-redis
+      REDIS_DB: 21
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@workflow-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      workflow-postgres:
+        condition: service_healthy
+      workflow-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-workflow-network
+
+  workflow-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_workflow
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_workflow
+    ports:
+      - '5454:5432'
+    volumes:
+      - workflow-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-workflow-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_workflow']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  workflow-redis:
+    image: redis:7-alpine
+    ports:
+      - '6401:6379'
+    networks:
+      - nddtp-workflow-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  workflow-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5694:5672'
+      - '15694:15672'
+    networks:
+      - nddtp-workflow-network
+
+networks:
+  nddtp-workflow-network:
+    driver: bridge
+
+volumes:
+  workflow-postgres-data:
