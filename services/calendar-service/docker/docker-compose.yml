@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  calendar-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-calendar-service
+    ports:
+      - '3023:3023'
+    environment:
+      APP_PORT: 3023
+      DB_HOST: calendar-postgres
+      DB_USERNAME: nddtp_calendar
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_calendar
+      REDIS_HOST: calendar-redis
+      REDIS_DB: 22
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@calendar-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      calendar-postgres:
+        condition: service_healthy
+      calendar-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-calendar-network
+
+  calendar-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_calendar
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_calendar
+    ports:
+      - '5455:5432'
+    volumes:
+      - calendar-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-calendar-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_calendar']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  calendar-redis:
+    image: redis:7-alpine
+    ports:
+      - '6402:6379'
+    networks:
+      - nddtp-calendar-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  calendar-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5695:5672'
+      - '15695:15672'
+    networks:
+      - nddtp-calendar-network
+
+networks:
+  nddtp-calendar-network:
+    driver: bridge
+
+volumes:
+  calendar-postgres-data:
