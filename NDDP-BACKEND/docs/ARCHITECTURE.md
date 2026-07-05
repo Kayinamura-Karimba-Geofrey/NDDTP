@@ -20,15 +20,17 @@ The National Defence Digital Transformation Platform (NDDTP) is a **domain-drive
 
 ```
 NDDTP/
-├── packages/
-│   └── platform-core/          # Shared auth, observability, events, config
-├── services/
-│   ├── auth-service/           # Port 3001 — Identity gateway
-│   ├── authorization-service/  # Port 3002 — RBAC
-│   ├── ...                     # Domain services 3003–3034
-│   └── ai-assistant-service/   # Port 3035 — AI conversations
-├── scripts/                    # Monorepo automation
-└── docs/                       # Platform documentation
+└── NDDP-BACKEND/               # Backend monorepo root
+    ├── packages/
+    │   └── platform-core/      # Shared auth, observability, events, config
+    ├── services/
+    │   ├── auth-service/       # Port 3001 — Identity gateway
+    │   ├── authorization-service/  # Port 3002 — RBAC
+    │   ├── ...                 # Domain services 3003–3034
+    │   └── ai-assistant-service/   # Port 3035 — AI conversations
+    ├── scripts/                # Monorepo automation
+    ├── docs/                   # Platform documentation
+    └── package.json            # Workspace root
 ```
 
 ## Layered Service Architecture
@@ -86,6 +88,8 @@ src/
 ## Development
 
 ```bash
+cd NDDP-BACKEND
+
 # Install all workspaces
 npm install
 
