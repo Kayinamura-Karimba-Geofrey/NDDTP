@@ -1,7 +1,7 @@
 import { IsString, IsUUID, IsOptional, IsEnum, IsInt, Min, MaxLength, IsDateString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { BookingStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateBookingDto {
   @ApiProperty() @IsUUID() spaceId: string;

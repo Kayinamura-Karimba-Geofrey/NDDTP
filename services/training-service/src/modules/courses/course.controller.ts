@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CourseService } from './course.service';
 import { CreateCourseDto, UpdateCourseDto } from './dto/course.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Training Courses')
 @ApiBearerAuth('access-token')

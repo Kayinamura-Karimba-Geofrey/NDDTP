@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { User } from '../../../database/entities/user.entity';
 import { UserStatus } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class UserRepository {

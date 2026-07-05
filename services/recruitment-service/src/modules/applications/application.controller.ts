@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ApplicationService } from './application.service';
 import { SubmitApplicationDto, UpdateApplicationStatusDto, ApplicationFilterDto } from './dto/application.dto';
-import { RequirePermissions, Public, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, Public, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Applications')
 @Controller('applications')

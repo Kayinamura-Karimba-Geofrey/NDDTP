@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuditLogService } from './audit-log.service';
 import { SearchAuditLogsDto, CreateAuditLogDto } from './dto/audit.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 import { AuditOutcome, AuditSeverity } from '../../common/enums';
 
 @ApiTags('Audit Logs')

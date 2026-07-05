@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Param, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SemanticModelService } from './semantic-model.service';
 import { CreateSemanticModelDto, UpdateModelStatusDto } from './dto/semantic-model.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Semantic Models')
 @ApiBearerAuth('access-token')

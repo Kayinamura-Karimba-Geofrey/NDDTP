@@ -2,9 +2,9 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe, Query } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AnalyticsQueryService } from './analytics-query.service';
 import { CreateAnalyticsQueryDto, CompleteAnalyticsQueryDto, FailAnalyticsQueryDto } from './dto/analytics-query.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 import { QueryStatus } from '../../common/enums';
 
 @ApiTags('Analytics Queries')

@@ -4,9 +4,8 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PermissionService } from './permission.service';
 import { CreatePermissionDto, UpdatePermissionDto, PermissionFilterDto } from './dto/permission.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
+import { RequirePermissions } from '@nddtp/platform-core';
 import { CorrelationId } from '../../decorators/current-user.decorator';
 
 @ApiTags('Permissions')

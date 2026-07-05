@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CostAccountService } from './cost-account.service';
 import { CreateCostAccountDto, AccountFilterDto } from './dto/cost-account.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Cost Accounts')
 @ApiBearerAuth('access-token')

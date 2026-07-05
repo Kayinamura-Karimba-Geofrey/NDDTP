@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Param, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto, EndAssignmentDto } from './dto/assignment.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Assignments')
 @ApiBearerAuth('access-token')

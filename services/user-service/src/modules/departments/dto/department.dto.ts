@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsEnum, IsUUID, MaxLength } from 'class-validator';
 import { DepartmentType, DepartmentStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateDepartmentDto {
   @ApiProperty({ example: 'HR-001' })

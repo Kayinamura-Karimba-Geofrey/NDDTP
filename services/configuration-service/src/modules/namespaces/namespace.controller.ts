@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { NamespaceService } from './namespace.service';
 import { CreateNamespaceDto } from './dto/namespace.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Namespaces')
 @ApiBearerAuth('access-token')

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { Role } from '../../../database/entities/role.entity';
 import { RoleStatus } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class RoleRepository {

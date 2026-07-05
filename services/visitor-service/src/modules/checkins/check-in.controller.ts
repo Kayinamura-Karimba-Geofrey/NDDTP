@@ -2,8 +2,8 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckInService } from './check-in.service';
 import { RecordCheckInDto } from './dto/check-in.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Check-ins')
 @ApiBearerAuth('access-token')

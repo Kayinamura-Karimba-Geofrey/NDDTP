@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { WarehouseService } from './warehouse.service';
 import { CreateWarehouseDto } from './dto/warehouse.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Warehouses')
 @ApiBearerAuth('access-token')

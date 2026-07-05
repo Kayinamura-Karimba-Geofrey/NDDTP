@@ -5,9 +5,9 @@ import {
   CreateBiReportDefinitionDto, CreateBiReportExecutionDto,
   CompleteBiReportExecutionDto, FailBiReportExecutionDto,
 } from './dto/bi-report.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 import { ExecutionStatus } from '../../common/enums';
 
 @ApiTags('BI Reports')

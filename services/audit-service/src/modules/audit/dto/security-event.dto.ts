@@ -1,7 +1,7 @@
 import { IsOptional, IsUUID, IsEnum, IsBoolean, IsDateString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { SecurityEventType, AuditSeverity } from '../../../common/enums';
 
 export class SearchSecurityEventsDto extends PaginationDto {

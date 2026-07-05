@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigEntryService } from './config-entry.service';
 import { CreateConfigEntryDto, UpdateConfigEntryDto } from './dto/config-entry.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Config Entries')
 @ApiBearerAuth('access-token')

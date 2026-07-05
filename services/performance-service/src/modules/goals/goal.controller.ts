@@ -2,9 +2,9 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { GoalService } from './goal.service';
 import { CreateGoalDto, UpdateGoalProgressDto, GoalFilterDto } from './dto/goal.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Performance Goals')
 @ApiBearerAuth('access-token')

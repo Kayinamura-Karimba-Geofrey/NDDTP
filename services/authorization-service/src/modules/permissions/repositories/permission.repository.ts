@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, In } from 'typeorm';
 import { Permission } from '../../../database/entities/permission.entity';
 import { PermissionStatus } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class PermissionRepository {

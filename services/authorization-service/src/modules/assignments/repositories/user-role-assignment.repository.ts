@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserRoleAssignment } from '../../../database/entities/user-role-assignment.entity';
 import { AssignmentStatus, ScopeType } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class UserRoleAssignmentRepository {

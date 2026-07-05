@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FacilityTypeService } from './facility-type.service';
 import { CreateFacilityTypeDto } from './dto/facility-type.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Facility Types')
 @ApiBearerAuth('access-token')

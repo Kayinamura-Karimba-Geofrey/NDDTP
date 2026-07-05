@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/category.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Asset Categories')
 @ApiBearerAuth('access-token')

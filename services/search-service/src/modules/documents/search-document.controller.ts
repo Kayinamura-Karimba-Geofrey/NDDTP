@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseUUIDPipe
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SearchDocumentService } from './search-document.service';
 import { IndexDocumentDto, UpdateDocumentDto } from './dto/search-document.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Search Documents')
 @ApiBearerAuth('access-token')

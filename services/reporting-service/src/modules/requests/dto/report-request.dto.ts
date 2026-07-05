@@ -1,7 +1,7 @@
 import { IsUUID, IsOptional, IsEnum, IsObject, IsString, IsInt, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RequestStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateReportRequestDto {
   @ApiProperty() @IsUUID() definitionId: string;

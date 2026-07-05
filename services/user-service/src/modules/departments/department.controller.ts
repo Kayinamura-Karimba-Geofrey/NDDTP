@@ -4,9 +4,8 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto, UpdateDepartmentDto, DepartmentFilterDto } from './dto/department.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Departments')
 @Controller('departments')

@@ -4,7 +4,7 @@ import {
   MaxLength, MinLength, IsBoolean, IsObject,
 } from 'class-validator';
 import { UserStatus, Gender, AddressType } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'EMP-2026-00001' })

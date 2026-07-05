@@ -1,0 +1,17 @@
+export { HttpException, HttpStatus } from '@nestjs/common';
+export * from './interfaces';
+export * from './exceptions/domain.exceptions';
+export * from './dto/pagination.dto';
+export * from './auth/auth.decorators';
+export * from './auth/jwt-auth.guard';
+export * from './auth/permissions.guard';
+export * from './auth/jwt.strategy';
+export * from './observability/global-exception.filter';
+export * from './observability/correlation-id.interceptor';
+export * from './config/platform.config';
+export * from './config/winston.config';
+export * from './events/base-event.publisher';
+export * from './utils/status-transition.util';
+export * from './health/platform-health.module';
+export * from './health/platform-health.controller';
+export { PlatformModule, PlatformModuleOptions } from './platform.module';

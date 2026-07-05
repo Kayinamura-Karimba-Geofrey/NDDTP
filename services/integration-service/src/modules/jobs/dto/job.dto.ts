@@ -1,6 +1,6 @@
 import { IsUUID, IsOptional, IsObject, IsString, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { JobStatus } from '../../../common/enums';
 
 export class CreateJobDto {

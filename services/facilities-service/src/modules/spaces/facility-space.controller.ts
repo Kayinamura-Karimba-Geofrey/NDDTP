@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FacilitySpaceService } from './facility-space.service';
 import { CreateFacilitySpaceDto, SpaceFilterDto } from './dto/facility-space.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Facility Spaces')
 @ApiBearerAuth('access-token')

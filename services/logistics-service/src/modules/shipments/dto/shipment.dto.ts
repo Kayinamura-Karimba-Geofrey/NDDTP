@@ -1,7 +1,7 @@
 import { IsUUID, IsEnum, IsOptional, IsString, IsArray, ValidateNested, IsInt, Min, IsDateString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { TransportMode, ShipmentPriority, ShipmentStatus } from '../../../common/enums';
 
 export class ShipmentItemDto {

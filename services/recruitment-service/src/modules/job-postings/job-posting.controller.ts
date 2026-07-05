@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JobPostingService } from './job-posting.service';
 import { CreateJobPostingDto, UpdateJobPostingDto, JobPostingFilterDto } from './dto/job-posting.dto';
-import { RequirePermissions, Public, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, Public, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Job Postings')
 @Controller('job-postings')

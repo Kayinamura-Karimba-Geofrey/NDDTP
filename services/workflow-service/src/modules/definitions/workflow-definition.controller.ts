@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { WorkflowDefinitionService } from './workflow-definition.service';
 import { CreateWorkflowDefinitionDto } from './dto/workflow-definition.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Workflow Definitions')
 @ApiBearerAuth('access-token')

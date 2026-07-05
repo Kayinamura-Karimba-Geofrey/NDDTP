@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsUUID, IsDateString, IsInt, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateGoalDto {
   @ApiProperty() @IsUUID() cycleId: string;

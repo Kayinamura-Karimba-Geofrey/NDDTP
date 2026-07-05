@@ -2,8 +2,8 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { WorkOrderService } from './work-order.service';
 import { CreateWorkOrderDto, ScheduleWorkOrderDto, WorkOrderFilterDto } from './dto/work-order.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Work Orders')
 @ApiBearerAuth('access-token')

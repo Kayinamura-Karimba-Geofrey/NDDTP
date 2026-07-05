@@ -1,6 +1,6 @@
 import { IsUUID, IsInt, Min, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { RequestStatus } from '../../../common/enums';
 
 export class CreateRequestDto {

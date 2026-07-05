@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsUUID, IsEnum, IsEmail, IsDateString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { PersonnelType, ServiceStatus, ServiceBranch } from '../../../common/enums';
 
 export class CreatePersonnelRecordDto {

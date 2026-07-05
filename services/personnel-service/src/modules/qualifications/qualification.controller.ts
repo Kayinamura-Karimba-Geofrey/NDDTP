@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe } from '@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { QualificationService } from './qualification.service';
 import { CreateQualificationDto, AddPersonnelQualificationDto } from './dto/qualification.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Qualifications')
 @ApiBearerAuth('access-token')

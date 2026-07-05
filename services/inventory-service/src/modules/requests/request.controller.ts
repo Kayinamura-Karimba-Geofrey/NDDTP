@@ -2,9 +2,9 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RequestService } from './request.service';
 import { CreateRequestDto, ApproveRequestDto, RejectRequestDto, RequestFilterDto } from './dto/request.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Stock Requests')
 @ApiBearerAuth('access-token')

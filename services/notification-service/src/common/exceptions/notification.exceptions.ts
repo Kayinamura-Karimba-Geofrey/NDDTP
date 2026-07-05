@@ -1,16 +1,12 @@
+export {
+  ResourceNotFoundException,
+  DuplicateResourceException,
+  InvalidStatusTransitionException,
+  BusinessRuleViolationException,
+  ForbiddenAccessException,
+} from '@nddtp/platform-core';
+
 import { HttpException, HttpStatus } from '@nestjs/common';
-
-export class ResourceNotFoundException extends HttpException {
-  constructor(resource: string, id: string) {
-    super({ statusCode: HttpStatus.NOT_FOUND, message: `${resource} '${id}' not found`, error: 'Not Found' }, HttpStatus.NOT_FOUND);
-  }
-}
-
-export class DuplicateResourceException extends HttpException {
-  constructor(field: string, value: string) {
-    super({ statusCode: HttpStatus.CONFLICT, message: `${field} '${value}' already exists`, error: 'Conflict' }, HttpStatus.CONFLICT);
-  }
-}
 
 export class TemplateRenderException extends HttpException {
   constructor(message: string) {

@@ -2,9 +2,9 @@ import { Controller, Get, Post, Param, Body, Query, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SearchQueryService } from './search-query.service';
 import { SubmitSearchQueryDto, SearchQueryFilterDto } from './dto/search-query.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Search Queries')
 @ApiBearerAuth('access-token')

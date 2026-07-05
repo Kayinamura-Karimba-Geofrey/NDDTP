@@ -7,8 +7,8 @@ import {
   AuthorizationCheckResponseDto,
   EffectivePermissionsResponseDto,
 } from './dto/authorization.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { Public } from '../../decorators/auth.decorators';
+import { JwtAuthGuard } from '@nddtp/platform-core';
+import { Public } from '@nddtp/platform-core';
 import { CurrentUser, CorrelationId, ClientIp } from '../../decorators/current-user.decorator';
 
 @ApiTags('Authorization')

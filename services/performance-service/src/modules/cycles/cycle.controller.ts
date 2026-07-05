@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CycleService } from './cycle.service';
 import { CreateCycleDto, UpdateCycleDto } from './dto/cycle.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Performance Cycles')
 @ApiBearerAuth('access-token')

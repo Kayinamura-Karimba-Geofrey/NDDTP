@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Param, Query, Body, ParseUUIDPipe } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PersonnelService } from './personnel.service';
 import { CreatePersonnelRecordDto, UpdatePersonnelRecordDto, PersonnelFilterDto, CreateServiceHistoryDto } from './dto/personnel.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Personnel Records')
 @ApiBearerAuth('access-token')

@@ -21,7 +21,7 @@ export class PermissionService {
 
   async create(dto: CreatePermissionDto, correlationId?: string) {
     const existing = await this.permissionRepository.findByCode(dto.code);
-    if (existing) throw new DuplicateResourceException('Permission', 'code', dto.code);
+    if (existing) throw new DuplicateResourceException('code', dto.code);
 
     const permission = await this.permissionRepository.create({
       ...dto,

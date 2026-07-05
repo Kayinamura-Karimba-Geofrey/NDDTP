@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, IsBoolean, IsUUID, IsEmail } from 'class-validator';
 import { NotificationChannel, TemplateStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateTemplateDto {
   @ApiProperty({ example: 'CUSTOM_ALERT' })

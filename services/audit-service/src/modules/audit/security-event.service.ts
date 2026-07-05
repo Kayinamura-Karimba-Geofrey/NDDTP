@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SecurityEventRepository } from './repositories/security-event.repository';
 import { EventPublisherService } from '../../events/event-publisher.service';
-import { PaginatedResult } from '../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 import { ResourceNotFoundException } from '../../common/exceptions/audit.exceptions';
 import { SecurityEvent } from '../../database/entities/security-event.entity';
 import { SecurityEventType, AuditSeverity } from '../../common/enums';

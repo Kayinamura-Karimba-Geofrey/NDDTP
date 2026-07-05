@@ -1,0 +1,20 @@
+{
+  "name": "nddtp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "National Defence Digital Transformation Platform",
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build:platform": "npm run build -w @nddtp/platform-core",
+    "install:deps": "node scripts/install-platform-core.mjs",
+    "standardize": "node scripts/standardize-services.mjs",
+    "build:all": "node scripts/build-all-services.mjs",
+    "test:all": "node scripts/test-all-services.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

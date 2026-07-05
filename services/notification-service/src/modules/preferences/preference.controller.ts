@@ -2,7 +2,7 @@ import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PreferenceService } from './preference.service';
 import { UpdatePreferenceDto } from '../notifications/dto/notification.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@nddtp/platform-core';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 
 @ApiTags('Preferences')

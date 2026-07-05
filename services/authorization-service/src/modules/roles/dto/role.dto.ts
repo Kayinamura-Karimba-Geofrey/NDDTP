@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsUUID, IsEnum, IsInt, Min, MaxLength, Matches } from 'class-validator';
 import { RoleStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateRoleDto {
   @ApiProperty({ example: 'DEPARTMENT_HEAD' })

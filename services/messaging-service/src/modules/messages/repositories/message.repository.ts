@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Message } from '../../../database/entities/message.entity';
 import { MessageReceipt } from '../../../database/entities/message-receipt.entity';
 import { MessageStatus } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class MessageRepository {

@@ -2,8 +2,8 @@ import { Controller, Get, Post, Patch, Delete, Param, Body, ParseUUIDPipe } from
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { DependentService } from './dependent.service';
 import { CreateDependentDto, UpdateDependentDto } from './dto/dependent.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 
 @ApiTags('Dependents')
 @ApiBearerAuth('access-token')

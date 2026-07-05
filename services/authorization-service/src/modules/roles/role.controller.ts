@@ -4,9 +4,8 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { RoleService } from './role.service';
 import { CreateRoleDto, UpdateRoleDto, RoleFilterDto, GrantPermissionsDto, RoleResponseDto } from './dto/role.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { RequirePermissions, Public } from '../../decorators/auth.decorators';
+import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
+import { RequirePermissions, Public } from '@nddtp/platform-core';
 import { CurrentUser, CorrelationId } from '../../decorators/current-user.decorator';
 
 @ApiTags('Roles')

@@ -6,9 +6,8 @@ import { UserService } from './user.service';
 import {
   CreateUserDto, UpdateUserDto, UserFilterDto, CreateAddressDto, CreateEmergencyContactDto, UserResponseDto,
 } from './dto/user.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
+import { RequirePermissions } from '@nddtp/platform-core';
 import { CurrentUser, CorrelationId } from '../../decorators/current-user.decorator';
 
 @ApiTags('Users')

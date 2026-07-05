@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Param, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UnitService } from './unit.service';
 import { CreateUnitDto, UpdateUnitDto } from './dto/unit.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Units')
 @ApiBearerAuth('access-token')

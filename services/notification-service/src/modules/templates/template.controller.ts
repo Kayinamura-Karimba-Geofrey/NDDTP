@@ -4,9 +4,8 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { TemplateService } from './template.service';
 import { CreateTemplateDto, UpdateTemplateDto, TemplateFilterDto } from '../notifications/dto/notification.dto';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Templates')
 @Controller('templates')

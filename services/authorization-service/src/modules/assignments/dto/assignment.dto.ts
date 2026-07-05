@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsUUID, IsEnum, IsOptional, IsString, IsDateString } from 'class-validator';
 import { ScopeType } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class AssignRoleDto {
   @ApiProperty()

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body, ParseUUIDPipe, Query } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MetricService } from './metric.service';
 import { CreateMetricDefinitionDto, RecordMetricSnapshotDto, SnapshotFilterDto } from './dto/metric.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Metrics')
 @ApiBearerAuth('access-token')

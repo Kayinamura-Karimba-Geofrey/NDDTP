@@ -1,7 +1,7 @@
 import { IsUUID, IsString, IsEnum, IsOptional, IsDateString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CalendarEventType, EventStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateEventDto {
   @ApiProperty() @IsUUID() calendarId: string;

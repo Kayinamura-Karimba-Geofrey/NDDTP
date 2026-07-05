@@ -1,7 +1,7 @@
 import { IsUUID, IsString, IsOptional, IsEnum, IsNumber, Min, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ExpenditureStatus, ExpenditureReferenceType } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateExpenditureDto {
   @ApiProperty() @IsUUID() accountId: string;

@@ -2,9 +2,9 @@ import { Controller, Get, Post, Delete, Param, Body, Query, ParseUUIDPipe } from
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MessageService } from './message.service';
 import { SendMessageDto, MarkDeliveredDto, MarkReadDto } from './dto/message.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
+import { PaginationDto } from '@nddtp/platform-core';
 
 @ApiTags('Messages')
 @ApiBearerAuth('access-token')

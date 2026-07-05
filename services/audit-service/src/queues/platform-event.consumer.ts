@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/commo
 import { ConfigService } from '@nestjs/config';
 import * as amqp from 'amqplib';
 import { RABBITMQ_QUEUES } from '../common/constants';
-import { PlatformEventPayload } from '../common/interfaces';
+import { PlatformEventPayload } from '@nddtp/platform-core';
 import { AuditLogService } from '../modules/audit/audit-log.service';
 import { SecurityEventService } from '../modules/audit/security-event.service';
 import { EventMapperService } from '../modules/audit/event-mapper.service';

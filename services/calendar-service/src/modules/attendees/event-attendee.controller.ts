@@ -2,8 +2,8 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { EventAttendeeService } from './event-attendee.service';
 import { InviteAttendeeDto, RespondRsvpDto } from './dto/attendee.dto';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 import { RsvpStatus } from '../../common/enums';
 
 @ApiTags('Event Attendees')

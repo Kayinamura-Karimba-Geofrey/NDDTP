@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Announcement } from '../../../database/entities/announcement.entity';
 import { AnnouncementAudience } from '../../../database/entities/announcement-audience.entity';
 import { AnnouncementStatus } from '../../../common/enums';
-import { PaginatedResult } from '../../../common/interfaces';
+import { PaginatedResult } from '@nddtp/platform-core';
 
 @Injectable()
 export class AnnouncementRepository {

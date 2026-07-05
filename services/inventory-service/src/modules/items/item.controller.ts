@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Query, Body, ParseUUIDPipe } from '@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ItemService } from './item.service';
 import { CreateItemDto, ItemFilterDto } from './dto/item.dto';
-import { RequirePermissions } from '../../decorators/auth.decorators';
+import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Inventory Items')
 @ApiBearerAuth('access-token')

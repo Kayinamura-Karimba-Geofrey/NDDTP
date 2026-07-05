@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { LeaveBalanceService } from './leave-balance.service';
-import { RequirePermissions, CurrentUser } from '../../decorators/auth.decorators';
-import { AuthenticatedUser } from '../../common/interfaces';
+import { RequirePermissions, CurrentUser } from '@nddtp/platform-core';
+import { AuthenticatedUser } from '@nddtp/platform-core';
 import { Type } from 'class-transformer';
 import { IsOptional, IsInt } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';

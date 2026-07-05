@@ -1,7 +1,7 @@
 import { IsUUID, IsOptional, IsString, IsArray, ValidateNested, IsDateString, IsNumber, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 import { WorkOrderStatus } from '../../../common/enums';
 
 export class WorkOrderTaskDto {

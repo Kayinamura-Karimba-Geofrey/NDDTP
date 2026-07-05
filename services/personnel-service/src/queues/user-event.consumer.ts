@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/commo
 import { ConfigService } from '@nestjs/config';
 import * as amqp from 'amqplib';
 import { RABBITMQ_QUEUES } from '../common/constants';
-import { PlatformEventPayload } from '../common/interfaces';
+import { PlatformEventPayload } from '@nddtp/platform-core';
 import { PersonnelService } from '../modules/personnel/personnel.service';
 
 const USER_BINDINGS = ['user.user.created', 'user.user.updated', 'user.user.deactivated', 'user.user.deleted'];

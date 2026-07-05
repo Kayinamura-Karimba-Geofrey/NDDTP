@@ -28,7 +28,7 @@ export class RoleService {
 
   async create(dto: CreateRoleDto, createdBy?: string, correlationId?: string) {
     const existing = await this.roleRepository.findByCode(dto.code);
-    if (existing) throw new DuplicateResourceException('Role', 'code', dto.code);
+    if (existing) throw new DuplicateResourceException('code', dto.code);
 
     if (dto.parentRoleId) {
       const parent = await this.roleRepository.findById(dto.parentRoleId);

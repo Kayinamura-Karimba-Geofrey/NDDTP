@@ -1,7 +1,7 @@
 import { IsUUID, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { WorkflowEntityType, InstanceStatus } from '../../../common/enums';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { PaginationDto } from '@nddtp/platform-core';
 
 export class CreateInstanceDto {
   @ApiProperty() @IsUUID() definitionId: string;

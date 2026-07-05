@@ -3,7 +3,8 @@ import {
   AuditAction, AuditOutcome, AuditSeverity, SecurityEventType, AuditEventCategory,
 } from '../../common/enums';
 import { EVENT_CATEGORY_MAP, EVENT_ACTION_MAP, SECURITY_EVENT_TYPES } from '../../common/constants';
-import { PlatformEventPayload, CreateAuditLogInput } from '../../common/interfaces';
+import { PlatformEventPayload } from '@nddtp/platform-core';
+import { CreateAuditLogInput } from '../../common/interfaces';
 
 @Injectable()
 export class EventMapperService {
