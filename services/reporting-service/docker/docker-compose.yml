@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  reporting-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nddtp-reporting-service
+    ports:
+      - '3024:3024'
+    environment:
+      APP_PORT: 3024
+      DB_HOST: reporting-postgres
+      DB_USERNAME: nddtp_reporting
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      DB_NAME: nddtp_reporting
+      REDIS_HOST: reporting-redis
+      REDIS_DB: 23
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@reporting-rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
+    depends_on:
+      reporting-postgres:
+        condition: service_healthy
+      reporting-redis:
+        condition: service_healthy
+    networks:
+      - nddtp-reporting-network
+
+  reporting-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nddtp_reporting
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
+      POSTGRES_DB: nddtp_reporting
+    ports:
+      - '5456:5432'
+    volumes:
+      - reporting-postgres-data:/var/lib/postgresql/data
+    networks:
+      - nddtp-reporting-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_reporting']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  reporting-redis:
+    image: redis:7-alpine
+    ports:
+      - '6403:6379'
+    networks:
+      - nddtp-reporting-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  reporting-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nddtp
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
+    ports:
+      - '5696:5672'
+      - '15696:15672'
+    networks:
+      - nddtp-reporting-network
+
+networks:
+  nddtp-reporting-network:
+    driver: bridge
+
+volumes:
+  reporting-postgres-data:
