@@ -16,7 +16,7 @@ import { NotificationTemplate, Notification, NotificationDelivery, UserNotificat
         password: cs.get<string>('database.password'),
         database: cs.get<string>('database.name'),
         entities: [NotificationTemplate, Notification, NotificationDelivery, UserNotificationPreference],
-        synchronize: cs.get<string>('app.nodeEnv') === 'development',
+        synchronize: false,
         logging: cs.get<boolean>('database.logging'),
         extra: { max: cs.get<number>('database.poolSize') },
       }),

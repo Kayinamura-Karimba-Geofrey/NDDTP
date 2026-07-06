@@ -21,11 +21,14 @@ const jwt_strategy_1 = require("./auth/jwt.strategy");
 const winston_config_1 = require("./config/winston.config");
 const global_exception_filter_1 = require("./observability/global-exception.filter");
 const correlation_id_interceptor_1 = require("./observability/correlation-id.interceptor");
+const platform_health_controller_1 = require("./health/platform-health.controller");
 let PlatformModule = PlatformModule_1 = class PlatformModule {
     static forRoot(options) {
         return {
             module: PlatformModule_1,
+            global: true,
             imports: [
+                config_1.ConfigModule,
                 nest_winston_1.WinstonModule.forRoot((0, winston_config_1.createWinstonConfig)(options.serviceName)),
                 throttler_1.ThrottlerModule.forRootAsync({
                     imports: [config_1.ConfigModule],
@@ -40,11 +43,15 @@ let PlatformModule = PlatformModule_1 = class PlatformModule {
                     imports: [config_1.ConfigModule],
                     inject: [config_1.ConfigService],
                     useFactory: (configService) => ({
-                        secret: configService.get('jwt.accessSecret'),
+                        secret: configService.get('jwt.accessSecret') ||
+                            process.env.JWT_ACCESS_SECRET ||
+                            'change_me_access_secret_min_32_chars_long',
                     }),
                 }),
             ],
+            controllers: [platform_health_controller_1.PlatformHealthController],
             providers: [
+                core_1.Reflector,
                 jwt_strategy_1.JwtStrategy,
                 { provide: core_1.APP_FILTER, useClass: global_exception_filter_1.GlobalExceptionFilter },
                 { provide: core_1.APP_INTERCEPTOR, useClass: correlation_id_interceptor_1.CorrelationIdInterceptor },
@@ -52,7 +59,7 @@ let PlatformModule = PlatformModule_1 = class PlatformModule {
                 { provide: core_1.APP_GUARD, useClass: jwt_auth_guard_1.JwtAuthGuard },
                 { provide: core_1.APP_GUARD, useClass: permissions_guard_1.PermissionsGuard },
             ],
-            exports: [jwt_1.JwtModule, passport_1.PassportModule],
+            exports: [jwt_1.JwtModule, passport_1.PassportModule, core_1.Reflector],
         };
     }
 };

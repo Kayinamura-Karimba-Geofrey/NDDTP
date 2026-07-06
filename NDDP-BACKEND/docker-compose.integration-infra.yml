@@ -1,0 +1,102 @@
+# Infrastructure only — PostgreSQL for integration testing
+# Usage: docker compose -f docker-compose.integration-infra.yml up -d
+version: '3.9'
+
+x-postgres-defaults: &postgres-defaults
+  image: postgres:16-alpine
+  restart: unless-stopped
+  environment: &pg-env
+    POSTGRES_PASSWORD: change_me_secure_password
+  healthcheck:
+    test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+    interval: 5s
+    timeout: 5s
+    retries: 10
+  networks:
+    - nddtp-integration
+
+services:
+  auth-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-auth-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_auth
+      POSTGRES_DB: nddtp_auth
+    ports:
+      - '5433:5432'
+    volumes:
+      - integration-auth-pg:/var/lib/postgresql/data
+
+  authorization-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-authz-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_authorization
+      POSTGRES_DB: nddtp_authorization
+    ports:
+      - '5439:5432'
+    volumes:
+      - integration-authz-pg:/var/lib/postgresql/data
+
+  user-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-user-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_user
+      POSTGRES_DB: nddtp_user
+    ports:
+      - '5435:5432'
+    volumes:
+      - integration-user-pg:/var/lib/postgresql/data
+
+  notification-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-notification-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_notification
+      POSTGRES_DB: nddtp_notification
+    ports:
+      - '5436:5432'
+    volumes:
+      - integration-notification-pg:/var/lib/postgresql/data
+
+  personnel-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-personnel-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_personnel
+      POSTGRES_DB: nddtp_personnel
+    ports:
+      - '5438:5432'
+    volumes:
+      - integration-personnel-pg:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: nddtp-integration-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    networks:
+      - nddtp-integration
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  nddtp-integration:
+    name: nddtp-integration
+
+volumes:
+  integration-auth-pg:
+  integration-authz-pg:
+  integration-user-pg:
+  integration-notification-pg:
+  integration-personnel-pg:

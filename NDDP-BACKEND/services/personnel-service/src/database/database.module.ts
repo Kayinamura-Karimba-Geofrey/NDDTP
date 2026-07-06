@@ -19,7 +19,7 @@ import {
         password: cs.get<string>('database.password'),
         database: cs.get<string>('database.name'),
         entities: [PersonnelRecord, Rank, RankHistory, Unit, Assignment, Qualification, PersonnelQualification, ServiceHistory],
-        synchronize: cs.get<string>('app.nodeEnv') === 'development',
+        synchronize: false,
         logging: cs.get<boolean>('database.logging'),
         extra: { max: cs.get<number>('database.poolSize') },
       }),

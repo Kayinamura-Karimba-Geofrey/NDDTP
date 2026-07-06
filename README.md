@@ -1,15 +1,28 @@
 # NDDTP — National Defence Digital Transformation Platform
 
-Backend microservices live in **[NDDP-BACKEND](./NDDP-BACKEND/)**.
+| Folder | Description |
+|--------|-------------|
+| [NDDP-BACKEND](./NDDP-BACKEND/) | 35 NestJS microservices + platform-core |
+| [NDDP-FRONTEND](./NDDP-FRONTEND/) | React 19 enterprise web application |
 
-## Quick start
+## Backend
 
 ```bash
 cd NDDP-BACKEND
-npm run build:platform
-npm run install:deps
-npm run build:all
-npm run test:all
+npm run build:platform && npm run build:all
+
+# API Gateway (port 3000 — required for frontend integration)
+npm run gateway:install
+npm run gateway:dev
 ```
 
-See [NDDP-BACKEND/README.md](./NDDP-BACKEND/README.md) and [NDDP-BACKEND/docs/ARCHITECTURE.md](./NDDP-BACKEND/docs/ARCHITECTURE.md) for full details.
+## Frontend
+
+```bash
+cd NDDP-FRONTEND
+npm install && npm run dev
+```
+
+The Vite dev server proxies `/api/*` to the API Gateway at `http://localhost:3000`.
+
+Demo login: any email + password (8+ chars). MFA test: `mfa@mod.gov.rw` → OTP `123456`.

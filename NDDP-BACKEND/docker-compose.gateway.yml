@@ -1,0 +1,21 @@
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      GATEWAY_PORT: 3000
+      GATEWAY_HOST: 0.0.0.0
+      SERVICE_HOST: host.docker.internal
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost:4200
+      LOG_LEVEL: info
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3

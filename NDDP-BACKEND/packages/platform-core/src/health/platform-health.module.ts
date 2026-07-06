@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
-import { PlatformHealthController } from './platform-health.controller';
 
-@Module({
-  imports: [TerminusModule],
-  controllers: [PlatformHealthController],
-})
+/** @deprecated Health routes are registered via PlatformModule.forRoot(). Kept for import compatibility. */
+@Module({})
 export class PlatformHealthModule {}

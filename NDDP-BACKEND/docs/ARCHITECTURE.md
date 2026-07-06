@@ -21,6 +21,7 @@ The National Defence Digital Transformation Platform (NDDTP) is a **domain-drive
 ```
 NDDTP/
 └── NDDP-BACKEND/               # Backend monorepo root
+    ├── api-gateway/            # Port 3000 — unified API entry point
     ├── packages/
     │   └── platform-core/      # Shared auth, observability, events, config
     ├── services/
@@ -63,16 +64,35 @@ src/
 ## Service Communication
 
 ```
-┌─────────────┐     JWT      ┌──────────────────┐
-│   Client    │ ──────────► │  Domain Service   │
-└─────────────┘             └────────┬─────────┘
-                                     │ publish
-                                     ▼
-                            ┌──────────────────┐
-                            │  nddtp.events    │
-                            │  (RabbitMQ)      │
-                            └──────────────────┘
+┌─────────────┐              ┌──────────────────┐     proxy      ┌──────────────────┐
+│   Client    │ ──────────► │  API Gateway      │ ─────────────► │  Domain Service   │
+│  (React)    │   :3000     │  /api/svc/{key}   │   :3001-3035   │  /api/v1/...      │
+└─────────────┘              └────────┬─────────┘                └────────┬─────────┘
+                                      │ metadata                          │ publish
+                                      ▼                                   ▼
+                             ┌──────────────────┐                ┌──────────────────┐
+                             │ api-management   │                │  nddtp.events    │
+                             │ (control plane)  │                │  (RabbitMQ)      │
+                             └──────────────────┘                └──────────────────┘
 ```
+
+## API Gateway
+
+`NDDP-BACKEND/api-gateway` listens on **port 3000**:
+
+| Route | Purpose |
+|-------|---------|
+| `GET /health` | Gateway liveness |
+| `GET /health/services` | Aggregated microservice health |
+| `GET /api/svc` | Service catalog (35 microservices) |
+| `ANY /api/svc/{serviceKey}/*` | Proxy to `http://127.0.0.1:{port}/api/v1/*` |
+
+```bash
+npm run gateway:install && npm run gateway:dev
+docker compose -f docker-compose.gateway.yml up -d
+```
+
+The frontend dev server proxies `/api/*` to the gateway. Microservices default CORS to `http://localhost:3000`.
 
 ## Service Catalog
 
@@ -105,7 +125,7 @@ npm run test:all
 
 ## Production Hardening Roadmap
 
-1. Deploy API gateway (Kong/Envoy) using API Management service as control plane
+1. ~~Deploy API gateway~~ — `api-gateway` on :3000; optional Kong/Envoy for production scale
 2. Add OpenTelemetry tracing across platform-core
 3. Implement transactional outbox for reliable event delivery
 4. Add background workers for Integration, Backup, Monitoring, and AI Assistant job execution

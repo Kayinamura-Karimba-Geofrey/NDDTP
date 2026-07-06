@@ -2,8 +2,10 @@ import dataSource from '../data-source';
 import { Role } from '../entities/role.entity';
 import { Permission } from '../entities/permission.entity';
 import { RolePermission } from '../entities/role-permission.entity';
+import { UserRoleAssignment } from '../entities/user-role-assignment.entity';
 import { SYSTEM_ROLES, SYSTEM_PERMISSIONS } from '../../common/constants';
-import { RoleStatus, PermissionStatus } from '../../common/enums';
+import { RoleStatus, PermissionStatus, AssignmentStatus, ScopeType } from '../../common/enums';
+import { DEMO_USERS } from '../../../../../shared-seeds/demo-users';
 
 async function seed(): Promise<void> {
   await dataSource.initialize();
@@ -103,6 +105,31 @@ async function seed(): Promise<void> {
     if (perm) {
       const exists = await rpRepo.findOne({ where: { roleId: auditor.id, permissionId: perm.id } });
       if (!exists) await rpRepo.save(rpRepo.create({ roleId: auditor.id, permissionId: perm.id }));
+    }
+  }
+
+  const assignmentRepo = dataSource.getRepository(UserRoleAssignment);
+  const adminUserId = DEMO_USERS[0].id;
+
+  for (const demo of DEMO_USERS) {
+    const role = roleMap.get(demo.roleCode);
+    if (!role) continue;
+
+    const existing = await assignmentRepo.findOne({
+      where: { userId: demo.id, roleId: role.id, scopeType: ScopeType.GLOBAL },
+    });
+
+    if (!existing) {
+      await assignmentRepo.save(
+        assignmentRepo.create({
+          userId: demo.id,
+          roleId: role.id,
+          scopeType: ScopeType.GLOBAL,
+          status: AssignmentStatus.ACTIVE,
+          assignedBy: adminUserId,
+        }),
+      );
+      console.log(`Assigned role ${demo.roleCode} to ${demo.email}`);
     }
   }
 

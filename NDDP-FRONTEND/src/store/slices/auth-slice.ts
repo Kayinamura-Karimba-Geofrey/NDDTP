@@ -1,6 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { TOKEN_KEYS } from '@/constants/app';
 import type { AuthTokens, AuthUser } from '@/types';
+import {
+  clearAuthStorage,
+  getStoredTokens,
+  isJwtExpired,
+  isMockAccessToken,
+  sanitizeStoredAuth,
+} from '@/utils/auth-storage';
 
 interface AuthState {
   user: AuthUser | null;
@@ -10,24 +17,41 @@ interface AuthState {
   mfaRequired: boolean;
 }
 
+sanitizeStoredAuth();
+
 const loadUser = (): AuthUser | null => {
   const raw = localStorage.getItem(TOKEN_KEYS.USER) ?? sessionStorage.getItem(TOKEN_KEYS.USER);
   return raw ? (JSON.parse(raw) as AuthUser) : null;
 };
 
-const loadTokens = (): AuthTokens | null => {
-  const access =
-    localStorage.getItem(TOKEN_KEYS.ACCESS) ?? sessionStorage.getItem(TOKEN_KEYS.ACCESS);
-  const refresh =
-    localStorage.getItem(TOKEN_KEYS.REFRESH) ?? sessionStorage.getItem(TOKEN_KEYS.REFRESH);
-  if (!access || !refresh) return null;
-  return { accessToken: access, refreshToken: refresh, expiresIn: 3600 };
-};
+function loadSession(): Pick<AuthState, 'user' | 'tokens' | 'isAuthenticated'> {
+  const tokens = getStoredTokens();
+  if (!tokens) {
+    return { user: null, tokens: null, isAuthenticated: false };
+  }
+
+  if (
+    isMockAccessToken(tokens.accessToken) ||
+    isMockAccessToken(tokens.refreshToken) ||
+    isJwtExpired(tokens.accessToken)
+  ) {
+    if (isMockAccessToken(tokens.accessToken) || isMockAccessToken(tokens.refreshToken)) {
+      clearAuthStorage();
+      return { user: null, tokens: null, isAuthenticated: false };
+    }
+    // Expired access token — keep refresh token; base-api will refresh on next request.
+    return { user: loadUser(), tokens, isAuthenticated: true };
+  }
+
+  return { user: loadUser(), tokens, isAuthenticated: true };
+}
+
+const session = loadSession();
 
 const initialState: AuthState = {
-  user: loadUser(),
-  tokens: loadTokens(),
-  isAuthenticated: Boolean(loadTokens()),
+  user: session.user,
+  tokens: session.tokens,
+  isAuthenticated: session.isAuthenticated,
   isLoading: false,
   mfaRequired: false,
 };
@@ -57,11 +81,7 @@ const authSlice = createSlice({
       state.mfaRequired = action.payload;
     },
     logout: (state) => {
-      sessionStorage.clear();
-      localStorage.removeItem(TOKEN_KEYS.ACCESS);
-      localStorage.removeItem(TOKEN_KEYS.REFRESH);
-      localStorage.removeItem(TOKEN_KEYS.USER);
-      localStorage.removeItem(TOKEN_KEYS.MFA);
+      clearAuthStorage();
       state.user = null;
       state.tokens = null;
       state.isAuthenticated = false;

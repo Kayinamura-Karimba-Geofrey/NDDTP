@@ -1,6 +1,8 @@
 import dataSource from '../data-source';
 import { Department } from '../entities/department.entity';
-import { DepartmentType, DepartmentStatus } from '../../common/enums';
+import { User } from '../entities/user.entity';
+import { DepartmentType, DepartmentStatus, UserStatus, Gender } from '../../common/enums';
+import { DEMO_USERS } from '../../../../../shared-seeds/demo-users';
 
 const SEED_DEPARTMENTS = [
   { code: 'HQ', name: 'Headquarters', type: DepartmentType.HEADQUARTERS },
@@ -14,18 +16,60 @@ const SEED_DEPARTMENTS = [
 
 async function seed(): Promise<void> {
   await dataSource.initialize();
-  const repo = dataSource.getRepository(Department);
+  const deptRepo = dataSource.getRepository(Department);
+  const userRepo = dataSource.getRepository(User);
+
+  const deptMap = new Map<string, string>();
 
   for (const d of SEED_DEPARTMENTS) {
-    const existing = await repo.findOne({ where: { code: d.code } });
-    if (!existing) {
-      await repo.save(repo.create({ ...d, status: DepartmentStatus.ACTIVE }));
+    let dept = await deptRepo.findOne({ where: { code: d.code } });
+    if (!dept) {
+      dept = await deptRepo.save(deptRepo.create({ ...d, status: DepartmentStatus.ACTIVE }));
       console.log(`Created department: ${d.code}`);
+    }
+    deptMap.set(d.code, dept.id);
+  }
+
+  for (const demo of DEMO_USERS) {
+    const existing = await userRepo.findOne({ where: { id: demo.id } });
+    const departmentId = deptMap.get(demo.departmentCode) ?? null;
+
+    if (!existing) {
+      await userRepo.save(
+        userRepo.create({
+          id: demo.id,
+          employeeNumber: demo.employeeNumber,
+          firstName: demo.firstName,
+          lastName: demo.lastName,
+          email: demo.email.toLowerCase(),
+          rank: demo.rank,
+          jobTitle: demo.jobTitle,
+          departmentId,
+          status: UserStatus.ACTIVE,
+          gender: demo.firstName === 'Alice' ? Gender.FEMALE : Gender.MALE,
+          nationality: 'Rwandan',
+          hireDate: '2020-01-15',
+          hasCredentials: true,
+          credentialsRegisteredAt: new Date(),
+        }),
+      );
+      console.log(`Created user: ${demo.email}`);
+    } else {
+      await userRepo.update(demo.id, {
+        hasCredentials: true,
+        credentialsRegisteredAt: new Date(),
+        status: UserStatus.ACTIVE,
+        departmentId,
+      });
+      console.log(`Updated user: ${demo.email}`);
     }
   }
 
-  console.log('Seed completed');
+  console.log('User service seed complete');
   await dataSource.destroy();
 }
 
-seed().catch((e) => { console.error(e); process.exit(1); });
+seed().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

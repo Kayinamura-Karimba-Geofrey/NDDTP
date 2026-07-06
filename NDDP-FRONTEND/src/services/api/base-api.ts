@@ -4,6 +4,7 @@ import { API_SERVICE_BASE } from '@/constants/services';
 import type { ServiceKey } from '@/constants/services';
 import { TOKEN_KEYS } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
+import { redirectToSessionExpired } from '@/utils/auth-storage';
 
 export interface ServiceFetchArgs extends FetchArgs {
   service: ServiceKey;
@@ -24,7 +25,15 @@ const rawBaseQuery = fetchBaseQuery({
 function resolveUrl(args: string | ServiceFetchArgs): string {
   if (typeof args === 'string') return args;
   const path = args.url ?? '';
-  return `/${args.service}${path.startsWith('/') ? path : `/${path}`}`;
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (!args.service) return normalized;
+  return `/${args.service}${normalized}`;
+}
+
+function toFetchArgs(args: string | ServiceFetchArgs): string | FetchArgs {
+  if (typeof args === 'string') return args;
+  const { service: _service, skipAuthRedirect: _skip, ...fetchArgs } = args;
+  return { ...fetchArgs, url: resolveUrl(args) };
 }
 
 function isPublicAuthPath(url: string): boolean {
@@ -45,11 +54,7 @@ const baseQueryWithReauth: BaseQueryFn<string | ServiceFetchArgs, unknown, Fetch
   const url = resolveUrl(args);
   const skipRedirect = typeof args !== 'string' && args.skipAuthRedirect;
 
-  let result = await rawBaseQuery(
-    typeof args === 'string' ? args : { ...args, url },
-    api,
-    extraOptions,
-  );
+  let result = await rawBaseQuery(toFetchArgs(args), api, extraOptions);
 
   if (result.error?.status === 401 && !skipRedirect && !isPublicAuthPath(url)) {
     const refreshToken =
@@ -57,11 +62,13 @@ const baseQueryWithReauth: BaseQueryFn<string | ServiceFetchArgs, unknown, Fetch
 
     if (refreshToken) {
       const refreshResult = await rawBaseQuery(
-        {
-          url: '/auth/auth/refresh',
-          method: 'POST',
-          body: { refreshToken },
-        },
+        toFetchArgs(
+          serviceQuery('auth', '/auth/refresh', {
+            method: 'POST',
+            body: { refreshToken },
+            skipAuthRedirect: true,
+          }),
+        ),
         api,
         extraOptions,
       );
@@ -70,20 +77,17 @@ const baseQueryWithReauth: BaseQueryFn<string | ServiceFetchArgs, unknown, Fetch
         const tokens = unwrapApiResponse<{
           accessToken: string;
           refreshToken: string;
+          expiresIn?: number;
         }>(refreshResult.data);
         const storage = localStorage.getItem(TOKEN_KEYS.REFRESH) ? localStorage : sessionStorage;
         storage.setItem(TOKEN_KEYS.ACCESS, tokens.accessToken);
         storage.setItem(TOKEN_KEYS.REFRESH, tokens.refreshToken);
-        result = await rawBaseQuery(
-          typeof args === 'string' ? args : { ...args, url },
-          api,
-          extraOptions,
-        );
+        result = await rawBaseQuery(toFetchArgs(args), api, extraOptions);
       }
     }
 
     if (result.error?.status === 401) {
-      window.location.href = '/auth/session-expired';
+      redirectToSessionExpired();
     }
   }
 

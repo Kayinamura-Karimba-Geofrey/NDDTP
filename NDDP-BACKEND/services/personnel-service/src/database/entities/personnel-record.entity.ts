@@ -34,7 +34,7 @@ export class PersonnelRecord {
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string | null;
 
-  @Column({ type: 'enum', enum: PersonnelType, default: PersonnelType.ENLISTED })
+  @Column({ name: 'personnel_type', type: 'enum', enum: PersonnelType, default: PersonnelType.ENLISTED })
   personnelType: PersonnelType;
 
   @Column({ name: 'service_status', type: 'enum', enum: ServiceStatus, default: ServiceStatus.ACTIVE })

@@ -12,18 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlatformHealthController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const terminus_1 = require("@nestjs/terminus");
 const auth_decorators_1 = require("../auth/auth.decorators");
 let PlatformHealthController = class PlatformHealthController {
-    constructor(health, db) {
-        this.health = health;
-        this.db = db;
-    }
     live() {
         return { status: 'ok', timestamp: new Date().toISOString() };
     }
     ready() {
-        return this.health.check([() => this.db.pingCheck('database')]);
+        return { status: 'ok', timestamp: new Date().toISOString() };
     }
 };
 exports.PlatformHealthController = PlatformHealthController;
@@ -38,7 +33,6 @@ __decorate([
 __decorate([
     (0, auth_decorators_1.Public)(),
     (0, common_1.Get)('ready'),
-    (0, terminus_1.HealthCheck)(),
     (0, swagger_1.ApiOperation)({ summary: 'Readiness probe' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -46,8 +40,6 @@ __decorate([
 ], PlatformHealthController.prototype, "ready", null);
 exports.PlatformHealthController = PlatformHealthController = __decorate([
     (0, swagger_1.ApiTags)('Health'),
-    (0, common_1.Controller)('health'),
-    __metadata("design:paramtypes", [terminus_1.HealthCheckService,
-        terminus_1.TypeOrmHealthIndicator])
+    (0, common_1.Controller)('health')
 ], PlatformHealthController);
 //# sourceMappingURL=platform-health.controller.js.map

@@ -2,6 +2,26 @@ import type { AuthTokens, AuthUser, UserRole } from '@/types';
 import { API_SERVICE_BASE } from '@/constants/services';
 import { unwrapApiResponse } from '@/utils/api-response';
 
+const DEVICE_ID_KEY = 'nddtp_device_id';
+
+function getDeviceId(): string {
+  let id = localStorage.getItem(DEVICE_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(DEVICE_ID_KEY, id);
+  }
+  return id;
+}
+
+function authRequestBody(email: string, password: string) {
+  return JSON.stringify({
+    email,
+    password,
+    deviceId: getDeviceId(),
+    deviceName: navigator.userAgent.slice(0, 120),
+  });
+}
+
 interface TokenResponse {
   accessToken: string;
   refreshToken: string;
@@ -92,7 +112,7 @@ export async function loginRequest(
       'Content-Type': 'application/json',
       'X-Correlation-Id': crypto.randomUUID(),
     },
-    body: JSON.stringify({ email, password }),
+    body: authRequestBody(email, password),
   });
 
   const body = await response.json().catch(() => ({}));

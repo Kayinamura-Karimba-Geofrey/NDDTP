@@ -3,6 +3,7 @@ import { API_SERVICE_BASE } from '@/constants/services';
 import { TOKEN_KEYS } from '@/constants/app';
 import type { ApiError } from '@/types';
 import { unwrapApiResponse } from '@/utils/api-response';
+import { redirectToSessionExpired } from '@/utils/auth-storage';
 
 const api = axios.create({
   baseURL: API_SERVICE_BASE,
@@ -57,11 +58,7 @@ api.interceptors.response.use(
         if (original.headers) original.headers.Authorization = `Bearer ${tokens.accessToken}`;
         return api(original);
       } catch {
-        sessionStorage.clear();
-        localStorage.removeItem(TOKEN_KEYS.ACCESS);
-        localStorage.removeItem(TOKEN_KEYS.REFRESH);
-        localStorage.removeItem(TOKEN_KEYS.USER);
-        window.location.href = '/auth/session-expired';
+        redirectToSessionExpired();
         return Promise.reject(error);
       } finally {
         isRefreshing = false;

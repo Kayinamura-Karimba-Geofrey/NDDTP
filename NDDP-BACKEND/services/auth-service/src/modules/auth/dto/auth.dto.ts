@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   MinLength,
@@ -48,11 +49,13 @@ export class LoginDto {
   password: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   deviceId?: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   deviceName?: string;
 }

@@ -4,15 +4,24 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticatedUser } from '../interfaces';
 
+function jwtSetting(configService: ConfigService, key: string, envKey: string, fallback: string): string {
+  return configService.get<string>(key) || process.env[envKey] || fallback;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('jwt.accessSecret'),
-      issuer: configService.get<string>('jwt.issuer'),
-      audience: configService.get<string>('jwt.audience'),
+      secretOrKey: jwtSetting(
+        configService,
+        'jwt.accessSecret',
+        'JWT_ACCESS_SECRET',
+        'change_me_access_secret_min_32_chars_long',
+      ),
+      issuer: jwtSetting(configService, 'jwt.issuer', 'JWT_ISSUER', 'nddtp-auth-service'),
+      audience: jwtSetting(configService, 'jwt.audience', 'JWT_AUDIENCE', 'nddtp-platform'),
     });
   }
 

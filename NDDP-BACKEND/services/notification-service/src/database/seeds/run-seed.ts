@@ -1,6 +1,8 @@
 import dataSource from '../data-source';
 import { NotificationTemplate } from '../entities/notification-template.entity';
-import { NotificationChannel, TemplateStatus } from '../../common/enums';
+import { Notification } from '../entities/notification.entity';
+import { NotificationChannel, TemplateStatus, NotificationStatus, NotificationPriority } from '../../common/enums';
+import { DEMO_USERS } from '../../../../../shared-seeds/demo-users';
 
 const TEMPLATES = [
   {
@@ -54,6 +56,58 @@ async function seed(): Promise<void> {
     if (!existing) {
       await repo.save(repo.create({ ...t, status: TemplateStatus.ACTIVE, isSystem: true }));
       console.log(`Created template: ${t.code}`);
+    }
+  }
+
+  const notifRepo = dataSource.getRepository(Notification);
+  const admin = DEMO_USERS[0];
+
+  const inboxMessages = [
+    {
+      userId: admin.id,
+      subject: 'Welcome to NDDTP',
+      body: 'Your Super Admin account is active. You can manage all platform modules from the dashboard.',
+      isRead: true,
+      status: NotificationStatus.DELIVERED,
+    },
+    {
+      userId: admin.id,
+      subject: 'Pending leave approvals',
+      body: '3 leave requests are awaiting your review in the Leave Management module.',
+      isRead: false,
+      status: NotificationStatus.DELIVERED,
+    },
+    {
+      userId: admin.id,
+      subject: 'System integration test',
+      body: 'Integration seed data has been loaded. Use admin@mod.gov.rw to sign in.',
+      isRead: false,
+      status: NotificationStatus.DELIVERED,
+    },
+    {
+      userId: DEMO_USERS[1].id,
+      subject: 'HR module ready',
+      body: 'Personnel records and leave types are available for review.',
+      isRead: false,
+      status: NotificationStatus.DELIVERED,
+    },
+  ];
+
+  for (const msg of inboxMessages) {
+    const exists = await notifRepo.findOne({
+      where: { userId: msg.userId, subject: msg.subject },
+    });
+    if (!exists) {
+      await notifRepo.save(
+        notifRepo.create({
+          ...msg,
+          channel: NotificationChannel.IN_APP,
+          priority: NotificationPriority.NORMAL,
+          sentAt: new Date(),
+          readAt: msg.isRead ? new Date() : null,
+        }),
+      );
+      console.log(`Created notification: ${msg.subject}`);
     }
   }
 

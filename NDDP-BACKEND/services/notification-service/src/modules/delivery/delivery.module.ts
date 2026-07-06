@@ -1,8 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TemplateRendererService } from './template-renderer.service';
 import { EmailProviderService } from './email-provider.service';
 import { DeliveryEngineService } from './delivery-engine.service';
-import { NotificationModule } from '../notifications/notification.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Notification, NotificationDelivery } from '../../database/entities';
 import { NotificationRepository } from '../notifications/repositories/notification.repository';
@@ -12,7 +11,7 @@ import { EventsModule } from '../../events/events.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Notification, NotificationDelivery]),
-    EventsModule,
+    forwardRef(() => EventsModule),
   ],
   providers: [
     TemplateRendererService,

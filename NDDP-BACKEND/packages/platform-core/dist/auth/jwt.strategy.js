@@ -14,14 +14,17 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const config_1 = require("@nestjs/config");
+function jwtSetting(configService, key, envKey, fallback) {
+    return configService.get(key) || process.env[envKey] || fallback;
+}
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt') {
     constructor(configService) {
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get('jwt.accessSecret'),
-            issuer: configService.get('jwt.issuer'),
-            audience: configService.get('jwt.audience'),
+            secretOrKey: jwtSetting(configService, 'jwt.accessSecret', 'JWT_ACCESS_SECRET', 'change_me_access_secret_min_32_chars_long'),
+            issuer: jwtSetting(configService, 'jwt.issuer', 'JWT_ISSUER', 'nddtp-auth-service'),
+            audience: jwtSetting(configService, 'jwt.audience', 'JWT_AUDIENCE', 'nddtp-platform'),
         });
     }
     validate(payload) {

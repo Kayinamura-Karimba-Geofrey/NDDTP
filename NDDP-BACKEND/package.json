@@ -12,7 +12,16 @@
     "install:deps": "node scripts/install-platform-core.mjs",
     "standardize": "node scripts/standardize-services.mjs",
     "build:all": "node scripts/build-all-services.mjs",
-    "test:all": "node scripts/test-all-services.mjs"
+    "test:all": "node scripts/test-all-services.mjs",
+    "gateway:install": "npm install --prefix api-gateway",
+    "gateway:dev": "npm run dev --prefix api-gateway",
+    "gateway:build": "npm run build --prefix api-gateway",
+    "gateway:start": "npm run start --prefix api-gateway",
+    "gateway:seed-routes": "node scripts/seed-gateway-routes.mjs",
+    "seed:integration": "node scripts/seed-integration.mjs",
+    "seed:integration:migrate": "node scripts/seed-integration.mjs --migrate",
+    "integration:infra": "docker compose -f docker-compose.integration-infra.yml up -d",
+    "integration:setup": "node scripts/setup-integration-env.mjs"
   },
   "engines": {
     "node": ">=20"
