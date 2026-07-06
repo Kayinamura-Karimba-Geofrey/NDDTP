@@ -18,13 +18,18 @@ let PermissionsGuard = class PermissionsGuard {
         this.reflector = reflector;
     }
     canActivate(context) {
-        const required = this.reflector.getAllAndOverride(auth_decorators_1.PERMISSIONS_KEY, [
+        const raw = this.reflector.getAllAndOverride(auth_decorators_1.PERMISSIONS_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
-        if (!required?.length)
+        const required = !raw ? [] : Array.isArray(raw) ? raw : [raw];
+        if (!required.length)
             return true;
         const user = context.switchToHttp().getRequest().user;
+        if (user?.roles?.includes('SUPER_ADMIN'))
+            return true;
+        if (user?.permissions?.includes('*'))
+            return true;
         const hasAll = required.every((permission) => user?.permissions?.includes(permission));
         if (!hasAll) {
             throw new common_1.ForbiddenException('Insufficient permissions');

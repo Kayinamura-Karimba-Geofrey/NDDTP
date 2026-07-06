@@ -96,7 +96,11 @@ export class AuthorizationEngineService {
     const cached = await this.redisService.get(cacheKey);
 
     if (cached && !scopeType) {
-      return JSON.parse(cached) as EffectivePermissions;
+      try {
+        return JSON.parse(cached) as EffectivePermissions;
+      } catch {
+        await this.redisService.del(cacheKey);
+      }
     }
 
     const assignments = await this.assignmentRepository.findActiveByUserId(userId, scopeType, scopeId);

@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
+import { createPlatformValidationPipe } from '@nddtp/platform-core';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
@@ -17,7 +18,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix(apiPrefix);
   app.use(helmet());
   app.enableCors({ origin: cs.get<string[]>('app.corsOrigins'), credentials: true });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
+  app.useGlobalPipes(createPlatformValidationPipe());
 
   const swagger = new DocumentBuilder()
     .setTitle('NDDTP User Service')

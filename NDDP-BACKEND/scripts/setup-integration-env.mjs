@@ -19,6 +19,7 @@ const SERVICE_DB_PORTS = {
 
 const DB_PASSWORD = 'change_me_secure_password';
 const JWT_SECRET = 'change_me_access_secret_min_32_chars_long';
+const INTERNAL_SERVICE_KEY = 'change_me_internal_service_key';
 
 for (const [dir, port] of Object.entries(SERVICE_DB_PORTS)) {
   const svcPath = join(backendRoot, 'services', dir);
@@ -34,6 +35,27 @@ for (const [dir, port] of Object.entries(SERVICE_DB_PORTS)) {
   content = content.replace(/^DB_PORT=.*$/m, `DB_PORT=${port}`);
   content = content.replace(/^DB_PASSWORD=.*$/m, `DB_PASSWORD=${DB_PASSWORD}`);
   content = content.replace(/^JWT_ACCESS_SECRET=.*$/m, `JWT_ACCESS_SECRET=${JWT_SECRET}`);
+
+  if (dir === 'auth-service') {
+    if (/^AUTHORIZATION_SERVICE_URL=/m.test(content)) {
+      content = content.replace(/^AUTHORIZATION_SERVICE_URL=.*$/m, 'AUTHORIZATION_SERVICE_URL=http://127.0.0.1:3002/api/v1');
+    } else {
+      content += '\nAUTHORIZATION_SERVICE_URL=http://127.0.0.1:3002/api/v1\n';
+    }
+    if (/^INTERNAL_SERVICE_KEY=/m.test(content)) {
+      content = content.replace(/^INTERNAL_SERVICE_KEY=.*$/m, `INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY}`);
+    } else {
+      content += `INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY}\n`;
+    }
+  }
+
+  if (dir === 'authorization-service') {
+    if (/^INTERNAL_SERVICE_KEY=/m.test(content)) {
+      content = content.replace(/^INTERNAL_SERVICE_KEY=.*$/m, `INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY}`);
+    } else {
+      content += `INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY}\n`;
+    }
+  }
 
   writeFileSync(envPath, content, 'utf8');
   console.log(`Wrote ${envPath} (DB_PORT=${port})`);

@@ -5,6 +5,7 @@ import { UserRoleAssignment } from '../../database/entities/user-role-assignment
 import { Role } from '../../database/entities/role.entity';
 import { RolePermission } from '../../database/entities/role-permission.entity';
 import { AuthorizationController } from './authorization.controller';
+import { InternalController } from '../internal/internal.controller';
 import { AuthorizationEngineService } from './authorization-engine.service';
 import { AuthorizationDecisionLogRepository } from './repositories/authorization-decision-log.repository';
 import { UserRoleAssignmentRepository } from '../assignments/repositories/user-role-assignment.repository';
@@ -17,7 +18,7 @@ import { EventsModule } from '../../events/events.module';
     TypeOrmModule.forFeature([AuthorizationDecisionLog, UserRoleAssignment, Role, RolePermission]),
     EventsModule,
   ],
-  controllers: [AuthorizationController],
+  controllers: [AuthorizationController, InternalController],
   providers: [
     AuthorizationEngineService,
     AuthorizationDecisionLogRepository,

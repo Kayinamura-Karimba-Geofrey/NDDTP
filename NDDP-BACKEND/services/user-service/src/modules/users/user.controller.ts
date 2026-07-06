@@ -1,18 +1,16 @@
 import {
-  Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe, HttpCode, HttpStatus,
+  Controller, Get, Post, Put, Delete, Body, Param, Query, ParseUUIDPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import {
   CreateUserDto, UpdateUserDto, UserFilterDto, CreateAddressDto, CreateEmergencyContactDto, UserResponseDto,
 } from './dto/user.dto';
-import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
 import { RequirePermissions } from '@nddtp/platform-core';
 import { CurrentUser, CorrelationId } from '../../decorators/current-user.decorator';
 
 @ApiTags('Users')
 @Controller('users')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}

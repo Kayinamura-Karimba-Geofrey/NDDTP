@@ -32,7 +32,6 @@ export class UserRepository {
     page: number, limit: number, search?: string, status?: UserStatus, departmentId?: string,
   ): Promise<PaginatedResult<User>> {
     const qb = this.repo.createQueryBuilder('u')
-      .leftJoinAndSelect('u.department', 'd')
       .where('u.deleted_at IS NULL');
 
     if (status) qb.andWhere('u.status = :status', { status });

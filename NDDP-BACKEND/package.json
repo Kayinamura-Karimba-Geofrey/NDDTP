@@ -21,7 +21,9 @@
     "seed:integration": "node scripts/seed-integration.mjs",
     "seed:integration:migrate": "node scripts/seed-integration.mjs --migrate",
     "integration:infra": "docker compose -f docker-compose.integration-infra.yml up -d",
-    "integration:setup": "node scripts/setup-integration-env.mjs"
+    "integration:setup": "node scripts/setup-integration-env.mjs",
+    "start:core": "node scripts/start-core-services.mjs",
+    "verify:integration": "node scripts/verify-integration-apis.mjs"
   },
   "engines": {
     "node": ">=20"

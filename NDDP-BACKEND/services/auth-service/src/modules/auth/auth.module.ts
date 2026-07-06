@@ -18,6 +18,7 @@ import { JwtStrategy } from '../../strategies/jwt.strategy';
 import { LocalStrategy } from '../../strategies/local.strategy';
 import { PasswordResetToken } from '../../database/entities/password-reset-token.entity';
 import { PasswordResetTokenRepository } from '../password/repositories/password-reset-token.repository';
+import { AuthorizationLookupService } from './authorization-lookup.service';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PasswordResetTokenRepository } from '../password/repositories/password-
     AuthCredentialRepository,
     LoginAttemptRepository,
     PasswordResetTokenRepository,
+    AuthorizationLookupService,
     JwtStrategy,
     LocalStrategy,
   ],

@@ -32,7 +32,7 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
     listPath: '/personnel',
     title: 'Personnel',
     description: 'HR records, ranks, assignments, and qualifications.',
-    permission: 'personnel:read:records',
+    permission: 'personnel:read:profile',
     displayFields: ['serviceNumber', 'firstName', 'lastName', 'rank', 'serviceStatus', 'branch'],
   },
   recruitment: {
@@ -40,7 +40,7 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
     listPath: '/job-postings',
     title: 'Recruitment',
     description: 'Job postings, applications, and interviews.',
-    permission: 'recruitment:read:postings',
+    permission: 'recruitment:read:applications',
     displayFields: ['title', 'referenceNumber', 'status', 'department', 'closingDate'],
   },
   leave: {

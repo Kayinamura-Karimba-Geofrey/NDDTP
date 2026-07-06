@@ -1,17 +1,15 @@
 import {
-  Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe, HttpCode, HttpStatus,
+  Controller, Get, Post, Put, Delete, Body, Param, Query, ParseUUIDPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationService } from './notification.service';
 import { NotificationChannel } from '../../common/enums';
 import { SendNotificationDto, NotificationFilterDto } from './dto/notification.dto';
-import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
 import { RequirePermissions } from '@nddtp/platform-core';
 import { CurrentUser, CorrelationId } from '../../decorators/current-user.decorator';
 
 @ApiTags('Notifications')
 @Controller('notifications')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}

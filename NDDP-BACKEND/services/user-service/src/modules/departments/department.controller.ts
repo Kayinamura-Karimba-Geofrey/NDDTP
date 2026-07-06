@@ -1,15 +1,13 @@
 import {
-  Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe, HttpCode, HttpStatus,
+  Controller, Get, Post, Put, Delete, Body, Param, Query, ParseUUIDPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto, UpdateDepartmentDto, DepartmentFilterDto } from './dto/department.dto';
-import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
 import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Departments')
 @Controller('departments')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class DepartmentController {
   constructor(private readonly deptService: DepartmentService) {}

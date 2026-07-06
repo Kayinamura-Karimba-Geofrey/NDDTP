@@ -32,12 +32,17 @@ export class PersonnelRecordRepository {
   }
 
   async findAll(page: number, limit: number, search?: string, serviceStatus?: ServiceStatus, personnelType?: PersonnelType, branch?: ServiceBranch) {
-    const qb = this.repo.createQueryBuilder('p').where('p.deletedAt IS NULL');
-    if (search) qb.andWhere('(p.firstName ILIKE :s OR p.lastName ILIKE :s OR p.serviceNumber ILIKE :s OR p.email ILIKE :s)', { s: `%${search}%` });
-    if (serviceStatus) qb.andWhere('p.serviceStatus = :serviceStatus', { serviceStatus });
-    if (personnelType) qb.andWhere('p.personnelType = :personnelType', { personnelType });
+    const qb = this.repo.createQueryBuilder('p').where('p.deleted_at IS NULL');
+    if (search) {
+      qb.andWhere(
+        '(p.first_name ILIKE :s OR p.last_name ILIKE :s OR p.service_number ILIKE :s OR p.email ILIKE :s)',
+        { s: `%${search}%` },
+      );
+    }
+    if (serviceStatus) qb.andWhere('p.service_status = :serviceStatus', { serviceStatus });
+    if (personnelType) qb.andWhere('p.personnel_type = :personnelType', { personnelType });
     if (branch) qb.andWhere('p.branch = :branch', { branch });
-    const [data, total] = await qb.orderBy('p.createdAt', 'DESC').skip((page - 1) * limit).take(limit).getManyAndCount();
+    const [data, total] = await qb.orderBy('p.created_at', 'DESC').skip((page - 1) * limit).take(limit).getManyAndCount();
     const totalPages = Math.ceil(total / limit);
     return { data, meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 } };
   }

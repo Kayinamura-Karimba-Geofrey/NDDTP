@@ -37,6 +37,7 @@ import {
 import { DeviceInfo } from '../../common/interfaces';
 import { CACHE_KEYS } from '../../common/constants';
 import { AuthCredential } from '../../database/entities/auth-credential.entity';
+import { AuthorizationLookupService } from './authorization-lookup.service';
 
 @Injectable()
 export class AuthService {
@@ -54,6 +55,7 @@ export class AuthService {
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
+    private readonly authorizationLookup: AuthorizationLookupService,
   ) {}
 
   async register(dto: RegisterDto, correlationId?: string) {
@@ -338,11 +340,13 @@ export class AuthService {
 
     await this.credentialRepository.updateLastLogin(credential.id);
 
+    const effective = await this.authorizationLookup.getEffectivePermissions(credential.userId);
+
     const tokens = await this.tokenService.generateTokenPair(
       credential,
       sessionId,
-      [],
-      [],
+      effective.roles,
+      effective.permissions,
       { ipAddress: deviceInfo.ipAddress, userAgent: deviceInfo.userAgent },
     );
 

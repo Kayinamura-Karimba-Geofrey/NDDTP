@@ -1,15 +1,13 @@
 import {
-  Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe, HttpCode, HttpStatus,
+  Controller, Get, Post, Put, Delete, Body, Param, Query, ParseUUIDPipe, HttpCode, HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { TemplateService } from './template.service';
 import { CreateTemplateDto, UpdateTemplateDto, TemplateFilterDto } from '../notifications/dto/notification.dto';
-import { JwtAuthGuard, PermissionsGuard } from '@nddtp/platform-core';
 import { RequirePermissions } from '@nddtp/platform-core';
 
 @ApiTags('Templates')
 @Controller('templates')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class TemplateController {
   constructor(private readonly templateService: TemplateService) {}

@@ -29,6 +29,7 @@ __exportStar(require("./observability/global-exception.filter"), exports);
 __exportStar(require("./observability/correlation-id.interceptor"), exports);
 __exportStar(require("./config/platform.config"), exports);
 __exportStar(require("./config/winston.config"), exports);
+__exportStar(require("./pipes/platform-validation.pipe"), exports);
 __exportStar(require("./events/base-event.publisher"), exports);
 __exportStar(require("./utils/status-transition.util"), exports);
 __exportStar(require("./health/platform-health.module"), exports);

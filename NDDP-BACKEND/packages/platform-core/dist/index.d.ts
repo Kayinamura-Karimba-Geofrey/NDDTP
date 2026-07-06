@@ -10,6 +10,7 @@ export * from './observability/global-exception.filter';
 export * from './observability/correlation-id.interceptor';
 export * from './config/platform.config';
 export * from './config/winston.config';
+export * from './pipes/platform-validation.pipe';
 export * from './events/base-event.publisher';
 export * from './utils/status-transition.util';
 export * from './health/platform-health.module';
