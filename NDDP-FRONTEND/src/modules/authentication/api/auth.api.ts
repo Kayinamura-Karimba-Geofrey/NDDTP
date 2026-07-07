@@ -114,8 +114,51 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
     forgotPassword: builder.mutation<{ message: string }, { email: string }>({
-      query: (body) => serviceQuery('auth', '/auth/forgot-password', { method: 'POST', body, skipAuthRedirect: true }),
-      transformResponse: unwrapApiResponse<{ message: string }>,
+      queryFn: async (body, _api, _extra, baseQuery) => {
+        if (ENABLE_MOCK_API) {
+          await new Promise((r) => setTimeout(r, 600));
+          return { data: { message: 'If the email exists, a password reset link has been sent' } };
+        }
+        const result = await baseQuery(
+          serviceQuery('auth', '/auth/forgot-password', { method: 'POST', body, skipAuthRedirect: true }),
+        );
+        if (result.error) return { error: result.error };
+        return { data: unwrapApiResponse<{ message: string }>(result.data) };
+      },
+    }),
+    resetPassword: builder.mutation<{ message: string }, { token: string; password: string }>({
+      queryFn: async (body, _api, _extra, baseQuery) => {
+        if (ENABLE_MOCK_API) {
+          await new Promise((r) => setTimeout(r, 600));
+          if (!body.token) {
+            return { error: { status: 400, data: { message: 'Invalid or expired reset token' } } };
+          }
+          return { data: { message: 'Password reset successfully' } };
+        }
+        const result = await baseQuery(
+          serviceQuery('auth', '/auth/reset-password', {
+            method: 'POST',
+            body: { token: body.token, newPassword: body.password },
+            skipAuthRedirect: true,
+          }),
+        );
+        if (result.error) return { error: result.error };
+        return { data: unwrapApiResponse<{ message: string }>(result.data) };
+      },
+    }),
+    changePassword: builder.mutation<{ message: string }, { currentPassword: string; newPassword: string }>({
+      queryFn: async (body, _api, _extra, baseQuery) => {
+        if (ENABLE_MOCK_API) {
+          await new Promise((r) => setTimeout(r, 600));
+          return { data: { message: 'Password changed successfully. Please login again.' } };
+        }
+        const result = await baseQuery(
+          serviceQuery('auth', '/auth/change-password', { method: 'POST', body }),
+        );
+        if (result.error) return { error: result.error };
+        return { data: unwrapApiResponse<{ message: string }>(result.data) };
+      },
+      invalidatesTags: ['Auth', 'Sessions'],
     }),
     verifyOtp: builder.mutation<{ user: AuthUser; tokens: AuthTokens }, { code: string }>({
       queryFn: async ({ code }) => {
@@ -184,6 +227,8 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useChangePasswordMutation,
   useVerifyOtpMutation,
   useRefreshTokenMutation,
   useLogoutMutation,

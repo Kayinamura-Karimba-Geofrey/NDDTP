@@ -7,6 +7,10 @@ import { store } from '@/store';
 import { router } from '@/app/router';
 import '@/index.css';
 import '@/modules/cloud/api/cloud.api';
+import '@/modules/authentication/api/auth.api';
+import '@/modules/authentication/api/security.api';
+import '@/modules/authorization/api/authorization.api';
+import '@/modules/users/api/users.api';
 
 function ThemeInit() {
   useEffect(() => {
