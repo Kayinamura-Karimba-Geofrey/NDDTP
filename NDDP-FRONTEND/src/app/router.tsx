@@ -121,6 +121,43 @@ const LeavePoliciesPage = lazy(() => import('@/modules/leave/pages/LeavePolicies
 const LeaveHistoryPage = lazy(() => import('@/modules/leave/pages/LeaveHistoryPage').then((m) => ({ default: m.LeaveHistoryPage })));
 const LeaveReportsPage = lazy(() => import('@/modules/leave/pages/LeaveReportsPage').then((m) => ({ default: m.LeaveReportsPage })));
 const LeaveSettingsPage = lazy(() => import('@/modules/leave/pages/LeaveSettingsPage').then((m) => ({ default: m.LeaveSettingsPage })));
+const WelfareDashboardPage = lazy(() => import('@/modules/welfare/pages/WelfareDashboardPage').then((m) => ({ default: m.WelfareDashboardPage })));
+const MyWelfarePage = lazy(() => import('@/modules/welfare/pages/MyWelfarePage').then((m) => ({ default: m.MyWelfarePage })));
+const WelfareProgramsPage = lazy(() => import('@/modules/welfare/pages/WelfareProgramsPage').then((m) => ({ default: m.WelfareProgramsPage })));
+const BenefitManagementPage = lazy(() => import('@/modules/welfare/pages/BenefitManagementPage').then((m) => ({ default: m.BenefitManagementPage })));
+const AssistanceRequestsPage = lazy(() => import('@/modules/welfare/pages/AssistanceRequestsPage').then((m) => ({ default: m.AssistanceRequestsPage })));
+const NewAssistanceRequestPage = lazy(() => import('@/modules/welfare/pages/NewAssistanceRequestPage').then((m) => ({ default: m.NewAssistanceRequestPage })));
+const EmergencySupportPage = lazy(() => import('@/modules/welfare/pages/EmergencySupportPage').then((m) => ({ default: m.EmergencySupportPage })));
+const CounselingReferralsPage = lazy(() => import('@/modules/welfare/pages/CounselingReferralsPage').then((m) => ({ default: m.CounselingReferralsPage })));
+const FamilySupportPage = lazy(() => import('@/modules/welfare/pages/FamilySupportPage').then((m) => ({ default: m.FamilySupportPage })));
+const WellnessProgramsPage = lazy(() => import('@/modules/welfare/pages/WellnessProgramsPage').then((m) => ({ default: m.WellnessProgramsPage })));
+const WelfareEventsPage = lazy(() => import('@/modules/welfare/pages/WelfareEventsPage').then((m) => ({ default: m.WelfareEventsPage })));
+const WelfareApplicationsPage = lazy(() => import('@/modules/welfare/pages/WelfareApplicationsPage').then((m) => ({ default: m.WelfareApplicationsPage })));
+const WelfareApprovalCenterPage = lazy(() => import('@/modules/welfare/pages/WelfareApprovalCenterPage').then((m) => ({ default: m.WelfareApprovalCenterPage })));
+const WelfareDocumentsPage = lazy(() => import('@/modules/welfare/pages/WelfareDocumentsPage').then((m) => ({ default: m.WelfareDocumentsPage })));
+const WelfareHistoryPage = lazy(() => import('@/modules/welfare/pages/WelfareHistoryPage').then((m) => ({ default: m.WelfareHistoryPage })));
+const WelfareReportsPage = lazy(() => import('@/modules/welfare/pages/WelfareReportsPage').then((m) => ({ default: m.WelfareReportsPage })));
+const WelfareSettingsPage = lazy(() => import('@/modules/welfare/pages/WelfareSettingsPage').then((m) => ({ default: m.WelfareSettingsPage })));
+const MedicalDashboardPage = lazy(() => import('@/modules/medical/pages/MedicalDashboardPage').then((m) => ({ default: m.MedicalDashboardPage })));
+const MyMedicalPage = lazy(() => import('@/modules/medical/pages/MyMedicalPage').then((m) => ({ default: m.MyMedicalPage })));
+const MedicalProfilesPage = lazy(() => import('@/modules/medical/pages/MedicalProfilesPage').then((m) => ({ default: m.MedicalProfilesPage })));
+const MedicalProfileDetailPage = lazy(() => import('@/modules/medical/pages/MedicalProfileDetailPage').then((m) => ({ default: m.MedicalProfileDetailPage })));
+const MedicalAppointmentsPage = lazy(() => import('@/modules/medical/pages/MedicalAppointmentsPage').then((m) => ({ default: m.MedicalAppointmentsPage })));
+const MedicalAssessmentsPage = lazy(() => import('@/modules/medical/pages/MedicalAssessmentsPage').then((m) => ({ default: m.MedicalAssessmentsPage })));
+const MedicalClearancesPage = lazy(() => import('@/modules/medical/pages/MedicalClearancesPage').then((m) => ({ default: m.MedicalClearancesPage })));
+const MedicalFitnessPage = lazy(() => import('@/modules/medical/pages/MedicalFitnessPage').then((m) => ({ default: m.MedicalFitnessPage })));
+const VaccinationRecordsPage = lazy(() => import('@/modules/medical/pages/VaccinationRecordsPage').then((m) => ({ default: m.VaccinationRecordsPage })));
+const LaboratoryResultsPage = lazy(() => import('@/modules/medical/pages/LaboratoryResultsPage').then((m) => ({ default: m.LaboratoryResultsPage })));
+const MedicalReferralsPage = lazy(() => import('@/modules/medical/pages/MedicalReferralsPage').then((m) => ({ default: m.MedicalReferralsPage })));
+const MedicalDocumentsPage = lazy(() => import('@/modules/medical/pages/MedicalDocumentsPage').then((m) => ({ default: m.MedicalDocumentsPage })));
+const MedicalIncidentsPage = lazy(() => import('@/modules/medical/pages/MedicalIncidentsPage').then((m) => ({ default: m.MedicalIncidentsPage })));
+const OccupationalHealthPage = lazy(() => import('@/modules/medical/pages/OccupationalHealthPage').then((m) => ({ default: m.OccupationalHealthPage })));
+const HealthCampaignsPage = lazy(() => import('@/modules/medical/pages/HealthCampaignsPage').then((m) => ({ default: m.HealthCampaignsPage })));
+const MedicalCalendarPage = lazy(() => import('@/modules/medical/pages/MedicalCalendarPage').then((m) => ({ default: m.MedicalCalendarPage })));
+const MedicalApprovalCenterPage = lazy(() => import('@/modules/medical/pages/MedicalApprovalCenterPage').then((m) => ({ default: m.MedicalApprovalCenterPage })));
+const MedicalReportsPage = lazy(() => import('@/modules/medical/pages/MedicalReportsPage').then((m) => ({ default: m.MedicalReportsPage })));
+const MedicalHistoryPage = lazy(() => import('@/modules/medical/pages/MedicalHistoryPage').then((m) => ({ default: m.MedicalHistoryPage })));
+const MedicalSettingsPage = lazy(() => import('@/modules/medical/pages/MedicalSettingsPage').then((m) => ({ default: m.MedicalSettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -246,8 +283,45 @@ export const router = createBrowserRouter([
       { path: 'leave/history', element: wrap(<LeaveHistoryPage />) },
       { path: 'leave/reports', element: wrap(<LeaveReportsPage />) },
       { path: 'leave/settings', element: wrap(<LeaveSettingsPage />) },
-      moduleRoute('welfare/*', 'welfare'),
-      moduleRoute('medical/*', 'medical'),
+      { path: 'welfare', element: <Navigate to="/welfare/dashboard" replace /> },
+      { path: 'welfare/dashboard', element: wrap(<WelfareDashboardPage />) },
+      { path: 'welfare/my-welfare', element: wrap(<MyWelfarePage />) },
+      { path: 'welfare/programs', element: wrap(<WelfareProgramsPage />) },
+      { path: 'welfare/benefits', element: wrap(<BenefitManagementPage />) },
+      { path: 'welfare/assistance/new', element: wrap(<NewAssistanceRequestPage />) },
+      { path: 'welfare/assistance', element: wrap(<AssistanceRequestsPage />) },
+      { path: 'welfare/emergency', element: wrap(<EmergencySupportPage />) },
+      { path: 'welfare/counseling', element: wrap(<CounselingReferralsPage />) },
+      { path: 'welfare/family-support', element: wrap(<FamilySupportPage />) },
+      { path: 'welfare/wellness', element: wrap(<WellnessProgramsPage />) },
+      { path: 'welfare/events', element: wrap(<WelfareEventsPage />) },
+      { path: 'welfare/applications', element: wrap(<WelfareApplicationsPage />) },
+      { path: 'welfare/approvals', element: wrap(<WelfareApprovalCenterPage />) },
+      { path: 'welfare/documents', element: wrap(<WelfareDocumentsPage />) },
+      { path: 'welfare/history', element: wrap(<WelfareHistoryPage />) },
+      { path: 'welfare/reports', element: wrap(<WelfareReportsPage />) },
+      { path: 'welfare/settings', element: wrap(<WelfareSettingsPage />) },
+      { path: 'medical', element: <Navigate to="/medical/dashboard" replace /> },
+      { path: 'medical/dashboard', element: wrap(<MedicalDashboardPage />) },
+      { path: 'medical/my-medical', element: wrap(<MyMedicalPage />) },
+      { path: 'medical/profiles', element: wrap(<MedicalProfilesPage />) },
+      { path: 'medical/profiles/:id', element: wrap(<MedicalProfileDetailPage />) },
+      { path: 'medical/appointments', element: wrap(<MedicalAppointmentsPage />) },
+      { path: 'medical/assessments', element: wrap(<MedicalAssessmentsPage />) },
+      { path: 'medical/clearances', element: wrap(<MedicalClearancesPage />) },
+      { path: 'medical/fitness', element: wrap(<MedicalFitnessPage />) },
+      { path: 'medical/vaccinations', element: wrap(<VaccinationRecordsPage />) },
+      { path: 'medical/laboratory', element: wrap(<LaboratoryResultsPage />) },
+      { path: 'medical/referrals', element: wrap(<MedicalReferralsPage />) },
+      { path: 'medical/documents', element: wrap(<MedicalDocumentsPage />) },
+      { path: 'medical/incidents', element: wrap(<MedicalIncidentsPage />) },
+      { path: 'medical/occupational-health', element: wrap(<OccupationalHealthPage />) },
+      { path: 'medical/campaigns', element: wrap(<HealthCampaignsPage />) },
+      { path: 'medical/calendar', element: wrap(<MedicalCalendarPage />) },
+      { path: 'medical/approvals', element: wrap(<MedicalApprovalCenterPage />) },
+      { path: 'medical/reports', element: wrap(<MedicalReportsPage />) },
+      { path: 'medical/history', element: wrap(<MedicalHistoryPage />) },
+      { path: 'medical/settings', element: wrap(<MedicalSettingsPage />) },
       moduleRoute('training/*', 'training'),
       moduleRoute('performance/*', 'performance'),
       moduleRoute('assets/*', 'asset'),

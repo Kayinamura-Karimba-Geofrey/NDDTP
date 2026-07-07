@@ -130,6 +130,13 @@ export const baseApi = createApi({
     'LeaveBalances',
     'LeaveTypes',
     'LeaveApprovals',
+    'WelfarePrograms',
+    'WelfareClaims',
+    'WelfareApprovals',
+    'WelfareApplications',
+    'MedicalAppointments',
+    'MedicalClearances',
+    'MedicalApprovals',
   ],
   endpoints: () => ({}),
 });

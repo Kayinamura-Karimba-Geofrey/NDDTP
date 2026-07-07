@@ -53,19 +53,19 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   welfare: {
     serviceKey: 'welfare',
-    listPath: '/claims',
+    listPath: '/welfare/assistance',
     title: 'Welfare',
     description: 'Benefits programs, claims, and dependents.',
     permission: 'welfare:read:claims',
-    displayFields: ['referenceNumber', 'programName', 'status', 'claimAmount', 'submittedAt'],
+    displayFields: ['claimNumber', 'programName', 'status', 'requestedAmount', 'submittedAt'],
   },
   medical: {
     serviceKey: 'medical',
-    listPath: '/appointments',
+    listPath: '/medical/appointments',
     title: 'Medical Services',
     description: 'Appointments, records, fitness, and certificates.',
     permission: 'medical:read:appointments',
-    displayFields: ['referenceNumber', 'appointmentType', 'status', 'scheduledAt', 'facilityName'],
+    displayFields: ['appointmentNumber', 'type', 'status', 'scheduledAt', 'facilityName'],
   },
   training: {
     serviceKey: 'training',
