@@ -137,6 +137,10 @@ export const baseApi = createApi({
     'MedicalAppointments',
     'MedicalClearances',
     'MedicalApprovals',
+    'TrainingCourses',
+    'TrainingEnrollments',
+    'TrainingCertifications',
+    'TrainingApprovals',
   ],
   endpoints: () => ({}),
 });

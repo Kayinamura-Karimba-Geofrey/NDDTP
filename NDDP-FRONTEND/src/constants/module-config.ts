@@ -69,11 +69,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   training: {
     serviceKey: 'training',
-    listPath: '/courses',
+    listPath: '/training/catalog',
     title: 'Training',
     description: 'Courses, sessions, enrollments, and certifications.',
     permission: 'training:read:courses',
-    displayFields: ['code', 'title', 'category', 'status', 'durationHours'],
+    displayFields: ['code', 'title', 'category', 'status', 'duration'],
   },
   performance: {
     serviceKey: 'performance',
