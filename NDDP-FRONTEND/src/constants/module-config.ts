@@ -37,7 +37,7 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   recruitment: {
     serviceKey: 'recruitment',
-    listPath: '/job-postings',
+    listPath: '/recruitment/vacancies',
     title: 'Recruitment',
     description: 'Job postings, applications, and interviews.',
     permission: 'recruitment:read:applications',

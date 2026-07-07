@@ -122,6 +122,10 @@ export const baseApi = createApi({
     'PersonnelTransfers',
     'PersonnelPromotions',
     'PersonnelHistory',
+    'RecruitmentVacancies',
+    'RecruitmentApplications',
+    'RecruitmentPipeline',
+    'RecruitmentInterviews',
   ],
   endpoints: () => ({}),
 });

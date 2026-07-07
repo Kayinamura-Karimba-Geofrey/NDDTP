@@ -1,0 +1,60 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
+import toast from 'react-hot-toast';
+import { FiPlus } from 'react-icons/fi';
+import { useGetVacanciesQuery } from '../api/recruitment.api';
+import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
+import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
+import { Button, Card, CardContent } from '@/components/ui';
+import type { Vacancy } from '../constants/recruitment-data';
+
+export function VacancyManagementPage() {
+  const [statusFilter, setStatusFilter] = useState('');
+  const { data, isLoading } = useGetVacanciesQuery({ page: 1, limit: 50, status: statusFilter || undefined });
+
+  const columns: DataTableColumn<Vacancy>[] = [
+    { key: 'num', header: 'Vacancy #', render: (v) => <code className="text-xs">{v.vacancyNumber}</code> },
+    { key: 'title', header: 'Job Title', render: (v) => <span className="font-medium">{v.jobTitle}</span> },
+    { key: 'dept', header: 'Department' },
+    { key: 'loc', header: 'Location' },
+    { key: 'type', header: 'Employment Type' },
+    { key: 'open', header: 'Open Date', render: (v) => dayjs(v.openDate).format('MMM D, YYYY') },
+    { key: 'close', header: 'Closing Date', render: (v) => dayjs(v.closingDate).format('MMM D, YYYY') },
+    { key: 'apps', header: 'Applications', render: (v) => v.applicationsReceived },
+    { key: 'status', header: 'Status', render: (v) => <RecruitmentStatusBadge status={v.status} /> },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (v) => (
+        <div className="flex flex-wrap gap-1">
+          <Button variant="ghost" size="sm" onClick={() => toast('Edit')}>Edit</Button>
+          {v.status === 'DRAFT' && <Button variant="ghost" size="sm" onClick={() => toast.success('Published')}>Publish</Button>}
+          <Link to="/recruitment/applications"><Button variant="ghost" size="sm">Applicants</Button></Link>
+          <Button variant="ghost" size="sm" onClick={() => toast('Duplicated')}>Duplicate</Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Vacancy Management' }]} title="Vacancy Management" description="Central page for all open and closed vacancies" actions={<Button onClick={() => toast('Create vacancy')}><FiPlus className="h-4 w-4" /> Create Vacancy</Button>} />
+      <RecruitmentSubNav />
+      <Card>
+        <CardContent className="pt-6">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {['', 'OPEN', 'IN_PROGRESS', 'CLOSED', 'DRAFT'].map((s) => (
+              <button key={s || 'all'} type="button" onClick={() => setStatusFilter(s)} className={`rounded-full px-3 py-1 text-xs font-medium ${statusFilter === s ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{s ? s.replace('_', ' ') : 'All'}</button>
+            ))}
+          </div>
+          {isLoading ? <div className="data-table-empty">Loading vacancies...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={(data?.data ?? []) as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

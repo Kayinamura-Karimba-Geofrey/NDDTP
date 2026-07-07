@@ -12,6 +12,7 @@ import '@/modules/authentication/api/security.api';
 import '@/modules/authorization/api/authorization.api';
 import '@/modules/users/api/users.api';
 import '@/modules/personnel/api/personnel.api';
+import '@/modules/recruitment/api/recruitment.api';
 
 function ThemeInit() {
   useEffect(() => {
