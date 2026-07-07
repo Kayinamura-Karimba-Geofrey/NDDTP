@@ -45,11 +45,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   leave: {
     serviceKey: 'leave',
-    listPath: '/leave-requests',
+    listPath: '/leave/requests',
     title: 'Leave Management',
     description: 'Leave requests, balances, and approvals.',
     permission: 'leave:read:requests',
-    displayFields: ['referenceNumber', 'leaveType', 'status', 'startDate', 'endDate', 'totalDays'],
+    displayFields: ['requestNumber', 'leaveTypeName', 'status', 'startDate', 'endDate', 'totalDays'],
   },
   welfare: {
     serviceKey: 'welfare',

@@ -13,6 +13,7 @@ import '@/modules/authorization/api/authorization.api';
 import '@/modules/users/api/users.api';
 import '@/modules/personnel/api/personnel.api';
 import '@/modules/recruitment/api/recruitment.api';
+import '@/modules/leave/api/leave.api';
 
 function ThemeInit() {
   useEffect(() => {

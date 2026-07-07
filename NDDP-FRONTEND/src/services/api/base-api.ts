@@ -126,6 +126,10 @@ export const baseApi = createApi({
     'RecruitmentApplications',
     'RecruitmentPipeline',
     'RecruitmentInterviews',
+    'LeaveRequests',
+    'LeaveBalances',
+    'LeaveTypes',
+    'LeaveApprovals',
   ],
   endpoints: () => ({}),
 });
