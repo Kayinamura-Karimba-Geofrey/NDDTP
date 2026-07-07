@@ -2,13 +2,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/utils/cn';
 import { FiAlertCircle, FiAlertTriangle, FiCheckCircle, FiInfo } from 'react-icons/fi';
 
-const alertVariants = cva('relative flex gap-3 rounded-lg border p-4', {
+const alertVariants = cva('relative flex gap-3 rounded-xl border p-4', {
   variants: {
     variant: {
-      info: 'border-accent/30 bg-accent/5 text-foreground',
-      success: 'border-success/30 bg-success/5 text-foreground',
-      warning: 'border-warning/40 bg-warning/10 text-foreground',
-      danger: 'border-danger/30 bg-danger/5 text-foreground',
+      info: 'border-border bg-muted/50 text-foreground',
+      success: 'border-green-200 bg-green-50 text-foreground',
+      warning: 'border-amber-200 bg-amber-50 text-foreground',
+      danger: 'border-red-200 bg-red-50 text-foreground',
     },
   },
   defaultVariants: { variant: 'info' },
@@ -29,10 +29,10 @@ export function Alert({ className, variant = 'info', title, children, ...props }
   const Icon = icons[variant ?? 'info'];
   return (
     <div className={cn(alertVariants({ variant }), className)} role="alert" {...props}>
-      <Icon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden />
       <div>
-        {title && <p className="mb-1 font-semibold">{title}</p>}
-        <div className="text-sm">{children}</div>
+        {title && <p className="mb-1 font-semibold text-foreground">{title}</p>}
+        <div className="text-sm text-muted-foreground">{children}</div>
       </div>
     </div>
   );

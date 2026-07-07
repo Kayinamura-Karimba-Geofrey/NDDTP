@@ -7,27 +7,31 @@ interface ThemeState {
   sidebarCollapsed: boolean;
 }
 
-const getSystemTheme = (): 'light' | 'dark' =>
-  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-
-const storedMode = (localStorage.getItem('nddtp_theme') as ThemeMode) ?? 'system';
-const resolved = storedMode === 'system' ? getSystemTheme() : storedMode;
+/** Resolves stored theme preference; defaults to light for consistent contrast. */
+const storedTheme = localStorage.getItem('nddtp_theme');
+const initialMode: ThemeMode = storedTheme === 'dark' ? 'dark' : 'light';
 
 const initialState: ThemeState = {
-  mode: storedMode,
-  resolved,
+  mode: initialMode,
+  resolved: initialMode,
   sidebarCollapsed: localStorage.getItem('nddtp_sidebar_collapsed') === 'true',
 };
+
+if (initialMode === 'dark') {
+  document.documentElement.classList.add('dark');
+}
 
 const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
-    setTheme: (state, action: PayloadAction<ThemeMode>) => {
-      state.mode = action.payload;
-      state.resolved = action.payload === 'system' ? getSystemTheme() : action.payload;
-      localStorage.setItem('nddtp_theme', action.payload);
-      document.documentElement.classList.toggle('dark', state.resolved === 'dark');
+    setTheme: (state, action: PayloadAction<ThemeMode | undefined>) => {
+      const requested = action.payload ?? (state.resolved === 'dark' ? 'light' : 'dark');
+      const next: 'light' | 'dark' = requested === 'dark' ? 'dark' : 'light';
+      state.mode = next;
+      state.resolved = next;
+      localStorage.setItem('nddtp_theme', next);
+      document.documentElement.classList.toggle('dark', next === 'dark');
     },
     toggleSidebar: (state) => {
       state.sidebarCollapsed = !state.sidebarCollapsed;

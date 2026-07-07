@@ -17,11 +17,11 @@ export const BRANDING = {
     import.meta.env.VITE_RDF_LOGO_URL ??
     'https://live.staticflickr.com/65535/53547033213_c3792991a4.jpg',
   colors: {
-    rwandaBlue: '#00A1DE',
-    rwandaYellow: '#FAD201',
-    rwandaGreen: '#20603D',
-    modNavy: '#0B1F3A',
-    modGold: '#C9A227',
+    rwandaBlue: '#000000',
+    rwandaYellow: '#525252',
+    rwandaGreen: '#000000',
+    modNavy: '#000000',
+    modGold: '#000000',
   },
   contact: {
     phone: '+250 788 310 178',

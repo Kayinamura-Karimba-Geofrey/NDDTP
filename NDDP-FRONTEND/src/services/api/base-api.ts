@@ -106,6 +106,7 @@ export const baseApi = createApi({
     'Profile',
     'Search',
     'Module',
+    'Cloud',
   ],
   endpoints: () => ({}),
 });

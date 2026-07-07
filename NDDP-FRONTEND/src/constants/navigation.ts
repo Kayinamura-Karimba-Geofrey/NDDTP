@@ -1,7 +1,18 @@
 import type { NavItem } from '@/types';
 
 export const MAIN_NAVIGATION: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: 'FiGrid', module: 'dashboard' },
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    path: '/dashboard',
+    icon: 'FiGrid',
+    module: 'dashboard',
+    children: [
+      { id: 'dashboard-home', label: 'Home Dashboard', path: '/dashboard', icon: 'FiHome', module: 'dashboard' },
+      { id: 'dashboard-executive', label: 'Executive Dashboard', path: '/dashboard', icon: 'FiBarChart2', module: 'dashboard' },
+      { id: 'dashboard-my', label: 'My Dashboard', path: '/dashboard', icon: 'FiUser', module: 'dashboard' },
+    ],
+  },
   {
     id: 'hr',
     label: 'Human Resources',
@@ -9,7 +20,6 @@ export const MAIN_NAVIGATION: NavItem[] = [
     icon: 'FiUsers',
     module: 'hr',
     children: [
-      { id: 'users', label: 'User Management', path: '/users', icon: 'FiUser', module: 'users', permissions: ['personnel:read:profile'] },
       { id: 'personnel', label: 'Personnel', path: '/personnel', icon: 'FiUsers', module: 'personnel', permissions: ['personnel:read:records'] },
       { id: 'recruitment', label: 'Recruitment', path: '/recruitment', icon: 'FiUserPlus', module: 'recruitment', permissions: ['recruitment:read:postings'] },
       { id: 'leave', label: 'Leave', path: '/leave', icon: 'FiCalendar', module: 'leave', permissions: ['leave:read:requests'] },
@@ -21,7 +31,7 @@ export const MAIN_NAVIGATION: NavItem[] = [
   },
   {
     id: 'operations',
-    label: 'Operations',
+    label: 'Resource Management',
     path: '/assets',
     icon: 'FiPackage',
     module: 'operations',
@@ -41,7 +51,7 @@ export const MAIN_NAVIGATION: NavItem[] = [
   { id: 'calendar', label: 'Calendar', path: '/calendar', icon: 'FiCalendar', module: 'calendar', permissions: ['calendar:read:events'] },
   {
     id: 'insights',
-    label: 'Insights',
+    label: 'Intelligence',
     path: '/reports',
     icon: 'FiBarChart2',
     module: 'insights',
@@ -51,8 +61,18 @@ export const MAIN_NAVIGATION: NavItem[] = [
       { id: 'bi', label: 'Business Intelligence', path: '/business-intelligence', icon: 'FiLayers', module: 'bi', permissions: ['bi:read:datasets'] },
     ],
   },
-  { id: 'notifications', label: 'Notifications', path: '/notifications', icon: 'FiBell', module: 'notifications', permissions: ['notification:read:notifications'], badge: 3 },
-  { id: 'messaging', label: 'Messaging', path: '/messaging', icon: 'FiMessageSquare', module: 'messaging', permissions: ['messaging:read:channels'] },
+  {
+    id: 'communication',
+    label: 'Communication',
+    path: '/notifications',
+    icon: 'FiMessageCircle',
+    module: 'communication',
+    children: [
+      { id: 'notifications', label: 'Notifications', path: '/notifications', icon: 'FiBell', module: 'notifications', permissions: ['notification:read:notifications'], badge: 3 },
+      { id: 'messaging', label: 'Messages', path: '/messaging', icon: 'FiMessageSquare', module: 'messaging', permissions: ['messaging:read:channels'] },
+      { id: 'announcements', label: 'Announcements', path: '/notifications', icon: 'FiVolume2', module: 'announcements' },
+    ],
+  },
   { id: 'search', label: 'Search', path: '/search', icon: 'FiSearch', module: 'search', permissions: ['search:read:indexes'] },
   { id: 'ai-assistant', label: 'AI Assistant', path: '/ai-assistant', icon: 'FiCpu', module: 'ai-assistant', permissions: ['ai:read:conversations'] },
   {
@@ -63,9 +83,12 @@ export const MAIN_NAVIGATION: NavItem[] = [
     module: 'admin',
     roles: ['SUPER_ADMIN', 'ADMIN'],
     children: [
-      { id: 'settings', label: 'Settings', path: '/settings', icon: 'FiSliders', module: 'settings' },
-      { id: 'administration', label: 'System Admin', path: '/administration', icon: 'FiShield', module: 'administration', roles: ['SUPER_ADMIN'] },
+      { id: 'users', label: 'User Management', path: '/users', icon: 'FiUser', module: 'users', permissions: ['personnel:read:profile'] },
+      { id: 'roles', label: 'Roles', path: '/administration/roles', icon: 'FiShield', module: 'roles', roles: ['SUPER_ADMIN', 'ADMIN'] },
+      { id: 'permissions', label: 'Permissions', path: '/administration/permissions', icon: 'FiKey', module: 'permissions', roles: ['SUPER_ADMIN'] },
       { id: 'audit', label: 'Audit Logs', path: '/audit-logs', icon: 'FiClipboard', module: 'audit', permissions: ['audit:read:logs'] },
+      { id: 'settings', label: 'Settings', path: '/settings', icon: 'FiSliders', module: 'settings' },
+      { id: 'administration', label: 'System Admin', path: '/administration', icon: 'FiServer', module: 'administration', roles: ['SUPER_ADMIN'] },
     ],
   },
 ];
@@ -73,7 +96,5 @@ export const MAIN_NAVIGATION: NavItem[] = [
 export const QUICK_ACTIONS = [
   { label: 'New Leave Request', path: '/leave/new', icon: 'FiCalendar' },
   { label: 'Submit Requisition', path: '/procurement/requisitions/new', icon: 'FiShoppingCart' },
-  { label: 'Book Facility', path: '/facilities/bookings/new', icon: 'FiHome' },
-  { label: 'Register Visitor', path: '/visitors/new', icon: 'FiUserCheck' },
   { label: 'View Reports', path: '/reports', icon: 'FiFileText' },
 ];

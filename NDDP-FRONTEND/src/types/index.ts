@@ -13,6 +13,8 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
+  employeeNumber?: string;
+  jobTitle?: string;
   roles: UserRole[];
   permissions: string[];
   department?: string;

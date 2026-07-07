@@ -64,21 +64,21 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="fixed left-1/2 top-[20%] z-50 w-full max-w-lg -translate-x-1/2 rounded-xl border border-border bg-card shadow-2xl"
+            className="fixed left-1/2 top-[20%] z-50 w-full max-w-lg -translate-x-1/2 rounded-xl border border-border bg-white text-foreground shadow-2xl"
             role="dialog"
             aria-label="Command palette"
           >
             <div className="flex items-center gap-3 border-b border-border px-4">
-              <FiSearch className="h-5 w-5 text-muted-foreground" />
+              <FiSearch className="h-5 w-5 text-foreground" />
               <input
                 autoFocus
                 type="text"
                 placeholder="Search modules and actions..."
-                className="h-14 flex-1 bg-transparent text-sm outline-none"
+                className="h-14 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-foreground"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <kbd className="hidden rounded border border-border px-2 py-0.5 text-xs text-muted-foreground sm:block">
+              <kbd className="hidden rounded border border-border px-2 py-0.5 text-xs text-foreground sm:block">
                 ESC
               </kbd>
             </div>
@@ -87,7 +87,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 <li key={item.id}>
                   <button
                     type="button"
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted"
                     onClick={() => select(item.path)}
                   >
                     {item.label}
@@ -95,7 +95,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 </li>
               ))}
               {filtered.length === 0 && (
-                <li className="px-3 py-8 text-center text-sm text-muted-foreground">No results found</li>
+                <li className="px-3 py-8 text-center text-sm text-foreground">No results found</li>
               )}
             </ul>
           </motion.div>

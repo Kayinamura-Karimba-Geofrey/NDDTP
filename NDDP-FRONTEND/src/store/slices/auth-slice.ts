@@ -68,6 +68,11 @@ const authSlice = createSlice({
       action: PayloadAction<{ user: AuthUser; tokens: AuthTokens; remember?: boolean }>,
     ) => {
       const { user, tokens, remember = false } = action.payload;
+      const previousLogin = localStorage.getItem('nddtp_last_login');
+      if (previousLogin) {
+        sessionStorage.setItem('nddtp_display_last_login', previousLogin);
+      }
+      localStorage.setItem('nddtp_last_login', new Date().toISOString());
       const storage = remember ? localStorage : sessionStorage;
       storage.setItem(TOKEN_KEYS.ACCESS, tokens.accessToken);
       storage.setItem(TOKEN_KEYS.REFRESH, tokens.refreshToken);

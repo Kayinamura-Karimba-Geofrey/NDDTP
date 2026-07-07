@@ -41,7 +41,7 @@ export function OtpPage() {
               <Input label="Verification Code" placeholder="123456" error={errors.code?.message} {...register('code')} />
               <Button type="submit" className="w-full" isLoading={isLoading}>Verify</Button>
             </form>
-            <Link to={ROUTES.LOGIN} className="mt-4 block text-sm text-accent hover:underline">Back to login</Link>
+            <Link to={ROUTES.LOGIN} className="mt-4 block text-sm text-foreground underline-offset-2 hover:underline">Back to login</Link>
           </CardContent>
         </Card>
       </div>

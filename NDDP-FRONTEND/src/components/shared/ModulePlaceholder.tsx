@@ -12,7 +12,7 @@ export function ModulePlaceholder({ title, description, module }: ModulePlacehol
       <div>
         <Breadcrumbs items={[{ label: title }]} />
         <h1 className="mt-2 text-2xl font-bold">{title}</h1>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-foreground">{description}</p>
       </div>
       <Card>
         <CardHeader>

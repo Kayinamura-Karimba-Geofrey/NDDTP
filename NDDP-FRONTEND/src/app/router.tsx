@@ -15,6 +15,11 @@ const ForbiddenPage = lazy(() => import('@/modules/authentication/pages/ErrorPag
 const NotFoundPage = lazy(() => import('@/modules/authentication/pages/ErrorPages').then((m) => ({ default: m.NotFoundPage })));
 const ServerErrorPage = lazy(() => import('@/modules/authentication/pages/ErrorPages').then((m) => ({ default: m.ServerErrorPage })));
 const DashboardPage = lazy(() => import('@/modules/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })));
+const CloudOverviewPage = lazy(() => import('@/modules/cloud/pages/CloudOverviewPage').then((m) => ({ default: m.CloudOverviewPage })));
+const CloudServicesPage = lazy(() => import('@/modules/cloud/pages/CloudServicesPage').then((m) => ({ default: m.CloudServicesPage })));
+const CloudEnvironmentsPage = lazy(() => import('@/modules/cloud/pages/CloudEnvironmentsPage').then((m) => ({ default: m.CloudEnvironmentsPage })));
+const CloudGatewayPage = lazy(() => import('@/modules/cloud/pages/CloudGatewayPage').then((m) => ({ default: m.CloudGatewayPage })));
+const CloudDeploymentsPage = lazy(() => import('@/modules/cloud/pages/CloudDeploymentsPage').then((m) => ({ default: m.CloudDeploymentsPage })));
 const ServiceListPage = lazy(() => import('@/components/shared/ServiceListPage').then((m) => ({ default: m.ServiceListPage })));
 
 const wrap = (element: React.ReactNode) => (
@@ -47,6 +52,11 @@ export const router = createBrowserRouter([
     element: wrap(<ProtectedRoute><MainLayout /></ProtectedRoute>),
     children: [
       { path: 'dashboard', element: wrap(<DashboardPage />) },
+      { path: 'cloud', element: wrap(<CloudOverviewPage />) },
+      { path: 'cloud/services', element: wrap(<CloudServicesPage />) },
+      { path: 'cloud/environments', element: wrap(<CloudEnvironmentsPage />) },
+      { path: 'cloud/gateway', element: wrap(<CloudGatewayPage />) },
+      { path: 'cloud/deployments', element: wrap(<CloudDeploymentsPage />) },
       moduleRoute('profile', 'user'),
       moduleRoute('users/*', 'users'),
       moduleRoute('personnel/*', 'personnel'),

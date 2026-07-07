@@ -12,7 +12,7 @@ function AuthMessagePage({ title, message, actionLabel, actionTo }: {
         <Card className="w-full max-w-md text-center">
           <CardHeader><CardTitle>{title}</CardTitle></CardHeader>
           <CardContent>
-            <p className="mb-6 text-sm text-muted-foreground">{message}</p>
+            <p className="mb-6 text-sm text-foreground">{message}</p>
             <Link to={actionTo}>
               <Button>{actionLabel}</Button>
             </Link>

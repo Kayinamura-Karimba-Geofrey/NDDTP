@@ -53,35 +53,30 @@ export function LoginPage() {
 
   return (
     <AuthLayout>
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-card shadow-2xl lg:grid-cols-2">
-          <div className="relative hidden flex-col justify-between bg-mod-navy p-10 text-white lg:flex">
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)] lg:grid-cols-2">
+          <div className="relative hidden flex-col justify-between bg-primary p-10 text-primary-foreground lg:flex">
             <div>
               <img
                 src={BRANDING.logoUrl}
                 alt={BRANDING.forceName}
-                className="mb-6 h-20 w-20 rounded-full object-cover ring-4 ring-mod-gold"
+                className="mb-6 h-16 w-16 rounded-xl object-cover ring-2 ring-white/20"
               />
-              <h1 className="text-2xl font-bold">{BRANDING.platformName}</h1>
-              <p className="mt-2 text-sm text-white/70">{BRANDING.tagline}</p>
+              <h1 className="text-2xl font-bold leading-tight">{BRANDING.platformName}</h1>
+              <p className="mt-3 text-sm leading-relaxed text-white/80">{BRANDING.tagline}</p>
             </div>
-            <div className="space-y-2 text-sm text-white/60">
+            <div className="space-y-2 text-sm text-white/70">
               <p>{BRANDING.organization}</p>
               <p>{BRANDING.contact.address}</p>
-              <a href={BRANDING.modWebsite} className="text-rwanda-blue hover:underline" target="_blank" rel="noreferrer">
+              <a href={BRANDING.modWebsite} className="text-white hover:underline" target="_blank" rel="noreferrer">
                 {BRANDING.modWebsite}
               </a>
-            </div>
-            <div className="flex gap-2">
-              <span className="h-2 w-8 rounded-full bg-rwanda-blue" />
-              <span className="h-2 w-8 rounded-full bg-rwanda-yellow" />
-              <span className="h-2 w-8 rounded-full bg-rwanda-green" />
             </div>
           </div>
 
           <Card className="rounded-none border-0 shadow-none">
-            <CardHeader>
-              <CardTitle>Sign in to NDDTP</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl">Sign in to NDDTP</CardTitle>
               <CardDescription>
                 Use your official Ministry of Defence credentials
               </CardDescription>
@@ -103,11 +98,11 @@ export function LoginPage() {
                   {...register('password')}
                 />
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 text-sm">
+                  <label className="flex items-center gap-2 text-sm text-muted-foreground">
                     <input type="checkbox" {...register('rememberMe')} className="rounded border-border" />
                     Remember me
                   </label>
-                  <Link to={ROUTES.FORGOT_PASSWORD} className="text-sm text-accent hover:underline">
+                  <Link to={ROUTES.FORGOT_PASSWORD} className="text-sm font-medium text-foreground hover:underline">
                     Forgot password?
                   </Link>
                 </div>
@@ -116,17 +111,17 @@ export function LoginPage() {
                 </Button>
               </form>
               <Alert variant="info" className="mt-6" title="Demo credentials (pre-filled)">
-                <ul className="mt-2 space-y-1 text-sm">
+                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   <li>
-                    <strong>{SEED_CREDENTIALS.admin.label}:</strong>{' '}
+                    <strong className="text-foreground">{SEED_CREDENTIALS.admin.label}:</strong>{' '}
                     <code>{SEED_CREDENTIALS.admin.email}</code> / <code>{SEED_CREDENTIALS.admin.password}</code>
                   </li>
                   <li>
-                    <strong>{SEED_CREDENTIALS.officer.label}:</strong>{' '}
+                    <strong className="text-foreground">{SEED_CREDENTIALS.officer.label}:</strong>{' '}
                     <code>{SEED_CREDENTIALS.officer.email}</code> / <code>{SEED_CREDENTIALS.officer.password}</code>
                   </li>
                   <li>
-                    <strong>{SEED_CREDENTIALS.mfa.label}:</strong>{' '}
+                    <strong className="text-foreground">{SEED_CREDENTIALS.mfa.label}:</strong>{' '}
                     <code>{SEED_CREDENTIALS.mfa.email}</code> / <code>{SEED_CREDENTIALS.mfa.password}</code> → OTP{' '}
                     <code>{SEED_CREDENTIALS.mfa.otp}</code>
                   </li>

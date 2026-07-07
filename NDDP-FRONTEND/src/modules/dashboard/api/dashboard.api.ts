@@ -5,11 +5,11 @@ import { unwrapApiResponse, unwrapPaginated } from '@/utils/api-response';
 
 const mockStats: DashboardStat[] = [
   { id: '1', label: 'Total Personnel', value: '24,850', change: 2.4, trend: 'up', icon: 'FiUsers', color: 'bg-accent' },
-  { id: '2', label: 'Active Deployments', value: '1,240', change: -0.5, trend: 'down', icon: 'FiGlobe', color: 'bg-success' },
-  { id: '3', label: 'Pending Approvals', value: 47, change: 12, trend: 'up', icon: 'FiClock', color: 'bg-warning' },
+  { id: '2', label: 'Active Deployments', value: '1,240', change: -0.5, trend: 'down', icon: 'FiGlobe', color: 'bg-primary' },
+  { id: '3', label: 'Pending Approvals', value: 47, change: 12, trend: 'up', icon: 'FiClock', color: 'bg-secondary' },
   { id: '4', label: 'Budget Utilization', value: '68%', change: 3.1, trend: 'up', icon: 'FiDollarSign', color: 'bg-primary' },
-  { id: '5', label: 'Inventory Items', value: '156K', change: 1.2, trend: 'up', icon: 'FiPackage', color: 'bg-secondary' },
-  { id: '6', label: 'Open Maintenance', value: 23, change: -8, trend: 'down', icon: 'FiTool', color: 'bg-danger' },
+  { id: '5', label: 'Inventory Items', value: '156K', change: 1.2, trend: 'up', icon: 'FiPackage', color: 'bg-accent' },
+  { id: '6', label: 'Open Maintenance', value: 23, change: -8, trend: 'down', icon: 'FiTool', color: 'bg-secondary' },
 ];
 
 const mockActivities: ActivityItem[] = [

@@ -1,35 +1,37 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Rwanda national palette + MoD enterprise accents */
-  --color-rwanda-blue: #00a1de;
-  --color-rwanda-yellow: #fad201;
-  --color-rwanda-green: #20603d;
-  --color-mod-navy: #0b1f3a;
-  --color-mod-navy-light: #132d52;
-  --color-mod-gold: #c9a227;
+  /* Bolt-style slate palette */
+  --color-rwanda-blue: #0f172a;
+  --color-rwanda-yellow: #64748b;
+  --color-rwanda-green: #0f172a;
+  --color-mod-navy: #0f172a;
+  --color-mod-navy-light: #334155;
+  --color-mod-gold: #0f172a;
   --color-mod-slate: #64748b;
 
-  --color-primary: #0b1f3a;
+  --color-primary: #0f172a;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #132d52;
-  --color-accent: #00a1de;
+  --color-secondary: #1e293b;
+  --color-accent: #0f172a;
   --color-accent-foreground: #ffffff;
-  --color-success: #20603d;
-  --color-warning: #fad201;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
   --color-danger: #dc2626;
   --color-muted: #f1f5f9;
   --color-muted-foreground: #64748b;
   --color-border: #e2e8f0;
   --color-card: #ffffff;
-  --color-background: #f8fafc;
+  --color-background: #ffffff;
+  --color-page: #f8fafc;
   --color-foreground: #0f172a;
 
-  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-elevated: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
 }
 
 @layer base {
@@ -39,25 +41,111 @@
 
   html {
     @apply scroll-smooth;
+    font-size: 15px;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-page text-foreground font-sans antialiased;
+    line-height: 1.5;
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-accent;
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight text-foreground;
   }
 }
 
-.dark {
-  --color-background: #0b1220;
-  --color-foreground: #f1f5f9;
-  --color-card: #111827;
-  --color-muted: #1e293b;
-  --color-muted-foreground: #94a3b8;
-  --color-border: #334155;
-  --color-primary: #1e3a5f;
+@layer components {
+  .page-header {
+    @apply mb-8;
+  }
+
+  .page-title {
+    @apply text-2xl font-bold leading-tight text-foreground md:text-[1.75rem];
+  }
+
+  .page-description {
+    @apply max-w-3xl text-sm leading-relaxed text-muted-foreground;
+  }
+
+  .section-card {
+    @apply rounded-xl border border-border bg-card shadow-[var(--shadow-card)];
+  }
+
+  .stat-card {
+    @apply rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-elevated)];
+  }
+
+  .stat-label {
+    @apply text-xs font-medium uppercase tracking-wide text-muted-foreground;
+  }
+
+  .stat-value {
+    @apply mt-2 text-3xl font-bold leading-none text-foreground;
+  }
+
+  .data-table-wrap {
+    @apply overflow-x-auto rounded-xl border border-border bg-card;
+  }
+
+  .data-table {
+    @apply w-full min-w-[640px] border-collapse text-left text-sm;
+  }
+
+  .data-table thead {
+    @apply bg-muted/50;
+  }
+
+  .data-table th {
+    @apply border-b border-border px-5 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap;
+  }
+
+  .data-table td {
+    @apply border-b border-border/60 px-5 py-3.5 text-sm text-foreground;
+  }
+
+  .data-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-muted/40;
+  }
+
+  .data-table-empty {
+    @apply rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center text-sm text-muted-foreground;
+  }
+
+  .table-pagination {
+    @apply mt-5 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .table-pagination-meta {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .table-pagination-btn {
+    @apply inline-flex h-9 items-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .detail-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .detail-field {
+    @apply rounded-lg border border-border bg-muted/30 px-4 py-3.5;
+  }
+
+  .detail-label {
+    @apply text-xs font-medium uppercase tracking-wide text-muted-foreground;
+  }
+
+  .detail-value {
+    @apply mt-1.5 text-sm font-medium text-foreground;
+  }
 }
 
 @keyframes shimmer {
@@ -66,12 +154,7 @@
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(90deg, var(--color-muted) 25%, #e2e8f0 50%, var(--color-muted) 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-}
-
-.dark .skeleton-shimmer {
-  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-  background-size: 200% 100%;
 }

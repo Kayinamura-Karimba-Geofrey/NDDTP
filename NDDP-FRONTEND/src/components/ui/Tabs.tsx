@@ -46,7 +46,7 @@ export function TabsTrigger({ value, children }: { value: string; children: Reac
       aria-selected={isActive}
       className={cn(
         'inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium transition-colors',
-        isActive ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
+        isActive ? 'bg-card text-foreground shadow-sm' : 'text-foreground hover:opacity-80',
       )}
       onClick={() => ctx.onChange(value)}
     >

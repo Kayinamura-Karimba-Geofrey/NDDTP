@@ -10,15 +10,15 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className={cn('flex items-center gap-1 text-sm', className)}>
-      <Link to="/dashboard" className="text-muted-foreground hover:text-foreground" aria-label="Dashboard">
+    <nav aria-label="Breadcrumb" className={cn('flex items-center gap-1.5 text-sm', className)}>
+      <Link to="/dashboard" className="text-muted-foreground transition-colors hover:text-foreground" aria-label="Dashboard">
         <FiHome className="h-4 w-4" />
       </Link>
       {items.map((item, index) => (
-        <span key={index} className="flex items-center gap-1">
-          <FiChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
+        <span key={index} className="flex items-center gap-1.5">
+          <FiChevronRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
           {item.path && index < items.length - 1 ? (
-            <Link to={item.path} className="text-muted-foreground hover:text-foreground">
+            <Link to={item.path} className="text-muted-foreground transition-colors hover:text-foreground">
               {item.label}
             </Link>
           ) : (

@@ -13,7 +13,7 @@ const iconMap = FiIcons as Record<string, React.ComponentType<{ className?: stri
 
 function NavIcon({ name }: { name: string }) {
   const Icon = iconMap[name] ?? FiIcons.FiCircle;
-  return <Icon className="h-5 w-5 shrink-0" aria-hidden />;
+  return <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden />;
 }
 
 function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
@@ -24,9 +24,9 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
     <Link
       to={item.path}
       className={cn(
-        'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
         isActive
-          ? 'bg-accent/15 text-accent'
+          ? 'bg-primary text-primary-foreground shadow-sm'
           : 'text-muted-foreground hover:bg-muted hover:text-foreground',
       )}
       aria-current={isActive ? 'page' : undefined}
@@ -36,7 +36,9 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
         <>
           <span className="flex-1 truncate">{item.label}</span>
           {item.badge !== undefined && (
-            <span className="rounded-full bg-accent px-2 py-0.5 text-xs text-white">{item.badge}</span>
+            <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs text-primary-foreground">
+              {item.badge}
+            </span>
           )}
         </>
       )}
@@ -45,18 +47,13 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
 }
 
 function NavGroup({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
-  const location = useLocation();
-  const isOpen = item.children?.some(
-    (c) => location.pathname === c.path || location.pathname.startsWith(`${c.path}/`),
-  );
-
   if (collapsed) {
     return item.children?.map((child) => <NavLink key={child.id} item={child} collapsed={collapsed} />);
   }
 
   return (
     <div>
-      <p className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {item.label}
       </p>
       <div className="space-y-0.5">
@@ -64,7 +61,6 @@ function NavGroup({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
           <NavLink key={child.id} item={child} collapsed={collapsed} />
         ))}
       </div>
-      {!isOpen && item.children?.length === 0 && null}
     </div>
   );
 }
@@ -87,20 +83,20 @@ export function Sidebar() {
         <img
           src={BRANDING.logoUrl}
           alt={`${BRANDING.forceName} logo`}
-          className="h-10 w-10 rounded-full object-cover ring-2 ring-mod-gold"
+          className="h-9 w-9 rounded-lg object-cover ring-1 ring-border"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
         {!collapsed && (
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-primary">{BRANDING.platformAcronym}</p>
+            <p className="truncate text-sm font-bold text-foreground">{BRANDING.platformAcronym}</p>
             <p className="truncate text-xs text-muted-foreground">{BRANDING.shortName}</p>
           </div>
         )}
       </div>
 
-      <nav className="flex-1 space-y-4 overflow-y-auto p-3">
+      <nav className="flex-1 space-y-6 overflow-y-auto p-3">
         {navItems.map((item) =>
           item.children ? (
             <NavGroup key={item.id} item={item} collapsed={collapsed} />
@@ -114,7 +110,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => dispatch(toggleSidebar())}
-          className="flex w-full items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="flex w-full items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <FiIcons.FiChevronLeft className={cn('h-5 w-5 transition-transform', collapsed && 'rotate-180')} />
@@ -132,7 +128,7 @@ export function MobileSidebarOverlay({ open, onClose }: { open: boolean; onClose
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
           onClick={onClose}
           aria-hidden
         />

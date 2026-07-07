@@ -13,7 +13,7 @@ export function MainLayout() {
   const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-page">
       <Sidebar />
       <MobileSidebarOverlay open={mobileOpen} onClose={() => setMobileOpen(false)} />
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
@@ -28,8 +28,10 @@ export function MainLayout() {
           onMenuClick={() => setMobileOpen(true)}
           onCommandPalette={() => setCommandOpen(true)}
         />
-        <main className="flex-1 p-4 md:p-6" id="main-content">
-          <Outlet />
+        <main className="flex-1 p-6 md:p-8" id="main-content">
+          <div className="mx-auto max-w-[1400px]">
+            <Outlet />
+          </div>
         </main>
         <Footer />
       </div>
@@ -39,7 +41,7 @@ export function MainLayout() {
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mod-navy via-secondary to-mod-navy-light">
+    <div className="min-h-screen bg-page">
       {children}
     </div>
   );

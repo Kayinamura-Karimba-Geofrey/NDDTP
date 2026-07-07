@@ -9,9 +9,10 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, hint, id, ...props }, ref) => {
-    const inputId = id ?? props.name;
+    const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
+
     return (
-      <div className="flex flex-col gap-1.5">
+      <div className="space-y-1.5">
         {label && (
           <label htmlFor={inputId} className="text-sm font-medium text-foreground">
             {label}
@@ -21,10 +22,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            'flex h-10 w-full rounded-md border border-border bg-card px-3 py-2 text-sm',
-            'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-            'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-danger focus-visible:ring-danger',
+            'flex h-10 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground',
+            'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
+            error && 'border-danger focus-visible:ring-danger/20',
             className,
           )}
           aria-invalid={Boolean(error)}

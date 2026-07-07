@@ -19,6 +19,10 @@ export default defineConfig({
         target: GATEWAY_URL,
         changeOrigin: true,
       },
+      '/health': {
+        target: GATEWAY_URL,
+        changeOrigin: true,
+      },
     },
   },
   build: {

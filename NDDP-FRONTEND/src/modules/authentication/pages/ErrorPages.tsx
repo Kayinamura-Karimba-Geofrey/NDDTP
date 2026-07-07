@@ -7,11 +7,11 @@ function ErrorPage({ code, title, message }: { code: string; title: string; mess
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-lg text-center">
         <CardHeader>
-          <p className="text-6xl font-bold text-accent">{code}</p>
+          <p className="text-6xl font-bold text-foreground">{code}</p>
           <CardTitle className="mt-2">{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-6 text-muted-foreground">{message}</p>
+          <p className="mb-6 text-foreground">{message}</p>
           <div className="flex justify-center gap-3">
             <Button variant="outline" onClick={() => window.history.back()}>Go Back</Button>
             <Link to={ROUTES.DASHBOARD}>

@@ -35,6 +35,7 @@ interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
+  employeeNumber?: string | null;
   rank?: string | null;
   jobTitle?: string | null;
   department?: { id: string; code: string; name: string } | null;
@@ -94,6 +95,8 @@ export async function buildAuthUser(accessToken: string): Promise<AuthUser> {
     email: profile.email,
     firstName: profile.firstName,
     lastName: profile.lastName,
+    employeeNumber: profile.employeeNumber ?? undefined,
+    jobTitle: profile.jobTitle ?? undefined,
     roles: authz.roles as UserRole[],
     permissions: authz.permissions,
     department: profile.department?.name,

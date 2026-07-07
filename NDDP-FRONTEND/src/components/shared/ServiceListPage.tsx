@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
+import { FiSearch } from 'react-icons/fi';
 import { getModuleConfig } from '@/constants/module-config';
 import { MICROSERVICES } from '@/constants/services';
 import { useListResourcesQuery, useGetResourceQuery } from '@/services/api/modules.api';
@@ -9,7 +10,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Breadcrumbs,
   EmptyState,
   Skeleton,
   Badge,
@@ -17,6 +17,8 @@ import {
   Input,
   Alert,
 } from '@/components/ui';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { DataTable, TablePagination, type DataTableColumn } from '@/components/shared/DataTable';
 import { getApiErrorMessage } from '@/services/api/axios-instance';
 
 interface ServiceListPageProps {
@@ -31,7 +33,11 @@ function formatCellValue(value: unknown): string {
     return JSON.stringify(value);
   }
   if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
-    return new Date(value).toLocaleDateString('en-RW');
+    return new Date(value).toLocaleDateString('en-RW', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   }
   return String(value);
 }
@@ -49,13 +55,14 @@ export function ServiceListPage({ moduleKey }: ServiceListPageProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const pageSize = 20;
 
   const { data, isLoading, isError, error, isFetching, refetch } = useListResourcesQuery(
     {
       service: config?.serviceKey ?? 'user',
       path: config?.listPath ?? '/users',
       page,
-      limit: 20,
+      limit: pageSize,
       search: search || undefined,
     },
     { skip: !config || Boolean(config.singleResource) },
@@ -72,6 +79,23 @@ export function ServiceListPage({ moduleKey }: ServiceListPageProps) {
     { skip: !config || !config.singleResource },
   );
 
+  const fields = useMemo(() => {
+    const rows = config?.singleResource
+      ? singleData ? [singleData] : []
+      : data?.data ?? [];
+    return config?.displayFields ?? (rows[0] ? Object.keys(rows[0]).slice(0, 6) : ['id']);
+  }, [config, data?.data, singleData]);
+
+  const columns = useMemo<DataTableColumn<Record<string, unknown>>[]>(
+    () =>
+      fields.map((field) => ({
+        key: field,
+        header: formatFieldLabel(field),
+        render: (row) => formatCellValue(row[field]),
+      })),
+    [fields],
+  );
+
   if (!config) {
     return (
       <EmptyState
@@ -86,62 +110,62 @@ export function ServiceListPage({ moduleKey }: ServiceListPageProps) {
   }
 
   const rows = config.singleResource
-    ? singleData
-      ? [singleData]
-      : []
+    ? singleData ? [singleData] : []
     : data?.data ?? [];
   const meta = config.singleResource ? undefined : data?.meta;
   const loading = config.singleResource ? singleLoading : isLoading;
   const hasError = config.singleResource ? singleError : isError;
   const errorObj = config.singleResource ? singleErrorObj : error;
   const handleRefetch = config.singleResource ? refetchSingle : refetch;
-
   const serviceLabel = MICROSERVICES[config.serviceKey].label;
-  const fields =
-    config.displayFields ??
-    (rows[0] ? Object.keys(rows[0]).slice(0, 6) : ['id']);
 
   return (
     <div className="space-y-6">
-      <div>
-        <Breadcrumbs items={[{ label: config.title }]} />
-        <h1 className="mt-2 text-2xl font-bold">{config.title}</h1>
-        <p className="text-sm text-muted-foreground">{config.description}</p>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">{serviceLabel}</Badge>
-          <Badge variant="outline" className="font-mono text-xs">
-            {config.listPath}
-          </Badge>
-        </div>
-      </div>
+      <PageHeader
+        breadcrumbs={[{ label: config.title }]}
+        title={config.title}
+        description={config.description}
+        meta={<Badge variant="accent">{serviceLabel}</Badge>}
+      />
 
-      <Card>
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle>{config.singleResource ? 'Details' : 'Records'}</CardTitle>
+      <Card className="section-card">
+        <CardHeader className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle className="text-base font-semibold">
+              {config.singleResource ? 'Record Details' : 'All Records'}
+            </CardTitle>
+            {!config.singleResource && meta && (
+              <p className="mt-1 text-[0.8125rem] text-foreground">
+                {meta.total} total records
+              </p>
+            )}
+          </div>
           {!config.singleResource && (
-          <form
-            className="flex w-full max-w-sm gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearch(searchInput);
-              setPage(1);
-            }}
-          >
-            <Input
-              placeholder="Search..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              aria-label="Search records"
-            />
-            <Button type="submit" variant="secondary">
-              Search
-            </Button>
-          </form>
+            <form
+              className="flex w-full max-w-md gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearch(searchInput);
+                setPage(1);
+              }}
+            >
+              <Input
+                placeholder="Search records..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                aria-label="Search records"
+                className="h-10"
+              />
+              <Button type="submit" variant="primary" className="shrink-0">
+                <FiSearch className="h-4 w-4" />
+                Search
+              </Button>
+            </form>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-5">
           {hasError && (
-            <Alert variant="danger" title="Failed to load data" className="mb-4">
+            <Alert variant="danger" title="Failed to load data" className="mb-5">
               {getApiErrorMessage(errorObj)}
               <Button variant="outline" size="sm" className="mt-2" onClick={() => handleRefetch()}>
                 Retry
@@ -151,8 +175,8 @@ export function ServiceListPage({ moduleKey }: ServiceListPageProps) {
 
           {loading ? (
             <div className="space-y-2">
-              {Array.from({ length: config.singleResource ? 1 : 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
+              {Array.from({ length: config.singleResource ? 3 : 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-11 w-full rounded-md" />
               ))}
             </div>
           ) : !rows.length ? (
@@ -165,65 +189,33 @@ export function ServiceListPage({ moduleKey }: ServiceListPageProps) {
               }
             />
           ) : config.singleResource ? (
-            <dl className="grid gap-4 sm:grid-cols-2">
+            <dl className="detail-grid">
               {fields.map((field) => (
-                <div key={field} className="rounded-md border border-border p-4">
-                  <dt className="text-xs font-medium text-muted-foreground">{formatFieldLabel(field)}</dt>
-                  <dd className="mt-1 text-sm font-medium">{formatCellValue(rows[0][field])}</dd>
+                <div key={field} className="detail-field">
+                  <dt className="detail-label">{formatFieldLabel(field)}</dt>
+                  <dd className="detail-value">{formatCellValue(rows[0][field])}</dd>
                 </div>
               ))}
             </dl>
           ) : (
             <>
-              <div className="overflow-x-auto rounded-md border border-border">
-                <table className="w-full text-left text-sm">
-                  <thead className="border-b border-border bg-muted/50">
-                    <tr>
-                      {fields.map((field) => (
-                        <th key={field} className="px-4 py-3 font-medium text-muted-foreground">
-                          {formatFieldLabel(field)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row, idx) => (
-                      <tr key={String(row.id ?? idx)} className="border-b border-border last:border-0">
-                        {fields.map((field) => (
-                          <td key={field} className="px-4 py-3">
-                            {formatCellValue(row[field])}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
+              <DataTable
+                columns={columns}
+                rows={rows}
+                rowKey={(row, idx) => String(row.id ?? idx)}
+              />
               {meta && (
-                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>
-                    Page {meta.page} of {meta.totalPages || 1} — {meta.total} total
-                  </span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={!meta.hasPreviousPage || isFetching}
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={!meta.hasNextPage || isFetching}
-                      onClick={() => setPage((p) => p + 1)}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </div>
+                <TablePagination
+                  page={meta.page}
+                  totalPages={meta.totalPages || 1}
+                  total={meta.total}
+                  pageSize={pageSize}
+                  hasPreviousPage={meta.hasPreviousPage}
+                  hasNextPage={meta.hasNextPage}
+                  isLoading={isFetching}
+                  onPrevious={() => setPage((p) => Math.max(1, p - 1))}
+                  onNext={() => setPage((p) => p + 1)}
+                />
               )}
             </>
           )}

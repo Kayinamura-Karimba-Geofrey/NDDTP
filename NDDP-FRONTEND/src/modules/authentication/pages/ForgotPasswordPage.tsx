@@ -28,7 +28,7 @@ export function ForgotPasswordPage() {
           </CardHeader>
           <CardContent>
             {isSuccess ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground">
                 If an account exists for that email, you will receive password reset instructions shortly.
               </p>
             ) : (
@@ -37,7 +37,7 @@ export function ForgotPasswordPage() {
                 <Button type="submit" className="w-full" isLoading={isLoading}>Send Reset Link</Button>
               </form>
             )}
-            <Link to={ROUTES.LOGIN} className="mt-4 block text-sm text-accent hover:underline">Back to login</Link>
+            <Link to={ROUTES.LOGIN} className="mt-4 block text-sm text-foreground underline-offset-2 hover:underline">Back to login</Link>
           </CardContent>
         </Card>
       </div>

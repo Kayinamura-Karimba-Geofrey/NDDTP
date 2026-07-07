@@ -6,11 +6,12 @@ import { Toaster } from 'react-hot-toast';
 import { store } from '@/store';
 import { router } from '@/app/router';
 import '@/index.css';
+import '@/modules/cloud/api/cloud.api';
 
 function ThemeInit() {
   useEffect(() => {
-    const resolved = store.getState().theme.resolved;
-    document.documentElement.classList.toggle('dark', resolved === 'dark');
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('nddtp_theme', 'light');
   }, []);
   return null;
 }
@@ -24,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
         position="top-right"
         toastOptions={{
           duration: 4000,
-          style: { background: 'var(--color-card)', color: 'var(--color-foreground)', border: '1px solid var(--color-border)' },
+          style: { background: '#ffffff', color: '#000000', border: '1px solid #e5e5e5' },
         }}
       />
     </Provider>
