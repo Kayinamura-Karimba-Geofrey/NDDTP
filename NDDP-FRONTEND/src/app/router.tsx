@@ -179,6 +179,46 @@ const TrainingApprovalCenterPage = lazy(() => import('@/modules/training/pages/T
 const TrainingHistoryPage = lazy(() => import('@/modules/training/pages/TrainingHistoryPage').then((m) => ({ default: m.TrainingHistoryPage })));
 const TrainingReportsPage = lazy(() => import('@/modules/training/pages/TrainingReportsPage').then((m) => ({ default: m.TrainingReportsPage })));
 const TrainingSettingsPage = lazy(() => import('@/modules/training/pages/TrainingSettingsPage').then((m) => ({ default: m.TrainingSettingsPage })));
+const AssetDashboardPage = lazy(() => import('@/modules/assets/pages/AssetDashboardPage').then((m) => ({ default: m.AssetDashboardPage })));
+const AssetRegistryPage = lazy(() => import('@/modules/assets/pages/AssetRegistryPage').then((m) => ({ default: m.AssetRegistryPage })));
+const AssetCategoriesPage = lazy(() => import('@/modules/assets/pages/AssetCategoriesPage').then((m) => ({ default: m.AssetCategoriesPage })));
+const AssetTypesPage = lazy(() => import('@/modules/assets/pages/AssetTypesPage').then((m) => ({ default: m.AssetTypesPage })));
+const AssetProfileDetailPage = lazy(() => import('@/modules/assets/pages/AssetProfileDetailPage').then((m) => ({ default: m.AssetProfileDetailPage })));
+const AssetAssignmentPage = lazy(() => import('@/modules/assets/pages/AssetAssignmentPage').then((m) => ({ default: m.AssetAssignmentPage })));
+const AssetTransfersPage = lazy(() => import('@/modules/assets/pages/AssetTransfersPage').then((m) => ({ default: m.AssetTransfersPage })));
+const AssetReturnsPage = lazy(() => import('@/modules/assets/pages/AssetReturnsPage').then((m) => ({ default: m.AssetReturnsPage })));
+const MaintenanceManagementPage = lazy(() => import('@/modules/assets/pages/MaintenanceManagementPage').then((m) => ({ default: m.MaintenanceManagementPage })));
+const InspectionManagementPage = lazy(() => import('@/modules/assets/pages/InspectionManagementPage').then((m) => ({ default: m.InspectionManagementPage })));
+const WarrantyManagementPage = lazy(() => import('@/modules/assets/pages/WarrantyManagementPage').then((m) => ({ default: m.WarrantyManagementPage })));
+const AssetLifecyclePage = lazy(() => import('@/modules/assets/pages/AssetLifecyclePage').then((m) => ({ default: m.AssetLifecyclePage })));
+const AssetDocumentsPage = lazy(() => import('@/modules/assets/pages/AssetDocumentsPage').then((m) => ({ default: m.AssetDocumentsPage })));
+const AssetAuditPage = lazy(() => import('@/modules/assets/pages/AssetAuditPage').then((m) => ({ default: m.AssetAuditPage })));
+const AssetDisposalPage = lazy(() => import('@/modules/assets/pages/AssetDisposalPage').then((m) => ({ default: m.AssetDisposalPage })));
+const AssetReservationsPage = lazy(() => import('@/modules/assets/pages/AssetReservationsPage').then((m) => ({ default: m.AssetReservationsPage })));
+const BarcodeManagementPage = lazy(() => import('@/modules/assets/pages/BarcodeManagementPage').then((m) => ({ default: m.BarcodeManagementPage })));
+const AssetReportsPage = lazy(() => import('@/modules/assets/pages/AssetReportsPage').then((m) => ({ default: m.AssetReportsPage })));
+const AssetSettingsPage = lazy(() => import('@/modules/assets/pages/AssetSettingsPage').then((m) => ({ default: m.AssetSettingsPage })));
+const InventoryDashboardPage = lazy(() => import('@/modules/inventory/pages/InventoryDashboardPage').then((m) => ({ default: m.InventoryDashboardPage })));
+const WarehousesPage = lazy(() => import('@/modules/inventory/pages/WarehousesPage').then((m) => ({ default: m.WarehousesPage })));
+const WarehouseDetailPage = lazy(() => import('@/modules/inventory/pages/WarehouseDetailPage').then((m) => ({ default: m.WarehouseDetailPage })));
+const WarehouseLocationsPage = lazy(() => import('@/modules/inventory/pages/WarehouseLocationsPage').then((m) => ({ default: m.WarehouseLocationsPage })));
+const InventoryItemsPage = lazy(() => import('@/modules/inventory/pages/InventoryItemsPage').then((m) => ({ default: m.InventoryItemsPage })));
+const InventoryCategoriesPage = lazy(() => import('@/modules/inventory/pages/InventoryCategoriesPage').then((m) => ({ default: m.InventoryCategoriesPage })));
+const UnitsOfMeasurePage = lazy(() => import('@/modules/inventory/pages/UnitsOfMeasurePage').then((m) => ({ default: m.UnitsOfMeasurePage })));
+const StockLevelsPage = lazy(() => import('@/modules/inventory/pages/StockLevelsPage').then((m) => ({ default: m.StockLevelsPage })));
+const GoodsReceiptPage = lazy(() => import('@/modules/inventory/pages/GoodsReceiptPage').then((m) => ({ default: m.GoodsReceiptPage })));
+const GoodsIssuePage = lazy(() => import('@/modules/inventory/pages/GoodsIssuePage').then((m) => ({ default: m.GoodsIssuePage })));
+const StockRequestsPage = lazy(() => import('@/modules/inventory/pages/StockRequestsPage').then((m) => ({ default: m.StockRequestsPage })));
+const WarehouseTransfersPage = lazy(() => import('@/modules/inventory/pages/WarehouseTransfersPage').then((m) => ({ default: m.WarehouseTransfersPage })));
+const StockAdjustmentsPage = lazy(() => import('@/modules/inventory/pages/StockAdjustmentsPage').then((m) => ({ default: m.StockAdjustmentsPage })));
+const StockCountsPage = lazy(() => import('@/modules/inventory/pages/StockCountsPage').then((m) => ({ default: m.StockCountsPage })));
+const BatchLotManagementPage = lazy(() => import('@/modules/inventory/pages/BatchLotManagementPage').then((m) => ({ default: m.BatchLotManagementPage })));
+const ExpiryManagementPage = lazy(() => import('@/modules/inventory/pages/ExpiryManagementPage').then((m) => ({ default: m.ExpiryManagementPage })));
+const ReorderManagementPage = lazy(() => import('@/modules/inventory/pages/ReorderManagementPage').then((m) => ({ default: m.ReorderManagementPage })));
+const InventorySuppliersPage = lazy(() => import('@/modules/inventory/pages/InventorySuppliersPage').then((m) => ({ default: m.InventorySuppliersPage })));
+const InventoryValuationPage = lazy(() => import('@/modules/inventory/pages/InventoryValuationPage').then((m) => ({ default: m.InventoryValuationPage })));
+const InventoryReportsPage = lazy(() => import('@/modules/inventory/pages/InventoryReportsPage').then((m) => ({ default: m.InventoryReportsPage })));
+const InventorySettingsPage = lazy(() => import('@/modules/inventory/pages/InventorySettingsPage').then((m) => ({ default: m.InventorySettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -365,9 +405,49 @@ export const router = createBrowserRouter([
       { path: 'training/history', element: wrap(<TrainingHistoryPage />) },
       { path: 'training/reports', element: wrap(<TrainingReportsPage />) },
       { path: 'training/settings', element: wrap(<TrainingSettingsPage />) },
+      { path: 'assets', element: <Navigate to="/assets/dashboard" replace /> },
+      { path: 'assets/dashboard', element: wrap(<AssetDashboardPage />) },
+      { path: 'assets/registry', element: wrap(<AssetRegistryPage />) },
+      { path: 'assets/categories', element: wrap(<AssetCategoriesPage />) },
+      { path: 'assets/types', element: wrap(<AssetTypesPage />) },
+      { path: 'assets/profiles/:id', element: wrap(<AssetProfileDetailPage />) },
+      { path: 'assets/assignment', element: wrap(<AssetAssignmentPage />) },
+      { path: 'assets/transfers', element: wrap(<AssetTransfersPage />) },
+      { path: 'assets/returns', element: wrap(<AssetReturnsPage />) },
+      { path: 'assets/maintenance', element: wrap(<MaintenanceManagementPage />) },
+      { path: 'assets/inspections', element: wrap(<InspectionManagementPage />) },
+      { path: 'assets/warranty', element: wrap(<WarrantyManagementPage />) },
+      { path: 'assets/lifecycle', element: wrap(<AssetLifecyclePage />) },
+      { path: 'assets/documents', element: wrap(<AssetDocumentsPage />) },
+      { path: 'assets/audit', element: wrap(<AssetAuditPage />) },
+      { path: 'assets/disposal', element: wrap(<AssetDisposalPage />) },
+      { path: 'assets/reservations', element: wrap(<AssetReservationsPage />) },
+      { path: 'assets/barcodes', element: wrap(<BarcodeManagementPage />) },
+      { path: 'assets/reports', element: wrap(<AssetReportsPage />) },
+      { path: 'assets/settings', element: wrap(<AssetSettingsPage />) },
+      { path: 'inventory', element: <Navigate to="/inventory/dashboard" replace /> },
+      { path: 'inventory/dashboard', element: wrap(<InventoryDashboardPage />) },
+      { path: 'inventory/warehouses', element: wrap(<WarehousesPage />) },
+      { path: 'inventory/warehouses/:id', element: wrap(<WarehouseDetailPage />) },
+      { path: 'inventory/locations', element: wrap(<WarehouseLocationsPage />) },
+      { path: 'inventory/items', element: wrap(<InventoryItemsPage />) },
+      { path: 'inventory/categories', element: wrap(<InventoryCategoriesPage />) },
+      { path: 'inventory/units', element: wrap(<UnitsOfMeasurePage />) },
+      { path: 'inventory/stock-levels', element: wrap(<StockLevelsPage />) },
+      { path: 'inventory/goods-receipt', element: wrap(<GoodsReceiptPage />) },
+      { path: 'inventory/goods-issue', element: wrap(<GoodsIssuePage />) },
+      { path: 'inventory/requests', element: wrap(<StockRequestsPage />) },
+      { path: 'inventory/transfers', element: wrap(<WarehouseTransfersPage />) },
+      { path: 'inventory/adjustments', element: wrap(<StockAdjustmentsPage />) },
+      { path: 'inventory/stock-counts', element: wrap(<StockCountsPage />) },
+      { path: 'inventory/batches', element: wrap(<BatchLotManagementPage />) },
+      { path: 'inventory/expiry', element: wrap(<ExpiryManagementPage />) },
+      { path: 'inventory/reorder', element: wrap(<ReorderManagementPage />) },
+      { path: 'inventory/suppliers', element: wrap(<InventorySuppliersPage />) },
+      { path: 'inventory/valuation', element: wrap(<InventoryValuationPage />) },
+      { path: 'inventory/reports', element: wrap(<InventoryReportsPage />) },
+      { path: 'inventory/settings', element: wrap(<InventorySettingsPage />) },
       moduleRoute('performance/*', 'performance'),
-      moduleRoute('assets/*', 'asset'),
-      moduleRoute('inventory/*', 'inventory'),
       moduleRoute('logistics/*', 'logistics'),
       moduleRoute('procurement/*', 'procurement'),
       moduleRoute('fleet/*', 'fleet'),

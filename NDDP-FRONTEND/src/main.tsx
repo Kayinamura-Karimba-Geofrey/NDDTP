@@ -17,6 +17,8 @@ import '@/modules/leave/api/leave.api';
 import '@/modules/welfare/api/welfare.api';
 import '@/modules/medical/api/medical.api';
 import '@/modules/training/api/training.api';
+import '@/modules/assets/api/asset.api';
+import '@/modules/inventory/api/inventory.api';
 
 function ThemeInit() {
   useEffect(() => {

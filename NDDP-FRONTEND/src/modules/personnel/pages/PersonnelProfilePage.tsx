@@ -121,7 +121,7 @@ export function PersonnelProfilePage() {
               <ul className="space-y-2">{contacts.map((c) => <li key={c.id} className="border-b border-border pb-2"><p className="font-medium">{c.name}</p><p className="text-xs text-muted-foreground">{c.relationship} · {c.phone}</p></li>)}</ul>
             ) : <p className="text-sm text-muted-foreground"><Link to="/personnel/emergency-contacts" className="underline">Manage emergency contacts</Link></p>
           )}
-          {tab === 'Assets' && <p className="text-sm text-muted-foreground">Assigned assets from Asset Management Service.</p>}
+          {tab === 'Assets' && <p className="text-sm text-muted-foreground">Assigned assets from Asset Management. <Link to="/assets/registry" className="underline">View asset registry</Link></p>}
           {tab === 'Leave' && <p className="text-sm text-muted-foreground">Leave balance: {person.leaveBalance ?? '—'} days. <Link to="/leave/my-leave" className="underline">View leave history</Link></p>}
           {tab === 'Medical' && <p className="text-sm text-muted-foreground">Medical clearance: {person.medicalClearance ?? 'Not available'}. <Link to="/medical/my-medical" className="underline">Medical summary</Link></p>}
           {tab === 'Activity' && <p className="text-sm text-muted-foreground"><Link to="/personnel/employment-history" className="underline">View full activity timeline</Link></p>}

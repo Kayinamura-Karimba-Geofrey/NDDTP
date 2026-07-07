@@ -141,6 +141,13 @@ export const baseApi = createApi({
     'TrainingEnrollments',
     'TrainingCertifications',
     'TrainingApprovals',
+    'Assets',
+    'AssetCategories',
+    'InventoryItems',
+    'InventoryWarehouses',
+    'InventoryCategories',
+    'InventoryRequests',
+    'InventoryStockLevels',
   ],
   endpoints: () => ({}),
 });
