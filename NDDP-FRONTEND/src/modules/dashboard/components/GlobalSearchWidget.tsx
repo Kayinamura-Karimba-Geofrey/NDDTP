@@ -4,7 +4,7 @@ import { FiSearch, FiUsers, FiBox, FiTruck, FiArchive, FiShoppingCart, FiFileTex
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
 const SEARCH_CATEGORIES = [
-  { id: 'personnel', label: 'Personnel', icon: FiUsers, path: '/personnel' },
+  { id: 'personnel', label: 'Personnel', icon: FiUsers, path: '/personnel/dashboard' },
   { id: 'assets', label: 'Assets', icon: FiBox, path: '/assets' },
   { id: 'vehicles', label: 'Vehicles', icon: FiTruck, path: '/fleet' },
   { id: 'inventory', label: 'Inventory', icon: FiArchive, path: '/inventory' },

@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Body,
+  Query,
   HttpCode,
   HttpStatus,
   UseGuards,
@@ -29,7 +30,9 @@ import {
   UserProfileResponseDto,
   MessageResponseDto,
   MfaRequiredResponseDto,
+  LoginAttemptResponseDto,
 } from './dto/auth-response.dto';
+import { LoginAttemptFilterDto } from './dto/auth-filter.dto';
 import { Public } from '../../decorators/auth.decorators';
 import { CurrentUser, ClientIp, UserAgent, CorrelationId } from '../../decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
@@ -167,5 +170,17 @@ export class AuthController {
   @ApiResponse({ status: 200, type: UserProfileResponseDto })
   async getProfile(@CurrentUser('sub') userId: string) {
     return this.authService.getProfile(userId);
+  }
+
+  @Get('login-history')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get login attempt history for the current user' })
+  @ApiResponse({ status: 200, type: LoginAttemptResponseDto, isArray: true })
+  async getLoginHistory(
+    @CurrentUser('sub') userId: string,
+    @Query() filter: LoginAttemptFilterDto,
+  ) {
+    return this.authService.getLoginHistory(userId, filter.page || 1, filter.limit || 20);
   }
 }

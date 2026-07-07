@@ -29,7 +29,7 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   personnel: {
     serviceKey: 'personnel',
-    listPath: '/personnel',
+    listPath: '/personnel/directory',
     title: 'Personnel',
     description: 'HR records, ranks, assignments, and qualifications.',
     permission: 'personnel:read:profile',

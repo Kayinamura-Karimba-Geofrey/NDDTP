@@ -271,7 +271,7 @@ export const ORG_CHART_DATA = {
 };
 
 export const EXECUTIVE_QUICK_ACTIONS = [
-  { label: 'Create Personnel', path: '/personnel', icon: 'FiUserPlus' },
+  { label: 'Create Personnel', path: '/personnel/new', icon: 'FiUserPlus' },
   { label: 'Add Asset', path: '/assets', icon: 'FiBox' },
   { label: 'Submit Procurement', path: '/procurement', icon: 'FiShoppingCart' },
   { label: 'Generate Report', path: '/reports', icon: 'FiFileText' },
@@ -287,7 +287,7 @@ export const REPORT_SHORTCUTS = [
   { label: 'Financial Report', path: '/finance', icon: 'FiDollarSign' },
   { label: 'Inventory Report', path: '/inventory', icon: 'FiArchive' },
   { label: 'Training Report', path: '/training', icon: 'FiBookOpen' },
-  { label: 'Personnel Report', path: '/personnel', icon: 'FiUsers' },
+  { label: 'Personnel Report', path: '/personnel/reports', icon: 'FiUsers' },
 ];
 
 export const AI_SUGGESTIONS = [

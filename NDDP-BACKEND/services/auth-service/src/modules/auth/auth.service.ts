@@ -325,6 +325,31 @@ export class AuthService {
     };
   }
 
+  async getLoginHistory(userId: string, page = 1, limit = 20) {
+    const credential = await this.credentialRepository.findByUserId(userId);
+    if (!credential) {
+      throw new ResourceNotFoundException('Credential', userId);
+    }
+
+    const result = await this.loginAttemptRepository.findByCredentialIdPaginated(
+      credential.id,
+      page,
+      limit,
+    );
+
+    return {
+      data: result.data.map((attempt) => ({
+        id: attempt.id,
+        email: attempt.email,
+        result: attempt.result,
+        ipAddress: attempt.ipAddress,
+        userAgent: attempt.userAgent,
+        createdAt: attempt.createdAt,
+      })),
+      meta: result.meta,
+    };
+  }
+
   private async completeLogin(
     credential: AuthCredential,
     deviceInfo: DeviceInfo,

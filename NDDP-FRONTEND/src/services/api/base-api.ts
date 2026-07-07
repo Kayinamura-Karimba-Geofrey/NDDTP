@@ -116,6 +116,12 @@ export const baseApi = createApi({
     'Assignments',
     'Users',
     'Departments',
+    'PersonnelDepartments',
+    'PersonnelUnits',
+    'PersonnelQualifications',
+    'PersonnelTransfers',
+    'PersonnelPromotions',
+    'PersonnelHistory',
   ],
   endpoints: () => ({}),
 });
