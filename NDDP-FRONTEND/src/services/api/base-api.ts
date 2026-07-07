@@ -148,6 +148,9 @@ export const baseApi = createApi({
     'InventoryCategories',
     'InventoryRequests',
     'InventoryStockLevels',
+    'ProcurementRequisitions',
+    'ProcurementSuppliers',
+    'ProcurementOrders',
   ],
   endpoints: () => ({}),
 });

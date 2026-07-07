@@ -208,6 +208,25 @@ export const MAIN_NAVIGATION: NavItem[] = [
     ],
   },
   {
+    id: 'procurement',
+    label: 'Procurement',
+    path: '/procurement/dashboard',
+    icon: 'FiShoppingCart',
+    module: 'procurement',
+    permissions: ['procurement:read:requisitions'],
+    children: [
+      { id: 'procurement-dashboard', label: 'Dashboard', path: '/procurement/dashboard', icon: 'FiGrid', module: 'procurement' },
+      { id: 'procurement-requisitions', label: 'Requisitions', path: '/procurement/requisitions', icon: 'FiFileText', module: 'procurement' },
+      { id: 'procurement-orders', label: 'Purchase Orders', path: '/procurement/orders', icon: 'FiShoppingBag', module: 'procurement' },
+      { id: 'procurement-suppliers', label: 'Suppliers', path: '/procurement/suppliers', icon: 'FiUsers', module: 'procurement' },
+      { id: 'procurement-tenders', label: 'Tenders', path: '/procurement/tenders', icon: 'FiAward', module: 'procurement' },
+      { id: 'procurement-approvals', label: 'Approvals', path: '/procurement/approvals', icon: 'FiCheckCircle', module: 'procurement' },
+      { id: 'procurement-calendar', label: 'Calendar', path: '/procurement/calendar', icon: 'FiCalendar', module: 'procurement' },
+      { id: 'procurement-reports', label: 'Reports', path: '/procurement/reports', icon: 'FiBarChart2', module: 'procurement' },
+      { id: 'procurement-settings', label: 'Settings', path: '/procurement/settings', icon: 'FiSliders', module: 'procurement' },
+    ],
+  },
+  {
     id: 'operations',
     label: 'Resource Management',
     path: '/logistics',
@@ -215,7 +234,6 @@ export const MAIN_NAVIGATION: NavItem[] = [
     module: 'operations',
     children: [
       { id: 'logistics', label: 'Logistics', path: '/logistics', icon: 'FiTruck', module: 'logistics', permissions: ['logistics:read:shipments'] },
-      { id: 'procurement', label: 'Procurement', path: '/procurement', icon: 'FiShoppingCart', module: 'procurement', permissions: ['procurement:read:requisitions'] },
       { id: 'fleet', label: 'Fleet', path: '/fleet', icon: 'FiNavigation', module: 'fleet', permissions: ['fleet:read:vehicles'] },
       { id: 'maintenance', label: 'Maintenance', path: '/maintenance', icon: 'FiTool', module: 'maintenance', permissions: ['maintenance:read:work-orders'] },
       { id: 'facilities', label: 'Facilities', path: '/facilities', icon: 'FiHome', module: 'facilities', permissions: ['facilities:read:facilities'] },

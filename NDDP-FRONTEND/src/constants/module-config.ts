@@ -109,11 +109,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   procurement: {
     serviceKey: 'procurement',
-    listPath: '/requisitions',
+    listPath: '/procurement/requisitions',
     title: 'Procurement',
-    description: 'Vendors, requisitions, orders, and receipts.',
+    description: 'Requisitions, suppliers, orders, tenders, and contracts.',
     permission: 'procurement:read:requisitions',
-    displayFields: ['referenceNumber', 'title', 'status', 'totalAmount', 'requestedAt'],
+    displayFields: ['requisitionNumber', 'department', 'category', 'status', 'estimatedCost'],
   },
   fleet: {
     serviceKey: 'fleet',

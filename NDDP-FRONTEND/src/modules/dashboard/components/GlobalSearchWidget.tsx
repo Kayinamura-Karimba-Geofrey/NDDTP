@@ -8,7 +8,7 @@ const SEARCH_CATEGORIES = [
   { id: 'assets', label: 'Assets', icon: FiBox, path: '/assets' },
   { id: 'vehicles', label: 'Vehicles', icon: FiTruck, path: '/fleet' },
   { id: 'inventory', label: 'Inventory', icon: FiArchive, path: '/inventory' },
-  { id: 'suppliers', label: 'Suppliers', icon: FiShoppingCart, path: '/procurement' },
+  { id: 'suppliers', label: 'Suppliers', icon: FiShoppingCart, path: '/procurement/suppliers' },
   { id: 'documents', label: 'Documents', icon: FiFileText, path: '/documents' },
   { id: 'reports', label: 'Reports', icon: FiFileText, path: '/reports' },
   { id: 'users', label: 'Users', icon: FiUser, path: '/users' },

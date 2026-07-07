@@ -19,6 +19,7 @@ import '@/modules/medical/api/medical.api';
 import '@/modules/training/api/training.api';
 import '@/modules/assets/api/asset.api';
 import '@/modules/inventory/api/inventory.api';
+import '@/modules/procurement/api/procurement.api';
 
 function ThemeInit() {
   useEffect(() => {

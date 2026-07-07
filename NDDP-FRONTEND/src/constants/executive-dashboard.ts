@@ -273,7 +273,7 @@ export const ORG_CHART_DATA = {
 export const EXECUTIVE_QUICK_ACTIONS = [
   { label: 'Create Personnel', path: '/personnel/new', icon: 'FiUserPlus' },
   { label: 'Add Asset', path: '/assets', icon: 'FiBox' },
-  { label: 'Submit Procurement', path: '/procurement', icon: 'FiShoppingCart' },
+  { label: 'Submit Procurement', path: '/procurement/requisitions', icon: 'FiShoppingCart' },
   { label: 'Generate Report', path: '/reports', icon: 'FiFileText' },
   { label: 'Inventory Request', path: '/inventory', icon: 'FiArchive' },
   { label: 'Approve Workflow', path: '/workflow', icon: 'FiCheckCircle' },
