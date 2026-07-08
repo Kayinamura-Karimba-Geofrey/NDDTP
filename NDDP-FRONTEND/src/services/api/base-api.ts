@@ -162,6 +162,10 @@ export const baseApi = createApi({
     'FleetAssignments',
     'FleetTrips',
     'FleetInspections',
+    'DmsDocuments',
+    'DmsShared',
+    'DmsApprovals',
+    'DmsSignatures',
   ],
   endpoints: () => ({}),
 });

@@ -123,6 +123,13 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
     permission: 'fleet:read:vehicles',
     displayFields: ['fleetNumber', 'registrationNumber', 'make', 'model', 'status'],
   },
+  dms: {
+    serviceKey: 'search',
+    listPath: '/dms/dashboard',
+    title: 'Documents & Records',
+    description: 'Central document store — upload, versioning, signatures, retention, and archive.',
+    displayFields: ['documentNumber', 'title', 'category', 'status', 'version'],
+  },
   maintenance: {
     serviceKey: 'maintenance',
     listPath: '/work-orders',
