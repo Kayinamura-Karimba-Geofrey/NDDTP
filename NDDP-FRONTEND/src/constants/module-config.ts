@@ -251,11 +251,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
     displayFields: ['action', 'resourceType', 'userId', 'ipAddress', 'createdAt'],
   },
   settings: {
-    serviceKey: 'configuration',
-    listPath: '/namespaces',
+    serviceKey: 'user',
+    listPath: '/settings/overview',
     title: 'Settings',
-    description: 'Platform and user preferences.',
-    displayFields: ['code', 'name', 'description'],
+    description: 'Profile, appearance, language, notifications, and security preferences.',
+    displayFields: ['fullName', 'email', 'language', 'timezone'],
   },
 };
 

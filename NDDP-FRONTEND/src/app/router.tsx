@@ -506,6 +506,12 @@ const AiAssistantNewConversationPage = lazy(() => import('@/modules/ai-assistant
 const AiAssistantConversationDetailPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantConversationDetailPage').then((m) => ({ default: m.AiAssistantConversationDetailPage })));
 const AiAssistantReportsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantReportsPage').then((m) => ({ default: m.AiAssistantReportsPage })));
 const AiAssistantSettingsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantSettingsPage').then((m) => ({ default: m.AiAssistantSettingsPage })));
+const AppSettingsOverviewPage = lazy(() => import('@/modules/settings/pages/AppSettingsOverviewPage').then((m) => ({ default: m.AppSettingsOverviewPage })));
+const AppSettingsProfilePage = lazy(() => import('@/modules/settings/pages/AppSettingsProfilePage').then((m) => ({ default: m.AppSettingsProfilePage })));
+const AppSettingsAppearancePage = lazy(() => import('@/modules/settings/pages/AppSettingsAppearancePage').then((m) => ({ default: m.AppSettingsAppearancePage })));
+const AppSettingsLanguagePage = lazy(() => import('@/modules/settings/pages/AppSettingsLanguagePage').then((m) => ({ default: m.AppSettingsLanguagePage })));
+const AppSettingsNotificationsPage = lazy(() => import('@/modules/settings/pages/AppSettingsNotificationsPage').then((m) => ({ default: m.AppSettingsNotificationsPage })));
+const AppSettingsSecurityPage = lazy(() => import('@/modules/settings/pages/AppSettingsSecurityPage').then((m) => ({ default: m.AppSettingsSecurityPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -1026,7 +1032,14 @@ export const router = createBrowserRouter([
       { path: 'ai-assistant/reports', element: wrap(<AiAssistantReportsPage />) },
       { path: 'ai-assistant/settings', element: wrap(<AiAssistantSettingsPage />) },
 
-      moduleRoute('settings/*', 'settings'),
+      { path: 'settings', element: <Navigate to="/settings/overview" replace /> },
+      { path: 'settings/overview', element: wrap(<AppSettingsOverviewPage />) },
+      { path: 'settings/profile', element: wrap(<AppSettingsProfilePage />) },
+      { path: 'settings/appearance', element: wrap(<AppSettingsAppearancePage />) },
+      { path: 'settings/language', element: wrap(<AppSettingsLanguagePage />) },
+      { path: 'settings/notifications', element: wrap(<AppSettingsNotificationsPage />) },
+      { path: 'settings/security', element: wrap(<AppSettingsSecurityPage />) },
+
       { path: 'administration/authorization', element: wrap(<AuthorizationDashboardPage />) },
       { path: 'administration/roles', element: wrap(<RolesPage />) },
       { path: 'administration/permissions', element: wrap(<PermissionsPage />) },
