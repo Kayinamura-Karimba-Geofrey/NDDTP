@@ -512,6 +512,12 @@ const AppSettingsAppearancePage = lazy(() => import('@/modules/settings/pages/Ap
 const AppSettingsLanguagePage = lazy(() => import('@/modules/settings/pages/AppSettingsLanguagePage').then((m) => ({ default: m.AppSettingsLanguagePage })));
 const AppSettingsNotificationsPage = lazy(() => import('@/modules/settings/pages/AppSettingsNotificationsPage').then((m) => ({ default: m.AppSettingsNotificationsPage })));
 const AppSettingsSecurityPage = lazy(() => import('@/modules/settings/pages/AppSettingsSecurityPage').then((m) => ({ default: m.AppSettingsSecurityPage })));
+const ProfileOverviewPage = lazy(() => import('@/modules/profile/pages/ProfileOverviewPage').then((m) => ({ default: m.ProfileOverviewPage })));
+const ProfileEditPage = lazy(() => import('@/modules/profile/pages/ProfileEditPage').then((m) => ({ default: m.ProfileEditPage })));
+const ProfileAddressesPage = lazy(() => import('@/modules/profile/pages/ProfileAddressesPage').then((m) => ({ default: m.ProfileAddressesPage })));
+const ProfileEmergencyContactsPage = lazy(() => import('@/modules/profile/pages/ProfileEmergencyContactsPage').then((m) => ({ default: m.ProfileEmergencyContactsPage })));
+const ProfilePreferencesPage = lazy(() => import('@/modules/profile/pages/ProfilePreferencesPage').then((m) => ({ default: m.ProfilePreferencesPage })));
+const ProfileActivityPage = lazy(() => import('@/modules/profile/pages/ProfileActivityPage').then((m) => ({ default: m.ProfileActivityPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -553,7 +559,12 @@ export const router = createBrowserRouter([
       { path: 'cloud/environments', element: wrap(<CloudEnvironmentsPage />) },
       { path: 'cloud/gateway', element: wrap(<CloudGatewayPage />) },
       { path: 'cloud/deployments', element: wrap(<CloudDeploymentsPage />) },
-      moduleRoute('profile', 'user'),
+      { path: 'profile', element: wrap(<ProfileOverviewPage />) },
+      { path: 'profile/edit', element: wrap(<ProfileEditPage />) },
+      { path: 'profile/addresses', element: wrap(<ProfileAddressesPage />) },
+      { path: 'profile/emergency-contacts', element: wrap(<ProfileEmergencyContactsPage />) },
+      { path: 'profile/preferences', element: wrap(<ProfilePreferencesPage />) },
+      { path: 'profile/activity', element: wrap(<ProfileActivityPage />) },
       { path: 'users', element: <Navigate to="/users/dashboard" replace /> },
       { path: 'users/dashboard', element: wrap(<UsersDashboardPage />) },
       { path: 'users/list', element: wrap(<UsersListPage />) },

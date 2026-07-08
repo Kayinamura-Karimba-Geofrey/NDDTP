@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/ui';
@@ -17,7 +18,12 @@ export function AppSettingsProfilePage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Settings', path: '/settings/overview' }, { label: 'Profile' }]} title="Profile" description="Your account identity and contact details" />
+      <PageHeader
+        breadcrumbs={[{ label: 'Settings', path: '/settings/overview' }, { label: 'Profile' }]}
+        title="Profile"
+        description="Your account identity and contact details"
+        actions={<Link to="/profile"><Button size="sm" variant="outline">Open My Profile</Button></Link>}
+      />
       <AppSettingsSubNav />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -37,7 +43,10 @@ export function AppSettingsProfilePage() {
             <Input label="Job title" defaultValue={jobTitle} />
             <Input label="Employee number" defaultValue={profile?.employeeNumber ?? 'EMP-0001'} />
             <Input label="Office location" defaultValue="HQ Complex" />
-            <Button variant="outline" onClick={() => toast('Request sent to HR for review')}>Request HR Update</Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => toast('Request sent to HR for review')}>Request HR Update</Button>
+              <Link to="/profile/edit"><Button variant="outline">Full edit</Button></Link>
+            </div>
           </CardContent>
         </Card>
       </div>

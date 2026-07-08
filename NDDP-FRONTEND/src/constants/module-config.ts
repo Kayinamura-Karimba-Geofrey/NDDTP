@@ -13,9 +13,9 @@ export interface ModuleConfig {
 export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   user: {
     serviceKey: 'user',
-    listPath: '/users/me',
+    listPath: '/profile',
     title: 'My Profile',
-    description: 'Manage your personal information and preferences.',
+    description: 'Manage your personal information, addresses, and emergency contacts.',
     singleResource: true,
     displayFields: ['employeeNumber', 'firstName', 'lastName', 'email', 'status', 'rank', 'jobTitle', 'phone'],
   },
