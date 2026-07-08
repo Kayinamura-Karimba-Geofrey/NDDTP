@@ -472,6 +472,40 @@ const FacilitiesInspectionsPage = lazy(() => import('@/modules/facilities/pages/
 const FacilitiesAccessPage = lazy(() => import('@/modules/facilities/pages/FacilitiesAccessPage').then((m) => ({ default: m.FacilitiesAccessPage })));
 const FacilitiesReportsPage = lazy(() => import('@/modules/facilities/pages/FacilitiesReportsPage').then((m) => ({ default: m.FacilitiesReportsPage })));
 const FacilitiesSettingsPage = lazy(() => import('@/modules/facilities/pages/FacilitiesSettingsPage').then((m) => ({ default: m.FacilitiesSettingsPage })));
+const LogisticsDashboardPage = lazy(() => import('@/modules/logistics/pages/LogisticsDashboardPage').then((m) => ({ default: m.LogisticsDashboardPage })));
+const LogisticsShipmentsPage = lazy(() => import('@/modules/logistics/pages/LogisticsShipmentsPage').then((m) => ({ default: m.LogisticsShipmentsPage })));
+const LogisticsMyShipmentsPage = lazy(() => import('@/modules/logistics/pages/LogisticsMyShipmentsPage').then((m) => ({ default: m.LogisticsMyShipmentsPage })));
+const LogisticsCreateShipmentPage = lazy(() => import('@/modules/logistics/pages/LogisticsCreateShipmentPage').then((m) => ({ default: m.LogisticsCreateShipmentPage })));
+const LogisticsShipmentDetailPage = lazy(() => import('@/modules/logistics/pages/LogisticsShipmentDetailPage').then((m) => ({ default: m.LogisticsShipmentDetailPage })));
+const LogisticsLocationsPage = lazy(() => import('@/modules/logistics/pages/LogisticsLocationsPage').then((m) => ({ default: m.LogisticsLocationsPage })));
+const LogisticsRoutesPage = lazy(() => import('@/modules/logistics/pages/LogisticsRoutesPage').then((m) => ({ default: m.LogisticsRoutesPage })));
+const LogisticsTrackingPage = lazy(() => import('@/modules/logistics/pages/LogisticsTrackingPage').then((m) => ({ default: m.LogisticsTrackingPage })));
+const LogisticsTrackingDetailPage = lazy(() => import('@/modules/logistics/pages/LogisticsTrackingDetailPage').then((m) => ({ default: m.LogisticsTrackingDetailPage })));
+const LogisticsReportsPage = lazy(() => import('@/modules/logistics/pages/LogisticsReportsPage').then((m) => ({ default: m.LogisticsReportsPage })));
+const LogisticsSettingsPage = lazy(() => import('@/modules/logistics/pages/LogisticsSettingsPage').then((m) => ({ default: m.LogisticsSettingsPage })));
+const SearchDashboardPage = lazy(() => import('@/modules/search/pages/SearchDashboardPage').then((m) => ({ default: m.SearchDashboardPage })));
+const SearchQueryPage = lazy(() => import('@/modules/search/pages/SearchQueryPage').then((m) => ({ default: m.SearchQueryPage })));
+const SearchQueriesPage = lazy(() => import('@/modules/search/pages/SearchQueriesPage').then((m) => ({ default: m.SearchQueriesPage })));
+const SearchMyQueriesPage = lazy(() => import('@/modules/search/pages/SearchMyQueriesPage').then((m) => ({ default: m.SearchMyQueriesPage })));
+const SearchQueryDetailPage = lazy(() => import('@/modules/search/pages/SearchQueryDetailPage').then((m) => ({ default: m.SearchQueryDetailPage })));
+const SearchIndexesPage = lazy(() => import('@/modules/search/pages/SearchIndexesPage').then((m) => ({ default: m.SearchIndexesPage })));
+const SearchCreateIndexPage = lazy(() => import('@/modules/search/pages/SearchCreateIndexPage').then((m) => ({ default: m.SearchCreateIndexPage })));
+const SearchIndexDetailPage = lazy(() => import('@/modules/search/pages/SearchIndexDetailPage').then((m) => ({ default: m.SearchIndexDetailPage })));
+const SearchDocumentsPage = lazy(() => import('@/modules/search/pages/SearchDocumentsPage').then((m) => ({ default: m.SearchDocumentsPage })));
+const SearchCreateDocumentPage = lazy(() => import('@/modules/search/pages/SearchCreateDocumentPage').then((m) => ({ default: m.SearchCreateDocumentPage })));
+const SearchDocumentDetailPage = lazy(() => import('@/modules/search/pages/SearchDocumentDetailPage').then((m) => ({ default: m.SearchDocumentDetailPage })));
+const SearchReportsPage = lazy(() => import('@/modules/search/pages/SearchReportsPage').then((m) => ({ default: m.SearchReportsPage })));
+const SearchSettingsPage = lazy(() => import('@/modules/search/pages/SearchSettingsPage').then((m) => ({ default: m.SearchSettingsPage })));
+const AiAssistantDashboardPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantDashboardPage').then((m) => ({ default: m.AiAssistantDashboardPage })));
+const AiAssistantAgentsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantAgentsPage').then((m) => ({ default: m.AiAssistantAgentsPage })));
+const AiAssistantCreateAgentPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantCreateAgentPage').then((m) => ({ default: m.AiAssistantCreateAgentPage })));
+const AiAssistantAgentDetailPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantAgentDetailPage').then((m) => ({ default: m.AiAssistantAgentDetailPage })));
+const AiAssistantConversationsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantConversationsPage').then((m) => ({ default: m.AiAssistantConversationsPage })));
+const AiAssistantMyConversationsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantMyConversationsPage').then((m) => ({ default: m.AiAssistantMyConversationsPage })));
+const AiAssistantNewConversationPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantNewConversationPage').then((m) => ({ default: m.AiAssistantNewConversationPage })));
+const AiAssistantConversationDetailPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantConversationDetailPage').then((m) => ({ default: m.AiAssistantConversationDetailPage })));
+const AiAssistantReportsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantReportsPage').then((m) => ({ default: m.AiAssistantReportsPage })));
+const AiAssistantSettingsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantSettingsPage').then((m) => ({ default: m.AiAssistantSettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -762,7 +796,19 @@ export const router = createBrowserRouter([
       { path: 'performance/reports', element: wrap(<PerformanceReportsPage />) },
       { path: 'performance/history', element: wrap(<PerformanceHistoryPage />) },
       { path: 'performance/settings', element: wrap(<PerformanceSettingsPage />) },
-      moduleRoute('logistics/*', 'logistics'),
+      { path: 'logistics', element: <Navigate to="/logistics/dashboard" replace /> },
+      { path: 'logistics/dashboard', element: wrap(<LogisticsDashboardPage />) },
+      { path: 'logistics/shipments', element: wrap(<LogisticsShipmentsPage />) },
+      { path: 'logistics/shipments/mine', element: wrap(<LogisticsMyShipmentsPage />) },
+      { path: 'logistics/shipments/new', element: wrap(<LogisticsCreateShipmentPage />) },
+      { path: 'logistics/shipments/:id', element: wrap(<LogisticsShipmentDetailPage />) },
+      { path: 'logistics/locations', element: wrap(<LogisticsLocationsPage />) },
+      { path: 'logistics/routes', element: wrap(<LogisticsRoutesPage />) },
+      { path: 'logistics/tracking', element: wrap(<LogisticsTrackingPage />) },
+      { path: 'logistics/tracking/:shipmentId', element: wrap(<LogisticsTrackingDetailPage />) },
+      { path: 'logistics/reports', element: wrap(<LogisticsReportsPage />) },
+      { path: 'logistics/settings', element: wrap(<LogisticsSettingsPage />) },
+
       { path: 'fleet', element: <Navigate to="/fleet/dashboard" replace /> },
       { path: 'fleet/dashboard', element: wrap(<FleetDashboardPage />) },
       { path: 'fleet/registry', element: wrap(<FleetRegistryPage />) },
@@ -953,8 +999,33 @@ export const router = createBrowserRouter([
       { path: 'messaging/files', element: wrap(<MessagingFilesPage />) },
       { path: 'messaging/search', element: wrap(<MessagingSearchPage />) },
       { path: 'messaging/settings', element: wrap(<MessagingSettingsPage />) },
-      moduleRoute('search/*', 'search'),
-      moduleRoute('ai-assistant/*', 'ai-assistant'),
+      { path: 'search', element: <Navigate to="/search/dashboard" replace /> },
+      { path: 'search/dashboard', element: wrap(<SearchDashboardPage />) },
+      { path: 'search/query', element: wrap(<SearchQueryPage />) },
+      { path: 'search/queries', element: wrap(<SearchQueriesPage />) },
+      { path: 'search/queries/mine', element: wrap(<SearchMyQueriesPage />) },
+      { path: 'search/queries/:id', element: wrap(<SearchQueryDetailPage />) },
+      { path: 'search/indexes', element: wrap(<SearchIndexesPage />) },
+      { path: 'search/indexes/new', element: wrap(<SearchCreateIndexPage />) },
+      { path: 'search/indexes/:id', element: wrap(<SearchIndexDetailPage />) },
+      { path: 'search/documents', element: wrap(<SearchDocumentsPage />) },
+      { path: 'search/documents/new', element: wrap(<SearchCreateDocumentPage />) },
+      { path: 'search/documents/:id', element: wrap(<SearchDocumentDetailPage />) },
+      { path: 'search/reports', element: wrap(<SearchReportsPage />) },
+      { path: 'search/settings', element: wrap(<SearchSettingsPage />) },
+
+      { path: 'ai-assistant', element: <Navigate to="/ai-assistant/dashboard" replace /> },
+      { path: 'ai-assistant/dashboard', element: wrap(<AiAssistantDashboardPage />) },
+      { path: 'ai-assistant/agents', element: wrap(<AiAssistantAgentsPage />) },
+      { path: 'ai-assistant/agents/new', element: wrap(<AiAssistantCreateAgentPage />) },
+      { path: 'ai-assistant/agents/:id', element: wrap(<AiAssistantAgentDetailPage />) },
+      { path: 'ai-assistant/conversations', element: wrap(<AiAssistantConversationsPage />) },
+      { path: 'ai-assistant/conversations/mine', element: wrap(<AiAssistantMyConversationsPage />) },
+      { path: 'ai-assistant/conversations/new', element: wrap(<AiAssistantNewConversationPage />) },
+      { path: 'ai-assistant/conversations/:id', element: wrap(<AiAssistantConversationDetailPage />) },
+      { path: 'ai-assistant/reports', element: wrap(<AiAssistantReportsPage />) },
+      { path: 'ai-assistant/settings', element: wrap(<AiAssistantSettingsPage />) },
+
       moduleRoute('settings/*', 'settings'),
       { path: 'administration/authorization', element: wrap(<AuthorizationDashboardPage />) },
       { path: 'administration/roles', element: wrap(<RolesPage />) },

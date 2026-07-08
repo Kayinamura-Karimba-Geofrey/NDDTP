@@ -33,6 +33,9 @@ import '@/modules/calendar/api/calendar.api';
 import '@/modules/visitor/api/visitor.api';
 import '@/modules/maintenance/api/maintenance.api';
 import '@/modules/facilities/api/facilities.api';
+import '@/modules/logistics/api/logistics.api';
+import '@/modules/search/api/search.api';
+import '@/modules/ai-assistant/api/ai-assistant.api';
 
 function ThemeInit() {
   useEffect(() => {

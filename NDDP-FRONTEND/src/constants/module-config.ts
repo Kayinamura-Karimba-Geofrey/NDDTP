@@ -101,7 +101,7 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   logistics: {
     serviceKey: 'logistics',
-    listPath: '/shipments',
+    listPath: '/logistics/dashboard',
     title: 'Logistics',
     description: 'Locations, routes, shipments, and tracking.',
     permission: 'logistics:read:shipments',
@@ -220,15 +220,15 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   search: {
     serviceKey: 'search',
-    listPath: '/indexes',
+    listPath: '/search/dashboard',
     title: 'Search',
-    description: 'Indexes, documents, and queries.',
+    description: 'Indexes, documents, and enterprise queries.',
     permission: 'search:read:indexes',
     displayFields: ['name', 'documentCount', 'status', 'lastIndexedAt'],
   },
   'ai-assistant': {
     serviceKey: 'ai-assistant',
-    listPath: '/conversations/me',
+    listPath: '/ai-assistant/dashboard',
     title: 'AI Assistant',
     description: 'Agents, conversations, and messages.',
     permission: 'ai:read:conversations',
