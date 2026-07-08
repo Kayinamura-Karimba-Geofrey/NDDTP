@@ -172,6 +172,9 @@ export const baseApi = createApi({
     'NotificationInbox',
     'NotificationTemplates',
     'NotificationPreferences',
+    'ReportDefinitions',
+    'ReportKpis',
+    'ReportSchedules',
   ],
   endpoints: () => ({}),
 });

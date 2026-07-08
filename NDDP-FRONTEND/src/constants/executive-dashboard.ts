@@ -274,7 +274,7 @@ export const EXECUTIVE_QUICK_ACTIONS = [
   { label: 'Create Personnel', path: '/personnel/new', icon: 'FiUserPlus' },
   { label: 'Add Asset', path: '/assets', icon: 'FiBox' },
   { label: 'Submit Procurement', path: '/procurement/requisitions', icon: 'FiShoppingCart' },
-  { label: 'Generate Report', path: '/reports', icon: 'FiFileText' },
+  { label: 'Generate Report', path: '/reports/library', icon: 'FiFileText' },
   { label: 'Inventory Request', path: '/inventory', icon: 'FiArchive' },
   { label: 'Approve Workflow', path: '/workflow/my-approvals', icon: 'FiCheckCircle' },
   { label: 'Notifications', path: '/notifications/center', icon: 'FiBell' },
@@ -282,8 +282,8 @@ export const EXECUTIVE_QUICK_ACTIONS = [
 ];
 
 export const REPORT_SHORTCUTS = [
-  { label: 'Monthly Summary', path: '/reports', icon: 'FiFileText' },
-  { label: 'Department Report', path: '/reports', icon: 'FiLayers' },
+  { label: 'Monthly Summary', path: '/reports/library', icon: 'FiFileText' },
+  { label: 'Department Report', path: '/reports/comparative', icon: 'FiLayers' },
   { label: 'Financial Report', path: '/finance/reports', icon: 'FiDollarSign' },
   { label: 'Inventory Report', path: '/inventory', icon: 'FiArchive' },
   { label: 'Training Report', path: '/training', icon: 'FiBookOpen' },
