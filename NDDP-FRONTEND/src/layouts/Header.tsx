@@ -96,7 +96,7 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
                   Mark all read
                 </button>
               </div>
-              <Link to="/notifications" className="block text-sm font-medium text-foreground hover:underline" onClick={() => setNotifOpen(false)}>
+              <Link to="/notifications/center" className="block text-sm font-medium text-foreground hover:underline" onClick={() => setNotifOpen(false)}>
                 View all notifications
               </Link>
             </div>

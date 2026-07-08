@@ -25,6 +25,7 @@ import '@/modules/performance/api/performance.api';
 import '@/modules/fleet/api/fleet.api';
 import '@/modules/dms/api/dms.api';
 import '@/modules/workflow/api/workflow.api';
+import '@/modules/notification/api/notification.api';
 
 function ThemeInit() {
   useEffect(() => {

@@ -277,7 +277,7 @@ export const EXECUTIVE_QUICK_ACTIONS = [
   { label: 'Generate Report', path: '/reports', icon: 'FiFileText' },
   { label: 'Inventory Request', path: '/inventory', icon: 'FiArchive' },
   { label: 'Approve Workflow', path: '/workflow/my-approvals', icon: 'FiCheckCircle' },
-  { label: 'Notifications', path: '/notifications', icon: 'FiBell' },
+  { label: 'Notifications', path: '/notifications/center', icon: 'FiBell' },
   { label: 'Calendar', path: '/calendar', icon: 'FiCalendar' },
 ];
 

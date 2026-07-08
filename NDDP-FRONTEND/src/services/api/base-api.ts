@@ -169,6 +169,9 @@ export const baseApi = createApi({
     'WorkflowTemplates',
     'WorkflowInstances',
     'WorkflowTasks',
+    'NotificationInbox',
+    'NotificationTemplates',
+    'NotificationPreferences',
   ],
   endpoints: () => ({}),
 });

@@ -204,9 +204,10 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   notification: {
     serviceKey: 'notification',
-    listPath: '/notifications/inbox',
-    title: 'Notifications',
-    description: 'Email, SMS, push, and in-app notifications.',
+    listPath: '/notifications/center',
+    title: 'Notification & Communication',
+    description: 'Email, SMS, push, in-app notifications, templates, and delivery tracking.',
+    permission: 'notification:read:notifications',
     displayFields: ['title', 'channel', 'status', 'priority', 'createdAt'],
   },
   messaging: {

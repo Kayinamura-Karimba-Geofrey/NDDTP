@@ -14,7 +14,7 @@ export function NotificationsCenter() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-3">
         <CardTitle className="text-sm">Notifications Center</CardTitle>
-        <Link to="/notifications" className="text-xs font-medium text-foreground hover:underline">View all</Link>
+        <Link to="/notifications/center" className="text-xs font-medium text-foreground hover:underline">View all</Link>
       </CardHeader>
       <CardContent className="space-y-0 divide-y divide-border/60 p-0">
         {DASHBOARD_NOTIFICATIONS.map((n) => {
