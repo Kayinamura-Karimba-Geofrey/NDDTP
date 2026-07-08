@@ -141,11 +141,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   finance: {
     serviceKey: 'finance',
-    listPath: '/budgets',
-    title: 'Finance',
-    description: 'Budgets, allocations, and expenditures.',
+    listPath: '/finance/budget-allocation',
+    title: 'Finance & Budget',
+    description: 'Budget planning, expenditures, invoices, and payments.',
     permission: 'finance:read:budgets',
-    displayFields: ['code', 'name', 'fiscalYear', 'totalAmount', 'status'],
+    displayFields: ['budgetCode', 'department', 'allocatedAmount', 'spentAmount', 'status'],
   },
   visitor: {
     serviceKey: 'visitor',

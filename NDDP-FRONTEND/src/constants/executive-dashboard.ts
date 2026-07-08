@@ -284,7 +284,7 @@ export const EXECUTIVE_QUICK_ACTIONS = [
 export const REPORT_SHORTCUTS = [
   { label: 'Monthly Summary', path: '/reports', icon: 'FiFileText' },
   { label: 'Department Report', path: '/reports', icon: 'FiLayers' },
-  { label: 'Financial Report', path: '/finance', icon: 'FiDollarSign' },
+  { label: 'Financial Report', path: '/finance/reports', icon: 'FiDollarSign' },
   { label: 'Inventory Report', path: '/inventory', icon: 'FiArchive' },
   { label: 'Training Report', path: '/training', icon: 'FiBookOpen' },
   { label: 'Personnel Report', path: '/personnel/reports', icon: 'FiUsers' },

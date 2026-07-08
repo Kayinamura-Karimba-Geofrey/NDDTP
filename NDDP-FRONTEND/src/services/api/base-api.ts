@@ -151,6 +151,9 @@ export const baseApi = createApi({
     'ProcurementRequisitions',
     'ProcurementSuppliers',
     'ProcurementOrders',
+    'FinanceBudgets',
+    'FinanceCostCenters',
+    'FinanceExpenditures',
   ],
   endpoints: () => ({}),
 });
