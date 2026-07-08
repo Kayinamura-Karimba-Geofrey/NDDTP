@@ -27,6 +27,8 @@ import '@/modules/dms/api/dms.api';
 import '@/modules/workflow/api/workflow.api';
 import '@/modules/notification/api/notification.api';
 import '@/modules/reporting/api/reporting.api';
+import '@/modules/audit/api/audit.api';
+import '@/modules/messaging/api/messaging.api';
 
 function ThemeInit() {
   useEffect(() => {

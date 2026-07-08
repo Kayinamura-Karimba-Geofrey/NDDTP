@@ -7,7 +7,7 @@ export function MessagesWidget() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-3">
         <CardTitle className="text-sm">Messages</CardTitle>
-        <Link to="/messaging" className="text-xs font-medium text-foreground hover:underline">View all</Link>
+        <Link to="/messaging/inbox" className="text-xs font-medium text-foreground hover:underline">View all</Link>
       </CardHeader>
       <CardContent className="space-y-0 divide-y divide-border/60 pt-2">
         {DASHBOARD_MESSAGES.map((msg) => (

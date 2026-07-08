@@ -372,6 +372,42 @@ const DashboardDesignerPage = lazy(() => import('@/modules/reporting/pages/Dashb
 const BiIntegrationsPage = lazy(() => import('@/modules/reporting/pages/BiIntegrationsPage').then((m) => ({ default: m.BiIntegrationsPage })));
 const ReportHistoryPage = lazy(() => import('@/modules/reporting/pages/ReportHistoryPage').then((m) => ({ default: m.ReportHistoryPage })));
 const ReportingSettingsPage = lazy(() => import('@/modules/reporting/pages/ReportingSettingsPage').then((m) => ({ default: m.ReportingSettingsPage })));
+const AuditDashboardPage = lazy(() => import('@/modules/audit/pages/AuditDashboardPage').then((m) => ({ default: m.AuditDashboardPage })));
+const AuditLogsPage = lazy(() => import('@/modules/audit/pages/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage })));
+const UserActivityPage = lazy(() => import('@/modules/audit/pages/UserActivityPage').then((m) => ({ default: m.UserActivityPage })));
+const SystemActivityPage = lazy(() => import('@/modules/audit/pages/SystemActivityPage').then((m) => ({ default: m.SystemActivityPage })));
+const ApiActivityPage = lazy(() => import('@/modules/audit/pages/ApiActivityPage').then((m) => ({ default: m.ApiActivityPage })));
+const ComplianceCenterPage = lazy(() => import('@/modules/audit/pages/ComplianceCenterPage').then((m) => ({ default: m.ComplianceCenterPage })));
+const SecurityEventsPage = lazy(() => import('@/modules/audit/pages/SecurityEventsPage').then((m) => ({ default: m.SecurityEventsPage })));
+const ConfigChangesPage = lazy(() => import('@/modules/audit/pages/ConfigChangesPage').then((m) => ({ default: m.ConfigChangesPage })));
+const DistributedTracingPage = lazy(() => import('@/modules/audit/pages/DistributedTracingPage').then((m) => ({ default: m.DistributedTracingPage })));
+const SystemMonitoringPage = lazy(() => import('@/modules/audit/pages/SystemMonitoringPage').then((m) => ({ default: m.SystemMonitoringPage })));
+const InfrastructureMonitoringPage = lazy(() => import('@/modules/audit/pages/InfrastructureMonitoringPage').then((m) => ({ default: m.InfrastructureMonitoringPage })));
+const PerformanceMetricsPage = lazy(() => import('@/modules/audit/pages/PerformanceMetricsPage').then((m) => ({ default: m.PerformanceMetricsPage })));
+const ErrorTrackingPage = lazy(() => import('@/modules/audit/pages/ErrorTrackingPage').then((m) => ({ default: m.ErrorTrackingPage })));
+const AlertCenterPage = lazy(() => import('@/modules/audit/pages/AlertCenterPage').then((m) => ({ default: m.AlertCenterPage })));
+const IncidentTimelinePage = lazy(() => import('@/modules/audit/pages/IncidentTimelinePage').then((m) => ({ default: m.IncidentTimelinePage })));
+const LogExplorerPage = lazy(() => import('@/modules/audit/pages/LogExplorerPage').then((m) => ({ default: m.LogExplorerPage })));
+const AuditModuleReportsPage = lazy(() => import('@/modules/audit/pages/AuditModuleReportsPage').then((m) => ({ default: m.AuditModuleReportsPage })));
+const AuditIntegrationsPage = lazy(() => import('@/modules/audit/pages/AuditIntegrationsPage').then((m) => ({ default: m.AuditIntegrationsPage })));
+const AuditSettingsPage = lazy(() => import('@/modules/audit/pages/AuditSettingsPage').then((m) => ({ default: m.AuditSettingsPage })));
+const MessagingDashboardPage = lazy(() => import('@/modules/messaging/pages/MessagingDashboardPage').then((m) => ({ default: m.MessagingDashboardPage })));
+const MessagingInboxPage = lazy(() => import('@/modules/messaging/pages/MessagingInboxPage').then((m) => ({ default: m.MessagingInboxPage })));
+const MessagingChannelsPage = lazy(() => import('@/modules/messaging/pages/MessagingChannelsPage').then((m) => ({ default: m.MessagingChannelsPage })));
+const MessagingCreateChannelPage = lazy(() => import('@/modules/messaging/pages/MessagingCreateChannelPage').then((m) => ({ default: m.MessagingCreateChannelPage })));
+const MessagingThreadPage = lazy(() => import('@/modules/messaging/pages/MessagingThreadPage').then((m) => ({ default: m.MessagingThreadPage })));
+const MessagingDirectPage = lazy(() => import('@/modules/messaging/pages/MessagingChannelTypePages').then((m) => ({ default: m.MessagingDirectPage })));
+const MessagingGroupsPage = lazy(() => import('@/modules/messaging/pages/MessagingChannelTypePages').then((m) => ({ default: m.MessagingGroupsPage })));
+const MessagingDepartmentsPage = lazy(() => import('@/modules/messaging/pages/MessagingChannelTypePages').then((m) => ({ default: m.MessagingDepartmentsPage })));
+const MessagingBroadcastsPage = lazy(() => import('@/modules/messaging/pages/MessagingChannelTypePages').then((m) => ({ default: m.MessagingBroadcastsPage })));
+const MessagingComposePage = lazy(() => import('@/modules/messaging/pages/MessagingComposePage').then((m) => ({ default: m.MessagingComposePage })));
+const MessagingMembersPage = lazy(() => import('@/modules/messaging/pages/MessagingMembersPage').then((m) => ({ default: m.MessagingMembersPage })));
+const MessagingArchivedPage = lazy(() => import('@/modules/messaging/pages/MessagingArchivedPage').then((m) => ({ default: m.MessagingArchivedPage })));
+const MessagingReceiptsPage = lazy(() => import('@/modules/messaging/pages/MessagingReceiptsPage').then((m) => ({ default: m.MessagingReceiptsPage })));
+const MessagingPresencePage = lazy(() => import('@/modules/messaging/pages/MessagingPresencePage').then((m) => ({ default: m.MessagingPresencePage })));
+const MessagingFilesPage = lazy(() => import('@/modules/messaging/pages/MessagingFilesPage').then((m) => ({ default: m.MessagingFilesPage })));
+const MessagingSearchPage = lazy(() => import('@/modules/messaging/pages/MessagingSearchPage').then((m) => ({ default: m.MessagingSearchPage })));
+const MessagingSettingsPage = lazy(() => import('@/modules/messaging/pages/MessagingSettingsPage').then((m) => ({ default: m.MessagingSettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -771,7 +807,24 @@ export const router = createBrowserRouter([
       { path: 'analytics/*', element: <Navigate to="/reports/analytics" replace /> },
       { path: 'business-intelligence', element: <Navigate to="/reports/integrations" replace /> },
       { path: 'business-intelligence/*', element: <Navigate to="/reports/integrations" replace /> },
-      moduleRoute('messaging/*', 'messaging'),
+      { path: 'messaging', element: <Navigate to="/messaging/dashboard" replace /> },
+      { path: 'messaging/dashboard', element: wrap(<MessagingDashboardPage />) },
+      { path: 'messaging/inbox', element: wrap(<MessagingInboxPage />) },
+      { path: 'messaging/channels', element: wrap(<MessagingChannelsPage />) },
+      { path: 'messaging/channels/new', element: wrap(<MessagingCreateChannelPage />) },
+      { path: 'messaging/channels/:id', element: wrap(<MessagingThreadPage />) },
+      { path: 'messaging/direct', element: wrap(<MessagingDirectPage />) },
+      { path: 'messaging/groups', element: wrap(<MessagingGroupsPage />) },
+      { path: 'messaging/departments', element: wrap(<MessagingDepartmentsPage />) },
+      { path: 'messaging/broadcasts', element: wrap(<MessagingBroadcastsPage />) },
+      { path: 'messaging/compose', element: wrap(<MessagingComposePage />) },
+      { path: 'messaging/members', element: wrap(<MessagingMembersPage />) },
+      { path: 'messaging/archived', element: wrap(<MessagingArchivedPage />) },
+      { path: 'messaging/receipts', element: wrap(<MessagingReceiptsPage />) },
+      { path: 'messaging/presence', element: wrap(<MessagingPresencePage />) },
+      { path: 'messaging/files', element: wrap(<MessagingFilesPage />) },
+      { path: 'messaging/search', element: wrap(<MessagingSearchPage />) },
+      { path: 'messaging/settings', element: wrap(<MessagingSettingsPage />) },
       moduleRoute('search/*', 'search'),
       moduleRoute('ai-assistant/*', 'ai-assistant'),
       moduleRoute('settings/*', 'settings'),
@@ -792,7 +845,28 @@ export const router = createBrowserRouter([
       { path: 'administration/permission-audit', element: wrap(<PermissionAuditPage />) },
       { path: 'administration/authorization-settings', element: wrap(<AuthorizationSettingsPage />) },
       moduleRoute('administration/*', 'configuration'),
-      moduleRoute('audit-logs/*', 'audit'),
+      { path: 'audit', element: <Navigate to="/audit/dashboard" replace /> },
+      { path: 'audit-logs', element: <Navigate to="/audit/logs" replace /> },
+      { path: 'audit-logs/*', element: <Navigate to="/audit/logs" replace /> },
+      { path: 'audit/dashboard', element: wrap(<AuditDashboardPage />) },
+      { path: 'audit/logs', element: wrap(<AuditLogsPage />) },
+      { path: 'audit/user-activity', element: wrap(<UserActivityPage />) },
+      { path: 'audit/system-activity', element: wrap(<SystemActivityPage />) },
+      { path: 'audit/api-activity', element: wrap(<ApiActivityPage />) },
+      { path: 'audit/compliance', element: wrap(<ComplianceCenterPage />) },
+      { path: 'audit/security-events', element: wrap(<SecurityEventsPage />) },
+      { path: 'audit/config-changes', element: wrap(<ConfigChangesPage />) },
+      { path: 'audit/tracing', element: wrap(<DistributedTracingPage />) },
+      { path: 'audit/system-monitoring', element: wrap(<SystemMonitoringPage />) },
+      { path: 'audit/infrastructure', element: wrap(<InfrastructureMonitoringPage />) },
+      { path: 'audit/performance', element: wrap(<PerformanceMetricsPage />) },
+      { path: 'audit/errors', element: wrap(<ErrorTrackingPage />) },
+      { path: 'audit/alerts', element: wrap(<AlertCenterPage />) },
+      { path: 'audit/incidents', element: wrap(<IncidentTimelinePage />) },
+      { path: 'audit/log-explorer', element: wrap(<LogExplorerPage />) },
+      { path: 'audit/reports', element: wrap(<AuditModuleReportsPage />) },
+      { path: 'audit/integrations', element: wrap(<AuditIntegrationsPage />) },
+      { path: 'audit/settings', element: wrap(<AuditSettingsPage />) },
     ],
   },
   { path: '*', element: <Navigate to="/404" replace /> },

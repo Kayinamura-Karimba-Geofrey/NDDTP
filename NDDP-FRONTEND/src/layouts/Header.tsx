@@ -103,7 +103,7 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
           )}
         </div>
 
-        <Link to="/messaging" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Messages">
+        <Link to="/messaging/inbox" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Messages">
           <FiMessageSquare className="h-5 w-5" />
         </Link>
 

@@ -8,7 +8,7 @@ export function AuditSummary() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-3">
         <CardTitle className="text-sm">Audit Summary</CardTitle>
-        <Link to="/audit-logs" className="text-xs font-medium text-foreground hover:underline">Full audit log</Link>
+        <Link to="/audit/logs" className="text-xs font-medium text-foreground hover:underline">Full audit log</Link>
       </CardHeader>
       <CardContent className="space-y-0 divide-y divide-border/60 pt-2">
         {AUDIT_EVENTS.map((event) => (

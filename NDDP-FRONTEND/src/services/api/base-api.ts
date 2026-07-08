@@ -175,6 +175,11 @@ export const baseApi = createApi({
     'ReportDefinitions',
     'ReportKpis',
     'ReportSchedules',
+    'AuditLogs',
+    'SecurityEvents',
+    'MonitoringAlerts',
+    'MessagingChannels',
+    'MessagingMessages',
   ],
   endpoints: () => ({}),
 });
