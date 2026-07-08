@@ -111,7 +111,7 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
           <FiCheckSquare className="h-5 w-5" />
         </Link>
 
-        <Link to="/calendar" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Calendar">
+        <Link to="/calendar/view" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Calendar">
           <FiCalendar className="h-5 w-5" />
         </Link>
 

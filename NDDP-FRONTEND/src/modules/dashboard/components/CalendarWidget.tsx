@@ -15,7 +15,7 @@ export function CalendarWidget() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-3">
         <CardTitle className="text-sm">Today&apos;s Schedule</CardTitle>
-        <Link to="/calendar" className="text-xs font-medium text-foreground hover:underline">Open calendar</Link>
+        <Link to="/calendar/view" className="text-xs font-medium text-foreground hover:underline">Open calendar</Link>
       </CardHeader>
       <CardContent className="space-y-2 pt-4">
         {CALENDAR_EVENTS.map((event) => (

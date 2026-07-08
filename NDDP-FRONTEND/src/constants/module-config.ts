@@ -172,9 +172,9 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   calendar: {
     serviceKey: 'calendar',
-    listPath: '/events',
+    listPath: '/calendar/dashboard',
     title: 'Calendar',
-    description: 'Calendars, events, and attendees.',
+    description: 'Calendars, events, invitations, rooms, holidays, and conflicts.',
     permission: 'calendar:read:events',
     displayFields: ['title', 'eventType', 'status', 'startAt', 'endAt', 'location'],
   },

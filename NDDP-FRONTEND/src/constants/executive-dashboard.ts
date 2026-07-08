@@ -278,7 +278,7 @@ export const EXECUTIVE_QUICK_ACTIONS = [
   { label: 'Inventory Request', path: '/inventory', icon: 'FiArchive' },
   { label: 'Approve Workflow', path: '/workflow/my-approvals', icon: 'FiCheckCircle' },
   { label: 'Notifications', path: '/notifications/center', icon: 'FiBell' },
-  { label: 'Calendar', path: '/calendar', icon: 'FiCalendar' },
+  { label: 'Calendar', path: '/calendar/view', icon: 'FiCalendar' },
 ];
 
 export const REPORT_SHORTCUTS = [

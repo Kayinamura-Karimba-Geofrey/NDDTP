@@ -180,6 +180,9 @@ export const baseApi = createApi({
     'MonitoringAlerts',
     'MessagingChannels',
     'MessagingMessages',
+    'Calendars',
+    'CalendarEvents',
+    'CalendarAttendees',
   ],
   endpoints: () => ({}),
 });
