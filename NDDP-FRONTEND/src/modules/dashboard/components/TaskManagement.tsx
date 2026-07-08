@@ -30,7 +30,7 @@ export function TaskManagement() {
             </div>
           </div>
         ))}
-        <Link to="/workflow" className="block text-center text-xs font-medium text-foreground hover:underline">
+        <Link to="/workflow/my-approvals" className="block text-center text-xs font-medium text-foreground hover:underline">
           View all tasks
         </Link>
       </CardContent>

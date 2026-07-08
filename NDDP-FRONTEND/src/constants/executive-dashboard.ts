@@ -276,7 +276,7 @@ export const EXECUTIVE_QUICK_ACTIONS = [
   { label: 'Submit Procurement', path: '/procurement/requisitions', icon: 'FiShoppingCart' },
   { label: 'Generate Report', path: '/reports', icon: 'FiFileText' },
   { label: 'Inventory Request', path: '/inventory', icon: 'FiArchive' },
-  { label: 'Approve Workflow', path: '/workflow', icon: 'FiCheckCircle' },
+  { label: 'Approve Workflow', path: '/workflow/my-approvals', icon: 'FiCheckCircle' },
   { label: 'Notifications', path: '/notifications', icon: 'FiBell' },
   { label: 'Calendar', path: '/calendar', icon: 'FiCalendar' },
 ];

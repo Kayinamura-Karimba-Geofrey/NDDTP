@@ -107,7 +107,7 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
           <FiMessageSquare className="h-5 w-5" />
         </Link>
 
-        <Link to="/workflow" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Tasks">
+        <Link to="/workflow/my-approvals" className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Tasks">
           <FiCheckSquare className="h-5 w-5" />
         </Link>
 

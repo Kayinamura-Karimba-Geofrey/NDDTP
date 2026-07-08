@@ -166,6 +166,9 @@ export const baseApi = createApi({
     'DmsShared',
     'DmsApprovals',
     'DmsSignatures',
+    'WorkflowTemplates',
+    'WorkflowInstances',
+    'WorkflowTasks',
   ],
   endpoints: () => ({}),
 });

@@ -164,11 +164,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   workflow: {
     serviceKey: 'workflow',
-    listPath: '/instances',
-    title: 'Workflow',
-    description: 'Definitions, instances, tasks, and approvals.',
+    listPath: '/workflow/dashboard',
+    title: 'Workflow & BPM',
+    description: 'Definitions, instances, tasks, approvals, and process automation.',
     permission: 'workflow:read:instances',
-    displayFields: ['referenceNumber', 'definitionName', 'status', 'currentStep', 'startedAt'],
+    displayFields: ['referenceNumber', 'template', 'status', 'currentStage', 'startedAt'],
   },
   calendar: {
     serviceKey: 'calendar',
