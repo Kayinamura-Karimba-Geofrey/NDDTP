@@ -77,11 +77,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   performance: {
     serviceKey: 'performance',
-    listPath: '/cycles',
-    title: 'Performance',
-    description: 'Cycles, goals, reviews, and improvement plans.',
+    listPath: '/performance/dashboard',
+    title: 'Performance Management',
+    description: 'Goals, reviews, competencies, feedback, and development plans.',
     permission: 'performance:read:cycles',
-    displayFields: ['name', 'year', 'status', 'startDate', 'endDate'],
+    displayFields: ['name', 'status', 'startDate', 'endDate', 'type'],
   },
   asset: {
     serviceKey: 'asset',

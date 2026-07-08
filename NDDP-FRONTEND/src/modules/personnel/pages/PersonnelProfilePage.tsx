@@ -98,7 +98,12 @@ export function PersonnelProfilePage() {
           )}
           {tab === 'Certifications' && <p className="text-sm text-muted-foreground"><Link to="/personnel/certifications" className="underline">View certifications</Link></p>}
           {tab === 'Training' && <p className="text-sm text-muted-foreground">Training data from Training Service — completed and upcoming courses.</p>}
-          {tab === 'Performance' && <p className="text-sm text-muted-foreground">Performance reviews from Performance Service. Rating: {person.performanceRating ?? 'Not rated'}</p>}
+          {tab === 'Performance' && (
+            <p className="text-sm text-muted-foreground">
+              Performance reviews from Performance Service. Rating: {person.performanceRating ?? 'Not rated'}.{' '}
+              <Link to="/performance/my-performance" className="underline">View my performance</Link>
+            </p>
+          )}
           {tab === 'Transfers' && <p className="text-sm text-muted-foreground"><Link to="/personnel/transfers" className="underline">View transfer history</Link></p>}
           {tab === 'Promotions' && <p className="text-sm text-muted-foreground"><Link to="/personnel/promotions" className="underline">View promotion history</Link></p>}
           {tab === 'Awards' && (

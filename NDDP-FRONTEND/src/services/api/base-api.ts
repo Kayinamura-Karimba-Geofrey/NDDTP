@@ -154,6 +154,10 @@ export const baseApi = createApi({
     'FinanceBudgets',
     'FinanceCostCenters',
     'FinanceExpenditures',
+    'PerformanceGoals',
+    'PerformanceReviews',
+    'PerformanceCycles',
+    'PerformancePlans',
   ],
   endpoints: () => ({}),
 });
