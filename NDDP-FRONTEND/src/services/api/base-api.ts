@@ -190,6 +190,10 @@ export const baseApi = createApi({
     'MaintenanceCategories',
     'MaintenanceRequests',
     'WorkOrders',
+    'FacilityTypes',
+    'FacilitiesDirectory',
+    'FacilitySpaces',
+    'SpaceBookings',
   ],
   endpoints: () => ({}),
 });

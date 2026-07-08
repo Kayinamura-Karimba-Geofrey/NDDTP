@@ -140,9 +140,9 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   facilities: {
     serviceKey: 'facilities',
-    listPath: '/facilities',
+    listPath: '/facilities/dashboard',
     title: 'Facilities',
-    description: 'Facilities, spaces, and bookings.',
+    description: 'Buildings, spaces, bookings, occupancy, utilities, and access control.',
     permission: 'facilities:read:facilities',
     displayFields: ['code', 'name', 'type', 'status', 'capacity'],
   },

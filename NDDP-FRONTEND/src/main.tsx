@@ -32,6 +32,7 @@ import '@/modules/messaging/api/messaging.api';
 import '@/modules/calendar/api/calendar.api';
 import '@/modules/visitor/api/visitor.api';
 import '@/modules/maintenance/api/maintenance.api';
+import '@/modules/facilities/api/facilities.api';
 
 function ThemeInit() {
   useEffect(() => {
