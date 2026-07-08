@@ -132,9 +132,9 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   maintenance: {
     serviceKey: 'maintenance',
-    listPath: '/work-orders',
+    listPath: '/maintenance/dashboard',
     title: 'Maintenance',
-    description: 'Work orders, tasks, and maintenance logs.',
+    description: 'Work orders, requests, preventive schedules, parts, SLA, and technicians.',
     permission: 'maintenance:read:work-orders',
     displayFields: ['referenceNumber', 'title', 'priority', 'status', 'scheduledAt'],
   },

@@ -440,6 +440,22 @@ const VisitorBlacklistPage = lazy(() => import('@/modules/visitor/pages/VisitorB
 const VisitorHistoryPage = lazy(() => import('@/modules/visitor/pages/VisitorHistoryPage').then((m) => ({ default: m.VisitorHistoryPage })));
 const VisitorReportsPage = lazy(() => import('@/modules/visitor/pages/VisitorReportsPage').then((m) => ({ default: m.VisitorReportsPage })));
 const VisitorSettingsPage = lazy(() => import('@/modules/visitor/pages/VisitorSettingsPage').then((m) => ({ default: m.VisitorSettingsPage })));
+const MaintenanceDashboardPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceDashboardPage').then((m) => ({ default: m.MaintenanceDashboardPage })));
+const MaintenanceWorkOrdersPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceWorkOrdersPage').then((m) => ({ default: m.MaintenanceWorkOrdersPage })));
+const MaintenanceWorkOrderDetailPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceWorkOrderDetailPage').then((m) => ({ default: m.MaintenanceWorkOrderDetailPage })));
+const MaintenanceRequestsPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceRequestsPage').then((m) => ({ default: m.MaintenanceRequestsPage })));
+const MaintenancePendingPage = lazy(() => import('@/modules/maintenance/pages/MaintenancePendingPage').then((m) => ({ default: m.MaintenancePendingPage })));
+const MaintenanceMyRequestsPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceMyRequestsPage').then((m) => ({ default: m.MaintenanceMyRequestsPage })));
+const MaintenanceCreateRequestPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceCreateRequestPage').then((m) => ({ default: m.MaintenanceCreateRequestPage })));
+const MaintenanceRequestDetailPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceRequestDetailPage').then((m) => ({ default: m.MaintenanceRequestDetailPage })));
+const MaintenancePreventivePage = lazy(() => import('@/modules/maintenance/pages/MaintenancePreventivePage').then((m) => ({ default: m.MaintenancePreventivePage })));
+const MaintenanceAssetsPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceAssetsPage').then((m) => ({ default: m.MaintenanceAssetsPage })));
+const MaintenanceTechniciansPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceTechniciansPage').then((m) => ({ default: m.MaintenanceTechniciansPage })));
+const MaintenancePartsPage = lazy(() => import('@/modules/maintenance/pages/MaintenancePartsPage').then((m) => ({ default: m.MaintenancePartsPage })));
+const MaintenanceCategoriesPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceCategoriesPage').then((m) => ({ default: m.MaintenanceCategoriesPage })));
+const MaintenanceSlaPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceSlaPage').then((m) => ({ default: m.MaintenanceSlaPage })));
+const MaintenanceReportsPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceReportsPage').then((m) => ({ default: m.MaintenanceReportsPage })));
+const MaintenanceSettingsPage = lazy(() => import('@/modules/maintenance/pages/MaintenanceSettingsPage').then((m) => ({ default: m.MaintenanceSettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
@@ -812,7 +828,23 @@ export const router = createBrowserRouter([
       { path: 'notifications/reports', element: wrap(<NotificationReportsPage />) },
       { path: 'notifications/integrations', element: wrap(<NotificationIntegrationsPage />) },
       { path: 'notifications/settings', element: wrap(<NotificationSettingsPage />) },
-      moduleRoute('maintenance/*', 'maintenance'),
+      { path: 'maintenance', element: <Navigate to="/maintenance/dashboard" replace /> },
+      { path: 'maintenance/dashboard', element: wrap(<MaintenanceDashboardPage />) },
+      { path: 'maintenance/work-orders', element: wrap(<MaintenanceWorkOrdersPage />) },
+      { path: 'maintenance/work-orders/:id', element: wrap(<MaintenanceWorkOrderDetailPage />) },
+      { path: 'maintenance/requests', element: wrap(<MaintenanceRequestsPage />) },
+      { path: 'maintenance/requests/pending', element: wrap(<MaintenancePendingPage />) },
+      { path: 'maintenance/requests/mine', element: wrap(<MaintenanceMyRequestsPage />) },
+      { path: 'maintenance/requests/new', element: wrap(<MaintenanceCreateRequestPage />) },
+      { path: 'maintenance/requests/:id', element: wrap(<MaintenanceRequestDetailPage />) },
+      { path: 'maintenance/preventive', element: wrap(<MaintenancePreventivePage />) },
+      { path: 'maintenance/assets', element: wrap(<MaintenanceAssetsPage />) },
+      { path: 'maintenance/technicians', element: wrap(<MaintenanceTechniciansPage />) },
+      { path: 'maintenance/parts', element: wrap(<MaintenancePartsPage />) },
+      { path: 'maintenance/categories', element: wrap(<MaintenanceCategoriesPage />) },
+      { path: 'maintenance/sla', element: wrap(<MaintenanceSlaPage />) },
+      { path: 'maintenance/reports', element: wrap(<MaintenanceReportsPage />) },
+      { path: 'maintenance/settings', element: wrap(<MaintenanceSettingsPage />) },
       moduleRoute('facilities/*', 'facilities'),
       { path: 'visitors', element: <Navigate to="/visitors/dashboard" replace /> },
       { path: 'visitors/dashboard', element: wrap(<VisitorDashboardPage />) },

@@ -187,6 +187,9 @@ export const baseApi = createApi({
     'VisitorDirectory',
     'VisitRequests',
     'CheckInLogs',
+    'MaintenanceCategories',
+    'MaintenanceRequests',
+    'WorkOrders',
   ],
   endpoints: () => ({}),
 });
