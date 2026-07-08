@@ -117,11 +117,11 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   fleet: {
     serviceKey: 'fleet',
-    listPath: '/vehicles',
-    title: 'Fleet',
-    description: 'Vehicles, assignments, trips, and inspections.',
+    listPath: '/fleet/dashboard',
+    title: 'Logistics & Fleet',
+    description: 'Vehicles, drivers, trips, fuel, maintenance, and dispatch.',
     permission: 'fleet:read:vehicles',
-    displayFields: ['registrationNumber', 'make', 'model', 'status', 'mileage'],
+    displayFields: ['fleetNumber', 'registrationNumber', 'make', 'model', 'status'],
   },
   maintenance: {
     serviceKey: 'maintenance',

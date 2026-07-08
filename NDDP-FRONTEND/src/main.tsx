@@ -22,6 +22,7 @@ import '@/modules/inventory/api/inventory.api';
 import '@/modules/procurement/api/procurement.api';
 import '@/modules/finance/api/finance.api';
 import '@/modules/performance/api/performance.api';
+import '@/modules/fleet/api/fleet.api';
 
 function ThemeInit() {
   useEffect(() => {

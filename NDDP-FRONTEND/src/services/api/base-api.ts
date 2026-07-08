@@ -158,6 +158,10 @@ export const baseApi = createApi({
     'PerformanceReviews',
     'PerformanceCycles',
     'PerformancePlans',
+    'FleetVehicles',
+    'FleetAssignments',
+    'FleetTrips',
+    'FleetInspections',
   ],
   endpoints: () => ({}),
 });

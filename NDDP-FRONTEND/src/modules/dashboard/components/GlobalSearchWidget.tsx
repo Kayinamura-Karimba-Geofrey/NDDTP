@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 const SEARCH_CATEGORIES = [
   { id: 'personnel', label: 'Personnel', icon: FiUsers, path: '/personnel/dashboard' },
   { id: 'assets', label: 'Assets', icon: FiBox, path: '/assets' },
-  { id: 'vehicles', label: 'Vehicles', icon: FiTruck, path: '/fleet' },
+  { id: 'vehicles', label: 'Vehicles', icon: FiTruck, path: '/fleet/registry' },
   { id: 'inventory', label: 'Inventory', icon: FiArchive, path: '/inventory' },
   { id: 'suppliers', label: 'Suppliers', icon: FiShoppingCart, path: '/procurement/suppliers' },
   { id: 'documents', label: 'Documents', icon: FiFileText, path: '/documents' },
@@ -17,7 +17,7 @@ const SEARCH_CATEGORIES = [
 
 const SAMPLE_RESULTS = [
   { id: '1', title: 'Cpt. Niyonsenga — Personnel Record', category: 'personnel', path: '/personnel' },
-  { id: '2', title: 'Vehicle MOD-FLT-042', category: 'vehicles', path: '/fleet' },
+  { id: '2', title: 'Vehicle MOD-FLT-042', category: 'vehicles', path: '/fleet/registry' },
   { id: '3', title: 'Q2 Expenditure Report', category: 'reports', path: '/reports' },
 ];
 
