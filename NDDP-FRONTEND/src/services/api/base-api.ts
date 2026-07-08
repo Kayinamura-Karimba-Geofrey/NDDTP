@@ -183,6 +183,10 @@ export const baseApi = createApi({
     'Calendars',
     'CalendarEvents',
     'CalendarAttendees',
+    'VisitSites',
+    'VisitorDirectory',
+    'VisitRequests',
+    'CheckInLogs',
   ],
   endpoints: () => ({}),
 });

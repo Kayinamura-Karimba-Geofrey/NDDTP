@@ -156,9 +156,9 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   visitor: {
     serviceKey: 'visitor',
-    listPath: '/visitors',
-    title: 'Visitors',
-    description: 'Sites, visitors, visits, and check-in.',
+    listPath: '/visitors/dashboard',
+    title: 'Visitor Management',
+    description: 'Sites, visitor directory, visit requests, check-in, badges, and blacklist.',
     permission: 'visitor:read:visitors',
     displayFields: ['fullName', 'organization', 'idType', 'phone', 'status'],
   },
