@@ -9,7 +9,6 @@ const LINKS = [
   { title: 'Notifications', description: 'Email, SMS, push, and quiet hours', path: '/settings/notifications' },
   { title: 'App settings overview', description: 'All personal preference hubs', path: '/settings/overview' },
   { title: 'Security', description: 'Password, MFA, sessions, and devices', path: '/settings/security' },
-  { title: 'Legacy user preferences', description: 'User Management preferences page', path: '/users/preferences' },
 ];
 
 export function ProfilePreferencesPage() {

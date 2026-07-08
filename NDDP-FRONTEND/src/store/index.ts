@@ -5,7 +5,6 @@ import authReducer from './slices/auth-slice';
 import themeReducer from './slices/theme-slice';
 import notificationsReducer from './slices/notifications-slice';
 import settingsReducer from './slices/settings-slice';
-import profileReducer from './slices/profile-slice';
 import searchReducer from './slices/search-slice';
 
 export const store = configureStore({
@@ -14,7 +13,6 @@ export const store = configureStore({
     theme: themeReducer,
     notifications: notificationsReducer,
     settings: settingsReducer,
-    profile: profileReducer,
     search: searchReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
