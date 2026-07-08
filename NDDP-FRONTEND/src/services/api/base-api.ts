@@ -204,6 +204,9 @@ export const baseApi = createApi({
     'AiAgents',
     'AiConversations',
     'AiMessages',
+    'ConfigNamespaces',
+    'ConfigEntries',
+    'ConfigRevisions',
   ],
   endpoints: () => ({}),
 });

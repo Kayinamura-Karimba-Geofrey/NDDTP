@@ -37,6 +37,7 @@ import '@/modules/logistics/api/logistics.api';
 import '@/modules/search/api/search.api';
 import '@/modules/ai-assistant/api/ai-assistant.api';
 import '@/modules/profile/api/profile.api';
+import '@/modules/administration/api/configuration.api';
 
 function ThemeInit() {
   useEffect(() => {

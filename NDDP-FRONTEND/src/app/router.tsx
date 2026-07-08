@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { MainLayout } from '@/layouts/MainLayout';
 import { ProtectedRoute, PublicRoute, SuspenseFallback } from '@/app/guards/RouteGuards';
 import { ROUTES } from '@/constants/app';
@@ -25,7 +25,6 @@ const CloudServicesPage = lazy(() => import('@/modules/cloud/pages/CloudServices
 const CloudEnvironmentsPage = lazy(() => import('@/modules/cloud/pages/CloudEnvironmentsPage').then((m) => ({ default: m.CloudEnvironmentsPage })));
 const CloudGatewayPage = lazy(() => import('@/modules/cloud/pages/CloudGatewayPage').then((m) => ({ default: m.CloudGatewayPage })));
 const CloudDeploymentsPage = lazy(() => import('@/modules/cloud/pages/CloudDeploymentsPage').then((m) => ({ default: m.CloudDeploymentsPage })));
-const ServiceListPage = lazy(() => import('@/components/shared/ServiceListPage').then((m) => ({ default: m.ServiceListPage })));
 const AuthorizationDashboardPage = lazy(() => import('@/modules/authorization/pages/AuthorizationDashboardPage').then((m) => ({ default: m.AuthorizationDashboardPage })));
 const RolesPage = lazy(() => import('@/modules/authorization/pages/RolesPage').then((m) => ({ default: m.RolesPage })));
 const PermissionsPage = lazy(() => import('@/modules/authorization/pages/PermissionsPage').then((m) => ({ default: m.PermissionsPage })));
@@ -518,15 +517,22 @@ const ProfileAddressesPage = lazy(() => import('@/modules/profile/pages/ProfileA
 const ProfileEmergencyContactsPage = lazy(() => import('@/modules/profile/pages/ProfileEmergencyContactsPage').then((m) => ({ default: m.ProfileEmergencyContactsPage })));
 const ProfilePreferencesPage = lazy(() => import('@/modules/profile/pages/ProfilePreferencesPage').then((m) => ({ default: m.ProfilePreferencesPage })));
 const ProfileActivityPage = lazy(() => import('@/modules/profile/pages/ProfileActivityPage').then((m) => ({ default: m.ProfileActivityPage })));
+const AdminDashboardPage = lazy(() => import('@/modules/administration/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
+const ConfigNamespacesPage = lazy(() => import('@/modules/administration/pages/ConfigNamespacesPage').then((m) => ({ default: m.ConfigNamespacesPage })));
+const ConfigCreateNamespacePage = lazy(() => import('@/modules/administration/pages/ConfigCreateNamespacePage').then((m) => ({ default: m.ConfigCreateNamespacePage })));
+const ConfigNamespaceDetailPage = lazy(() => import('@/modules/administration/pages/ConfigNamespaceDetailPage').then((m) => ({ default: m.ConfigNamespaceDetailPage })));
+const ConfigEntriesPage = lazy(() => import('@/modules/administration/pages/ConfigEntriesPage').then((m) => ({ default: m.ConfigEntriesPage })));
+const ConfigCreateEntryPage = lazy(() => import('@/modules/administration/pages/ConfigCreateEntryPage').then((m) => ({ default: m.ConfigCreateEntryPage })));
+const ConfigEntryDetailPage = lazy(() => import('@/modules/administration/pages/ConfigEntryDetailPage').then((m) => ({ default: m.ConfigEntryDetailPage })));
+const ConfigRevisionsPage = lazy(() => import('@/modules/administration/pages/ConfigRevisionsPage').then((m) => ({ default: m.ConfigRevisionsPage })));
+const ConfigEntryRevisionsPage = lazy(() => import('@/modules/administration/pages/ConfigEntryRevisionsPage').then((m) => ({ default: m.ConfigEntryRevisionsPage })));
+const AdminHealthPage = lazy(() => import('@/modules/administration/pages/AdminHealthPage').then((m) => ({ default: m.AdminHealthPage })));
+const AdminReportsPage = lazy(() => import('@/modules/administration/pages/AdminReportsPage').then((m) => ({ default: m.AdminReportsPage })));
+const AdminSettingsPage = lazy(() => import('@/modules/administration/pages/AdminSettingsPage').then((m) => ({ default: m.AdminSettingsPage })));
 
 const wrap = (element: React.ReactNode) => (
   <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
 );
-
-const moduleRoute = (path: string, moduleKey: string): RouteObject => ({
-  path,
-  element: wrap(<ServiceListPage moduleKey={moduleKey} />),
-});
 
 export const router = createBrowserRouter([
   { path: '/', element: <Navigate to={ROUTES.DASHBOARD} replace /> },
@@ -1051,6 +1057,19 @@ export const router = createBrowserRouter([
       { path: 'settings/notifications', element: wrap(<AppSettingsNotificationsPage />) },
       { path: 'settings/security', element: wrap(<AppSettingsSecurityPage />) },
 
+      { path: 'administration', element: <Navigate to="/administration/dashboard" replace /> },
+      { path: 'administration/dashboard', element: wrap(<AdminDashboardPage />) },
+      { path: 'administration/namespaces', element: wrap(<ConfigNamespacesPage />) },
+      { path: 'administration/namespaces/new', element: wrap(<ConfigCreateNamespacePage />) },
+      { path: 'administration/namespaces/:id', element: wrap(<ConfigNamespaceDetailPage />) },
+      { path: 'administration/entries', element: wrap(<ConfigEntriesPage />) },
+      { path: 'administration/entries/new', element: wrap(<ConfigCreateEntryPage />) },
+      { path: 'administration/entries/:id', element: wrap(<ConfigEntryDetailPage />) },
+      { path: 'administration/revisions', element: wrap(<ConfigRevisionsPage />) },
+      { path: 'administration/revisions/entry/:entryId', element: wrap(<ConfigEntryRevisionsPage />) },
+      { path: 'administration/health', element: wrap(<AdminHealthPage />) },
+      { path: 'administration/reports', element: wrap(<AdminReportsPage />) },
+      { path: 'administration/settings', element: wrap(<AdminSettingsPage />) },
       { path: 'administration/authorization', element: wrap(<AuthorizationDashboardPage />) },
       { path: 'administration/roles', element: wrap(<RolesPage />) },
       { path: 'administration/permissions', element: wrap(<PermissionsPage />) },
@@ -1067,7 +1086,6 @@ export const router = createBrowserRouter([
       { path: 'administration/temporary-access', element: wrap(<TemporaryAccessPage />) },
       { path: 'administration/permission-audit', element: wrap(<PermissionAuditPage />) },
       { path: 'administration/authorization-settings', element: wrap(<AuthorizationSettingsPage />) },
-      moduleRoute('administration/*', 'configuration'),
       { path: 'audit', element: <Navigate to="/audit/dashboard" replace /> },
       { path: 'audit-logs', element: <Navigate to="/audit/logs" replace /> },
       { path: 'audit-logs/*', element: <Navigate to="/audit/logs" replace /> },

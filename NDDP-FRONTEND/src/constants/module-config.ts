@@ -236,9 +236,9 @@ export const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   },
   configuration: {
     serviceKey: 'configuration',
-    listPath: '/namespaces',
+    listPath: '/administration/dashboard',
     title: 'System Administration',
-    description: 'System administration and configuration.',
+    description: 'Configuration namespaces, entries, revisions, and platform health.',
     permission: 'configuration:read:namespaces',
     displayFields: ['code', 'name', 'description', 'entryCount'],
   },
