@@ -3,6 +3,7 @@
  * Import this once from app bootstrap instead of listing every API in main.tsx.
  */
 import '@/modules/cloud/api/cloud.api';
+import '@/modules/dashboard/api/dashboard.api';
 import '@/modules/authentication/api/auth.api';
 import '@/modules/authentication/api/security.api';
 import '@/modules/authorization/api/authorization.api';

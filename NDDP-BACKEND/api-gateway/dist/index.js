@@ -14,7 +14,7 @@ app.use(cors({
     credentials: true,
     maxAge: 3600,
 }));
-app.use(express.json({ limit: '1mb' }));
+// Proxy routes only — do not use express.json() here; it consumes POST bodies before forwarding.
 app.get('/health', (_req, res) => {
     res.json({
         status: 'ok',
@@ -27,7 +27,7 @@ app.get('/health', (_req, res) => {
 app.get('/health/services', async (_req, res) => {
     const host = process.env.SERVICE_HOST || '127.0.0.1';
     const checks = await Promise.all(Object.entries(MICROSERVICES).map(async ([key, { port, label }]) => {
-        const healthUrl = `http://${host}:${port}/health/live`;
+        const healthUrl = `http://${host}:${port}/api/v1/health/live`;
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 3000);

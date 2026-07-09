@@ -1,10 +1,6 @@
 export const APP_NAME = import.meta.env.VITE_APP_NAME ?? 'NDDTP';
 export const APP_TITLE =
   import.meta.env.VITE_APP_TITLE ?? 'National Defence Digital Transformation Platform';
-export const API_GATEWAY_URL =
-  import.meta.env.VITE_API_GATEWAY_URL ?? (import.meta.env.DEV ? '/api/svc' : 'http://localhost:3000/api/svc');
-export const AUTH_SERVICE_URL =
-  import.meta.env.VITE_AUTH_SERVICE_URL ?? (import.meta.env.DEV ? '/api/svc/auth' : 'http://localhost:3000/api/svc/auth');
 export const ENABLE_MOCK_API = import.meta.env.VITE_ENABLE_MOCK_API === 'true';
 
 export const TOKEN_KEYS = {

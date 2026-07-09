@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -13,14 +14,7 @@ import {
   type ImprovementPlan,
 } from '../constants/performance-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapGoal(raw: Record<string, unknown>): PerformanceGoal {
   return {
@@ -81,7 +75,7 @@ export const performanceApi = baseApi.injectEndpoints({
     getMyGoals: builder.query<PerformanceGoal[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_INDIVIDUAL_OBJECTIVES };
         }
         const result = await baseQuery(serviceQuery('performance', '/goals/me?limit=50'));
@@ -95,7 +89,7 @@ export const performanceApi = baseApi.injectEndpoints({
     getPerformanceReviews: builder.query<PaginatedResponse<PerformanceReview>, { page?: number; limit?: number }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           return { data: paginate(MOCK_REVIEWS, params.page ?? 1, params.limit ?? 50) };
         }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 50) });
@@ -110,7 +104,7 @@ export const performanceApi = baseApi.injectEndpoints({
     getReviewCycles: builder.query<ReviewCycle[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CYCLES };
         }
         const result = await baseQuery(serviceQuery('performance', '/cycles/active'));
@@ -130,7 +124,7 @@ export const performanceApi = baseApi.injectEndpoints({
     getImprovementPlans: builder.query<ImprovementPlan[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_PIPS };
         }
         const result = await baseQuery(serviceQuery('performance', '/plans?limit=50'));

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PlatformModule, PlatformHealthModule } from '@nddtp/platform-core';
+import { PlatformModule } from '@nddtp/platform-core';
 import { configuration } from './config';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './modules/cache/redis.module';
@@ -17,7 +17,6 @@ import { DepartmentModule } from './modules/departments/department.module';
     EventsModule,
     UserModule,
     DepartmentModule,
-    PlatformHealthModule,
   ],
 })
 export class AppModule {}

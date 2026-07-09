@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -60,7 +61,7 @@ export const calendarApi = baseApi.injectEndpoints({
     getCalendars: builder.query<CalendarRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CALENDARS };
         }
         const result = await baseQuery(serviceQuery('calendar', '/calendars'));
@@ -75,7 +76,7 @@ export const calendarApi = baseApi.injectEndpoints({
     getCalendarEvents: builder.query<CalendarEvent[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_EVENTS };
         }
         const result = await baseQuery(serviceQuery('calendar', '/events?limit=50'));
@@ -90,7 +91,7 @@ export const calendarApi = baseApi.injectEndpoints({
     getMyCalendarEvents: builder.query<CalendarEvent[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_MY_EVENTS };
         }
         const result = await baseQuery(serviceQuery('calendar', '/events/me?limit=50'));
@@ -105,7 +106,7 @@ export const calendarApi = baseApi.injectEndpoints({
     getMyInvitations: builder.query<CalendarAttendee[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_INVITATIONS };
         }
         const result = await baseQuery(serviceQuery('calendar', '/attendees/me'));

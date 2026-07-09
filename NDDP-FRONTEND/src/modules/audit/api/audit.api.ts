@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -55,7 +56,7 @@ export const auditApi = baseApi.injectEndpoints({
     getAuditLogs: builder.query<AuditLogRow[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_AUDIT_LOGS };
         }
         const result = await baseQuery(serviceQuery('audit', '/audit-logs?limit=50'));
@@ -70,7 +71,7 @@ export const auditApi = baseApi.injectEndpoints({
     getSecurityEvents: builder.query<SecurityEvent[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_SECURITY_EVENTS };
         }
         const result = await baseQuery(serviceQuery('audit', '/security-events?limit=50'));
@@ -85,7 +86,7 @@ export const auditApi = baseApi.injectEndpoints({
     getMonitoringAlerts: builder.query<AlertItem[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_ALERTS };
         }
         const result = await baseQuery(serviceQuery('monitoring', '/alerts?limit=50'));

@@ -1,75 +1,75 @@
 version: '3.9'
 
 services:
-  training-service:
+  inventory-service:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: nddtp-training-service
+    container_name: nddtp-inventory-service
     ports:
-      - '3011:3011'
+      - '3014:3014'
     environment:
-      APP_PORT: 3011
-      DB_HOST: training-postgres
-      DB_USERNAME: nddtp_training
+      APP_PORT: 3014
+      DB_HOST: inventory-postgres
+      DB_USERNAME: nddtp_inventory
       DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
-      DB_NAME: nddtp_training
-      REDIS_HOST: training-redis
-      REDIS_DB: 10
-      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@training-rabbitmq:5672
+      DB_NAME: nddtp_inventory
+      REDIS_HOST: inventory-redis
+      REDIS_DB: 13
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@inventory-rabbitmq:5672
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
     depends_on:
-      training-postgres:
+      inventory-postgres:
         condition: service_healthy
-      training-redis:
+      inventory-redis:
         condition: service_healthy
     networks:
-      - nddtp-training-network
+      - nddtp-inventory-network
 
-  training-postgres:
+  inventory-postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: nddtp_training
+      POSTGRES_USER: nddtp_inventory
       POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
-      POSTGRES_DB: nddtp_training
+      POSTGRES_DB: nddtp_inventory
     ports:
-      - '5443:5432'
+      - '5446:5432'
     volumes:
-      - training-postgres-data:/var/lib/postgresql/data
+      - inventory-postgres-data:/var/lib/postgresql/data
     networks:
-      - nddtp-training-network
+      - nddtp-inventory-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U nddtp_training']
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_inventory']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  training-redis:
+  inventory-redis:
     image: redis:7-alpine
     ports:
-      - '6390:6379'
+      - '6393:6379'
     networks:
-      - nddtp-training-network
+      - nddtp-inventory-network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  training-rabbitmq:
+  inventory-rabbitmq:
     image: rabbitmq:3.13-management-alpine
     environment:
       RABBITMQ_DEFAULT_USER: nddtp
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
     ports:
-      - '5683:5672'
-      - '15683:15672'
+      - '5686:5672'
+      - '15686:15672'
     networks:
-      - nddtp-training-network
+      - nddtp-inventory-network
 
 networks:
-  nddtp-training-network:
+  nddtp-inventory-network:
     driver: bridge
 
 volumes:
-  training-postgres-data:
+  inventory-postgres-data:

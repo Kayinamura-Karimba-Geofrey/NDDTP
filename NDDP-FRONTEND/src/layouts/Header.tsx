@@ -9,6 +9,7 @@ import { logout } from '@/store/slices/auth-slice';
 import { setSearchOpen } from '@/store/slices/search-slice';
 import { markAllRead } from '@/store/slices/notifications-slice';
 import { setTheme } from '@/store/slices/theme-slice';
+import { useLogoutMutation } from '@/modules/authentication/api/auth.api';
 import { Avatar, Button } from '@/components/ui';
 import { BRANDING } from '@/constants/branding';
 import { ROUTES } from '@/constants/app';
@@ -23,12 +24,19 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((s) => s.auth.user);
+  const tokens = useAppSelector((s) => s.auth.tokens);
   const { resolved } = useAppSelector((s) => s.theme);
   const unreadCount = useAppSelector((s) => s.notifications.unreadCount);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [logoutRequest] = useLogoutMutation();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await logoutRequest({ refreshToken: tokens?.refreshToken }).unwrap();
+    } catch {
+      // Clear local session even if server logout fails.
+    }
     dispatch(logout());
     navigate(ROUTES.LOGIN);
   };

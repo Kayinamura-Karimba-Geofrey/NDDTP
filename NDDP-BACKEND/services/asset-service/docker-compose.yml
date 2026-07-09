@@ -1,75 +1,75 @@
 version: '3.9'
 
 services:
-  training-service:
+  asset-service:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: nddtp-training-service
+    container_name: nddtp-asset-service
     ports:
-      - '3011:3011'
+      - '3013:3013'
     environment:
-      APP_PORT: 3011
-      DB_HOST: training-postgres
-      DB_USERNAME: nddtp_training
+      APP_PORT: 3013
+      DB_HOST: asset-postgres
+      DB_USERNAME: nddtp_asset
       DB_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
-      DB_NAME: nddtp_training
-      REDIS_HOST: training-redis
-      REDIS_DB: 10
-      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@training-rabbitmq:5672
+      DB_NAME: nddtp_asset
+      REDIS_HOST: asset-redis
+      REDIS_DB: 12
+      RABBITMQ_URL: amqp://nddtp:${RABBITMQ_PASSWORD:-change_me}@asset-rabbitmq:5672
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change_me_access_secret_min_32_chars_long}
     depends_on:
-      training-postgres:
+      asset-postgres:
         condition: service_healthy
-      training-redis:
+      asset-redis:
         condition: service_healthy
     networks:
-      - nddtp-training-network
+      - nddtp-asset-network
 
-  training-postgres:
+  asset-postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: nddtp_training
+      POSTGRES_USER: nddtp_asset
       POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_secure_password}
-      POSTGRES_DB: nddtp_training
+      POSTGRES_DB: nddtp_asset
     ports:
-      - '5443:5432'
+      - '5445:5432'
     volumes:
-      - training-postgres-data:/var/lib/postgresql/data
+      - asset-postgres-data:/var/lib/postgresql/data
     networks:
-      - nddtp-training-network
+      - nddtp-asset-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U nddtp_training']
+      test: ['CMD-SHELL', 'pg_isready -U nddtp_asset']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  training-redis:
+  asset-redis:
     image: redis:7-alpine
     ports:
-      - '6390:6379'
+      - '6392:6379'
     networks:
-      - nddtp-training-network
+      - nddtp-asset-network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  training-rabbitmq:
+  asset-rabbitmq:
     image: rabbitmq:3.13-management-alpine
     environment:
       RABBITMQ_DEFAULT_USER: nddtp
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-change_me}
     ports:
-      - '5683:5672'
-      - '15683:15672'
+      - '5685:5672'
+      - '15685:15672'
     networks:
-      - nddtp-training-network
+      - nddtp-asset-network
 
 networks:
-  nddtp-training-network:
+  nddtp-asset-network:
     driver: bridge
 
 volumes:
-  training-postgres-data:
+  asset-postgres-data:

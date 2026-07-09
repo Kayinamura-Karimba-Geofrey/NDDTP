@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -62,7 +63,7 @@ export const configurationApi = baseApi.injectEndpoints({
     getConfigNamespaces: builder.query<ConfigNamespaceRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_NAMESPACES };
         }
         const result = await baseQuery(serviceQuery('configuration', '/namespaces'));
@@ -77,7 +78,7 @@ export const configurationApi = baseApi.injectEndpoints({
     getConfigEntries: builder.query<ConfigEntryRecord[], string | void>({
       queryFn: async (namespaceId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           const data = namespaceId ? MOCK_ENTRIES.filter((e) => e.namespaceId === namespaceId) : MOCK_ENTRIES;
           return { data };
         }
@@ -94,7 +95,7 @@ export const configurationApi = baseApi.injectEndpoints({
     getConfigRevisions: builder.query<ConfigRevisionRecord[], string | void>({
       queryFn: async (entryId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           const data = entryId ? MOCK_REVISIONS.filter((r) => r.entryId === entryId) : MOCK_REVISIONS;
           return { data };
         }

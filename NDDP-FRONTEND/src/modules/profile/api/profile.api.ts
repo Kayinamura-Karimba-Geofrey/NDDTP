@@ -1,3 +1,4 @@
+import { mockDelay } from '@/utils/api-mock';
 import { baseApi, serviceQuery } from '@/services/api/base-api';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
@@ -61,7 +62,7 @@ export const profileApi = baseApi.injectEndpoints({
     getMyProfile: builder.query<MyProfileRecord, void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_MY_PROFILE };
         }
         const result = await baseQuery(serviceQuery('user', '/users/me'));

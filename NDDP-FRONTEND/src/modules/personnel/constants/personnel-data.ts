@@ -1,3 +1,5 @@
+import { SHARED_DEPARTMENTS } from '@/constants/shared-departments';
+
 export type ServiceStatus = 'ACTIVE' | 'ON_LEAVE' | 'IN_TRAINING' | 'SUSPENDED' | 'RETIRED' | 'SEPARATED' | 'PENDING';
 export type EmploymentType = 'PERMANENT' | 'CONTRACT' | 'TEMPORARY' | 'INTERNSHIP';
 export type SkillLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
@@ -341,14 +343,16 @@ export const MOCK_PERSONNEL: PersonnelRecord[] = [
   },
 ];
 
-export const MOCK_DEPARTMENTS: PersonnelDepartment[] = [
-  { id: 'd1', name: 'Human Resources', code: 'HR', manager: 'Patrick Habimana', location: 'Kigali HQ', personnelCount: 420, budgetRef: 'BUD-HR-2026', status: 'ACTIVE' },
-  { id: 'd2', name: 'Finance', code: 'FIN', manager: 'Claire Mutesi', location: 'Kigali HQ', personnelCount: 380, budgetRef: 'BUD-FIN-2026', status: 'ACTIVE' },
-  { id: 'd3', name: 'Logistics', code: 'LOG', manager: 'Emmanuel Niyonsenga', location: 'Kigali Depot', personnelCount: 620, status: 'ACTIVE' },
-  { id: 'd4', name: 'Medical', code: 'MED', manager: 'Eric Habyarimana', location: 'Kanombe', personnelCount: 340, status: 'ACTIVE' },
-  { id: 'd5', name: 'Training', code: 'TRN', manager: 'Grace Ingabire', location: 'Gako', personnelCount: 290, status: 'ACTIVE' },
-  { id: 'd6', name: 'Administration', code: 'ADM', manager: 'Jean Mukamana', location: 'Kigali HQ', personnelCount: 450, status: 'ACTIVE' },
-];
+export const MOCK_DEPARTMENTS: PersonnelDepartment[] = SHARED_DEPARTMENTS.map((d) => ({
+  id: d.id,
+  name: d.name,
+  code: d.code,
+  manager: d.manager,
+  location: d.location,
+  personnelCount: d.personnelCount,
+  budgetRef: d.budgetRef,
+  status: d.status,
+}));
 
 export const MOCK_UNITS: PersonnelUnit[] = [
   { id: 'u1', name: 'HQ Command', code: 'HQ-CMD', department: 'Headquarters', head: 'Jean Mukamana', personnelCount: 45, status: 'ACTIVE' },

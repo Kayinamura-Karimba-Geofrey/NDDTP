@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -42,7 +43,7 @@ export const notificationApi = baseApi.injectEndpoints({
     getNotificationInbox: builder.query<InboxNotification[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_INBOX };
         }
         const result = await baseQuery(serviceQuery('notification', '/notifications/inbox?limit=50'));
@@ -57,7 +58,7 @@ export const notificationApi = baseApi.injectEndpoints({
     getNotificationTemplates: builder.query<NotificationTemplate[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_MASTER_TEMPLATES };
         }
         const result = await baseQuery(serviceQuery('notification', '/templates'));
@@ -72,7 +73,7 @@ export const notificationApi = baseApi.injectEndpoints({
     getNotificationPreferences: builder.query<typeof MOCK_PREFERENCES, void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_PREFERENCES };
         }
         const result = await baseQuery(serviceQuery('notification', '/preferences'));

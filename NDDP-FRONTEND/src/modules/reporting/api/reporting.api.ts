@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -57,7 +58,7 @@ export const reportingApi = baseApi.injectEndpoints({
     getReportLibrary: builder.query<ReportDefinition[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_REPORTS };
         }
         const result = await baseQuery(serviceQuery('reporting', '/definitions'));
@@ -72,7 +73,7 @@ export const reportingApi = baseApi.injectEndpoints({
     getReportingKpis: builder.query<KpiItem[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_KPIS };
         }
         const result = await baseQuery(serviceQuery('analytics', '/metrics'));
@@ -87,7 +88,7 @@ export const reportingApi = baseApi.injectEndpoints({
     getScheduledReports: builder.query<ScheduledReport[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_SCHEDULED };
         }
         const result = await baseQuery(serviceQuery('reporting', '/schedules'));

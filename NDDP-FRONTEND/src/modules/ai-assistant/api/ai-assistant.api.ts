@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -66,7 +67,7 @@ export const aiAssistantApi = baseApi.injectEndpoints({
     getAiAgents: builder.query<AiAgentRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_AGENTS };
         }
         const result = await baseQuery(serviceQuery('ai-assistant', '/agents'));
@@ -81,7 +82,7 @@ export const aiAssistantApi = baseApi.injectEndpoints({
     getMyAiConversations: builder.query<AiConversationRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_MY_CONVERSATIONS };
         }
         const result = await baseQuery(serviceQuery('ai-assistant', '/conversations/me'));
@@ -96,7 +97,7 @@ export const aiAssistantApi = baseApi.injectEndpoints({
     getAiConversations: builder.query<AiConversationRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CONVERSATIONS };
         }
         // No admin list endpoint — fall back to /me with broader mock when live fails
@@ -112,7 +113,7 @@ export const aiAssistantApi = baseApi.injectEndpoints({
     getAiMessages: builder.query<AiMessageRecord[], string>({
       queryFn: async (conversationId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_MESSAGES.filter((m) => m.conversationId === conversationId) };
         }
         const result = await baseQuery(serviceQuery('ai-assistant', `/messages/conversation/${conversationId}`));

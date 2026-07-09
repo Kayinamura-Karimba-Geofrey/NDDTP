@@ -1,10 +1,11 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
+import { SHARED_DEPARTMENTS } from '@/constants/shared-departments';
 import type { PaginatedResponse } from '@/types';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import {
   MOCK_PERSONNEL,
-  MOCK_DEPARTMENTS,
   MOCK_UNITS,
   MOCK_QUALIFICATIONS,
   MOCK_TRANSFERS,
@@ -19,14 +20,7 @@ import {
   type ServiceHistoryEntry,
 } from '../constants/personnel-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapApiPersonnel(raw: Record<string, unknown>): PersonnelRecord {
   const rank = raw.currentRank as { name?: string } | string | undefined;
@@ -59,7 +53,7 @@ export const personnelApi = baseApi.injectEndpoints({
     getPersonnel: builder.query<PaginatedResponse<PersonnelRecord>, { page?: number; limit?: number; search?: string; serviceStatus?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_PERSONNEL];
           if (params.search) {
             const q = params.search.toLowerCase();
@@ -100,9 +94,37 @@ export const personnelApi = baseApi.injectEndpoints({
     }),
 
     getPersonnelDepartments: builder.query<PersonnelDepartment[], void>({
-      queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
-        return { data: MOCK_DEPARTMENTS };
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const mockDepartments: PersonnelDepartment[] = SHARED_DEPARTMENTS.map((d) => ({
+          id: d.id,
+          name: d.name,
+          code: d.code,
+          manager: d.manager,
+          location: d.location,
+          personnelCount: d.personnelCount,
+          budgetRef: d.budgetRef,
+          status: d.status,
+        }));
+        if (ENABLE_MOCK_API) {
+          await mockDelay(200);
+          return { data: mockDepartments };
+        }
+        const result = await baseQuery(serviceQuery('user', '/departments?limit=100'));
+        if (result.error) return { data: mockDepartments };
+        const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>> | Record<string, unknown>[]>(result.data);
+        const list = Array.isArray(raw) ? raw : raw.data;
+        return {
+          data: list.map((d) => ({
+            id: d.id as string,
+            name: d.name as string,
+            code: (d.code as string) ?? '—',
+            manager: (d.managerName as string) ?? (d.manager as string) ?? '—',
+            location: (d.location as string) ?? 'Kigali HQ',
+            personnelCount: (d.personnelCount as number) ?? (d.userCount as number) ?? 0,
+            budgetRef: d.budgetRef as string | undefined,
+            status: ((d.status as string) ?? 'ACTIVE') as PersonnelDepartment['status'],
+          })),
+        };
       },
       providesTags: ['PersonnelDepartments'],
     }),
@@ -110,7 +132,7 @@ export const personnelApi = baseApi.injectEndpoints({
     getPersonnelUnits: builder.query<PersonnelUnit[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_UNITS };
         }
         const result = await baseQuery(serviceQuery('personnel', '/units'));
@@ -133,7 +155,7 @@ export const personnelApi = baseApi.injectEndpoints({
 
     getPersonnelQualifications: builder.query<QualificationRecord[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_QUALIFICATIONS };
       },
       providesTags: ['PersonnelQualifications'],
@@ -141,7 +163,7 @@ export const personnelApi = baseApi.injectEndpoints({
 
     getPersonnelTransfers: builder.query<TransferRecord[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_TRANSFERS };
       },
       providesTags: ['PersonnelTransfers'],
@@ -149,7 +171,7 @@ export const personnelApi = baseApi.injectEndpoints({
 
     getPersonnelPromotions: builder.query<PromotionRecord[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_PROMOTIONS };
       },
       providesTags: ['PersonnelPromotions'],
@@ -158,7 +180,7 @@ export const personnelApi = baseApi.injectEndpoints({
     getServiceHistory: builder.query<ServiceHistoryEntry[], string>({
       queryFn: async (personnelId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_SERVICE_HISTORY.filter((h) => h.personnelId === personnelId) };
         }
         const result = await baseQuery(serviceQuery('personnel', `/personnel/${personnelId}/service-history`));

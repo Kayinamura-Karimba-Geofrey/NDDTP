@@ -7,15 +7,17 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const gatewayServicesPath = join(__dirname, '../api-gateway/src/services.ts');
+const registryPath = join(__dirname, '../../shared/service-registry.json');
 const apiMgmtUrl = process.env.API_MANAGEMENT_URL || 'http://127.0.0.1:3032/api/v1';
 
-const source = readFileSync(gatewayServicesPath, 'utf8');
-const portMatches = [...source.matchAll(/^\s+(\w[\w-]*):\s*\{\s*port:\s*(\d+)/gm)];
-const services = portMatches.map(([, key, port]) => ({ key, port: Number(port) }));
+const registry = JSON.parse(readFileSync(registryPath, 'utf8'));
+const services = Object.entries(registry).map(([key, value]) => ({
+  key,
+  port: Number(value.port),
+}));
 
 if (!services.length) {
-  console.error('Could not parse service registry from api-gateway/src/services.ts');
+  console.error('Could not load service registry from shared/service-registry.json');
   process.exit(1);
 }
 

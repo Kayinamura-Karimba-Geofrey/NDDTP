@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -13,14 +14,7 @@ import {
   type TrainingApproval,
 } from '../constants/training-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapCourse(raw: Record<string, unknown>): TrainingCourse {
   const durationDays = (raw.durationDays as number) ?? 1;
@@ -81,7 +75,7 @@ export const trainingApi = baseApi.injectEndpoints({
     getTrainingCourses: builder.query<TrainingCourse[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_COURSES };
         }
         const result = await baseQuery(serviceQuery('training', '/courses/active'));
@@ -95,7 +89,7 @@ export const trainingApi = baseApi.injectEndpoints({
     getEnrollments: builder.query<PaginatedResponse<Enrollment>, { page?: number; limit?: number; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           return { data: paginate(MOCK_ENROLLMENTS, params.page ?? 1, params.limit ?? 20) };
         }
         const path = params.mine ? '/enrollments/me' : '/enrollments';
@@ -111,7 +105,7 @@ export const trainingApi = baseApi.injectEndpoints({
     getCertifications: builder.query<Certification[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CERTIFICATIONS };
         }
         const result = await baseQuery(serviceQuery('training', '/certifications'));
@@ -126,7 +120,7 @@ export const trainingApi = baseApi.injectEndpoints({
     getPendingTrainingApprovals: builder.query<TrainingApproval[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_APPROVALS };
         }
         const result = await baseQuery(serviceQuery('training', '/enrollments/pending-review'));

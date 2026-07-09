@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -11,14 +12,7 @@ import {
   type Expenditure,
 } from '../constants/finance-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapBudget(raw: Record<string, unknown>): BudgetRecord {
   const account = raw.account as { name?: string; code?: string; departmentId?: string } | undefined;
@@ -83,7 +77,7 @@ export const financeApi = baseApi.injectEndpoints({
     getBudgets: builder.query<PaginatedResponse<BudgetRecord>, { page?: number; limit?: number }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           return { data: paginate(MOCK_BUDGETS, params.page ?? 1, params.limit ?? 50) };
         }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 50) });
@@ -98,7 +92,7 @@ export const financeApi = baseApi.injectEndpoints({
     getCostCenters: builder.query<CostCenter[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_COST_CENTERS };
         }
         const result = await baseQuery(serviceQuery('finance', '/accounts/active'));
@@ -112,7 +106,7 @@ export const financeApi = baseApi.injectEndpoints({
     getExpenditures: builder.query<PaginatedResponse<Expenditure>, { page?: number; limit?: number }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           return { data: paginate(MOCK_EXPENDITURES, params.page ?? 1, params.limit ?? 50) };
         }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 50) });

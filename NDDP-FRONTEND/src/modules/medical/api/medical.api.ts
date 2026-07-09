@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -11,14 +12,7 @@ import {
   type MedicalApproval,
 } from '../constants/medical-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapAppointment(raw: Record<string, unknown>): MedicalAppointment {
   const facility = raw.facility as { name?: string } | undefined;
@@ -63,7 +57,7 @@ export const medicalApi = baseApi.injectEndpoints({
     getMedicalAppointments: builder.query<PaginatedResponse<MedicalAppointment>, { page?: number; limit?: number; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           return { data: paginate(MOCK_APPOINTMENTS, params.page ?? 1, params.limit ?? 20) };
         }
         const path = params.mine ? '/appointments/me' : '/appointments';
@@ -79,7 +73,7 @@ export const medicalApi = baseApi.injectEndpoints({
     getMedicalClearances: builder.query<MedicalClearance[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CLEARANCES };
         }
         const result = await baseQuery(serviceQuery('medical', '/certificates'));
@@ -93,7 +87,7 @@ export const medicalApi = baseApi.injectEndpoints({
 
     getPendingMedicalApprovals: builder.query<MedicalApproval[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_APPROVALS };
       },
       providesTags: ['MedicalApprovals'],

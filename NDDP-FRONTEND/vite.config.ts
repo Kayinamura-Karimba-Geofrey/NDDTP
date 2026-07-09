@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@nddtp/registry': path.resolve(__dirname, '../shared/service-registry.ts'),
     },
   },
   server: {

@@ -1,3 +1,5 @@
+import { SHARED_DEPARTMENTS } from '@/constants/shared-departments';
+
 export type UserLifecycleStatus = 'ACTIVE' | 'PENDING' | 'INACTIVE' | 'SUSPENDED' | 'ARCHIVED' | 'RETIRED' | 'TERMINATED';
 
 export interface PlatformUser {
@@ -126,14 +128,14 @@ export const MOCK_USERS: PlatformUser[] = [
   { id: 'u6', employeeNumber: 'MOD-00330', firstName: 'Former', lastName: 'Employee', email: 'former@mod.gov.rw', department: 'Training', position: 'Training Coordinator', employmentStatus: 'Terminated', employmentType: 'Permanent', status: 'SUSPENDED', roles: ['EMPLOYEE'], createdAt: '2024-08-01T00:00:00Z', accountLocked: true },
 ];
 
-export const MOCK_DEPARTMENTS: Department[] = [
-  { id: 'd1', name: 'Human Resources', code: 'HR', manager: 'Patrick Habimana', userCount: 68, status: 'ACTIVE' },
-  { id: 'd2', name: 'Finance', code: 'FIN', manager: 'Marie Uwase', userCount: 52, status: 'ACTIVE' },
-  { id: 'd3', name: 'Procurement', code: 'PROC', manager: 'Eric Niyonsenga', userCount: 38, status: 'ACTIVE' },
-  { id: 'd4', name: 'Logistics', code: 'LOG', manager: 'Eric Niyonsenga', userCount: 74, status: 'ACTIVE' },
-  { id: 'd5', name: 'Medical', code: 'MED', manager: 'Dr. Immaculée', userCount: 41, status: 'ACTIVE' },
-  { id: 'd6', name: 'Administration', code: 'ADM', manager: 'Jean Mukamana', userCount: 48, status: 'ACTIVE' },
-];
+export const MOCK_DEPARTMENTS: Department[] = SHARED_DEPARTMENTS.map((d) => ({
+  id: d.id,
+  name: d.name,
+  code: d.code,
+  manager: d.manager,
+  userCount: d.userCount,
+  status: d.status,
+}));
 
 export const MOCK_POSITIONS: Position[] = [
   { id: 'pos1', title: 'Human Resources Officer', department: 'Human Resources', status: 'ACTIVE', userCount: 28 },
@@ -158,7 +160,7 @@ export const ORG_TREE = [
   ]},
 ];
 
-export const MOCK_DOCUMENTS: UserDocument[] = [
+export const USER_MOCK_DOCUMENTS: UserDocument[] = [
   { id: 'doc1', userId: 'u2', userName: 'Patrick Habimana', name: 'Employment Letter.pdf', type: 'Employment Letter', uploadedAt: '2025-03-15T00:00:00Z', version: 1 },
   { id: 'doc2', userId: 'u2', userName: 'Patrick Habimana', name: 'National ID.pdf', type: 'ID Document', uploadedAt: '2025-03-15T00:00:00Z', expiresAt: '2030-12-31T00:00:00Z', version: 2 },
   { id: 'doc3', userId: 'u3', userName: 'Alice Uwase', name: 'Professional Certificate.pdf', type: 'Professional Certification', uploadedAt: '2025-06-01T00:00:00Z', expiresAt: '2026-12-31T00:00:00Z', version: 1 },

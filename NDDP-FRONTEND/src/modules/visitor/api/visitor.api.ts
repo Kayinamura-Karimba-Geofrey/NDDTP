@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -64,7 +65,7 @@ export const visitorApi = baseApi.injectEndpoints({
     getVisitSites: builder.query<VisitSite[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_SITES };
         }
         const result = await baseQuery(serviceQuery('visitor', '/sites'));
@@ -79,7 +80,7 @@ export const visitorApi = baseApi.injectEndpoints({
     getVisitorDirectory: builder.query<VisitorRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_VISITORS };
         }
         const result = await baseQuery(serviceQuery('visitor', '/visitors?limit=50'));
@@ -94,7 +95,7 @@ export const visitorApi = baseApi.injectEndpoints({
     getVisitRequests: builder.query<VisitRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_VISITS };
         }
         const result = await baseQuery(serviceQuery('visitor', '/visits?limit=50'));
@@ -109,7 +110,7 @@ export const visitorApi = baseApi.injectEndpoints({
     getPendingVisits: builder.query<VisitRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_PENDING };
         }
         const result = await baseQuery(serviceQuery('visitor', '/visits/pending'));
@@ -124,7 +125,7 @@ export const visitorApi = baseApi.injectEndpoints({
     getCheckInLogs: builder.query<CheckInLog[], void>({
       queryFn: async () => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
         }
         // Backend exposes per-visit logs; use mock aggregate until list API exists
         return { data: MOCK_CHECKINS };

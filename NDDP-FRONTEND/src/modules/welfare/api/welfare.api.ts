@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -11,14 +12,7 @@ import {
   type WelfareApplication,
 } from '../constants/welfare-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapProgram(raw: Record<string, unknown>): WelfareProgram {
   return {
@@ -57,7 +51,7 @@ export const welfareApi = baseApi.injectEndpoints({
     getWelfarePrograms: builder.query<WelfareProgram[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_PROGRAMS };
         }
         const result = await baseQuery(serviceQuery('welfare', '/programs/active'));
@@ -71,7 +65,7 @@ export const welfareApi = baseApi.injectEndpoints({
     getAssistanceRequests: builder.query<PaginatedResponse<AssistanceRequest>, { page?: number; limit?: number; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           return { data: paginate(MOCK_ASSISTANCE_REQUESTS, params.page ?? 1, params.limit ?? 20) };
         }
         const path = params.mine ? '/claims/me' : '/claims';
@@ -87,7 +81,7 @@ export const welfareApi = baseApi.injectEndpoints({
     getPendingWelfareApprovals: builder.query<AssistanceRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_ASSISTANCE_REQUESTS.filter((r) => r.status === 'PENDING' || r.status === 'IN_PROGRESS') };
         }
         const result = await baseQuery(serviceQuery('welfare', '/claims/pending-review'));
@@ -101,7 +95,7 @@ export const welfareApi = baseApi.injectEndpoints({
 
     getWelfareApplications: builder.query<WelfareApplication[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_APPLICATIONS };
       },
       providesTags: ['WelfareApplications'],

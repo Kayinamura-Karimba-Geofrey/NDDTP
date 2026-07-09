@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -11,14 +12,7 @@ import {
   type LeaveType,
 } from '../constants/leave-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapLeaveRequest(raw: Record<string, unknown>): LeaveRequest {
   const leaveType = raw.leaveType as { id?: string; name?: string } | undefined;
@@ -66,7 +60,7 @@ export const leaveApi = baseApi.injectEndpoints({
     getLeaveRequests: builder.query<PaginatedResponse<LeaveRequest>, { page?: number; limit?: number; status?: string; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_LEAVE_REQUESTS];
           if (params.status) items = items.filter((r) => r.status === params.status);
           return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
@@ -85,7 +79,7 @@ export const leaveApi = baseApi.injectEndpoints({
     getPendingApprovals: builder.query<LeaveRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_LEAVE_REQUESTS.filter((r) => r.status === 'PENDING_APPROVAL') };
         }
         const result = await baseQuery(serviceQuery('leave', '/leave-requests/pending-approvals'));
@@ -100,7 +94,7 @@ export const leaveApi = baseApi.injectEndpoints({
     getMyLeaveBalances: builder.query<LeaveBalance[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_BALANCES.filter((b) => b.userId === 'u1') };
         }
         const result = await baseQuery(serviceQuery('leave', '/leave-balances/me'));
@@ -113,7 +107,7 @@ export const leaveApi = baseApi.injectEndpoints({
 
     getAllLeaveBalances: builder.query<LeaveBalance[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_BALANCES };
       },
       providesTags: ['LeaveBalances'],
@@ -122,7 +116,7 @@ export const leaveApi = baseApi.injectEndpoints({
     getLeaveTypes: builder.query<LeaveType[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_LEAVE_TYPES };
         }
         const result = await baseQuery(serviceQuery('leave', '/leave-types'));

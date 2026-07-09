@@ -157,7 +157,7 @@ export const ARCHIVED_VS_ACTIVE = [
   { name: 'Archived', value: 28 },
 ];
 
-export const MOCK_DOCUMENTS: DmsDocument[] = [
+export const DMS_MOCK_DOCUMENTS: DmsDocument[] = [
   { id: 'd1', documentNumber: 'DMS-2026-0142', title: 'Procurement Contract – Office Equipment', category: 'Procurement', owner: 'Alice N.', department: 'Procurement', version: 'v3.2', status: 'APPROVED', createdDate: '2026-07-01', lastModified: '2026-07-08T09:42:00', fileType: 'PDF', sizeKb: 2450, classification: 'Confidential', retentionClass: '7 Years', tags: ['contract', 'office equipment'], relatedEntity: 'PO-2026-0881' },
   { id: 'd2', documentNumber: 'DMS-2026-0138', title: 'Annual Training Plan 2026', category: 'Training', owner: 'Training Office', department: 'Training', version: 'v2.0', status: 'PENDING_SIGNATURE', createdDate: '2026-06-15', lastModified: '2026-07-08T08:15:00', fileType: 'PDF', sizeKb: 1800, classification: 'Internal', retentionClass: '5 Years', tags: ['training', 'plan'] },
   { id: 'd3', documentNumber: 'DMS-2026-0119', title: 'Personnel Transfer Letter', category: 'Personnel', owner: 'HR Officer', department: 'HR', version: 'v1.1', status: 'ARCHIVED', createdDate: '2026-05-10', lastModified: '2026-07-07T16:00:00', fileType: 'DOCX', sizeKb: 320, classification: 'Confidential', retentionClass: '10 Years' },

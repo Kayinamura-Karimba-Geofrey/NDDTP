@@ -96,7 +96,7 @@ export const MOCK_INDEXES: SearchIndexRecord[] = [
   { id: 'IDX-05', code: 'CUST-OPS', name: 'Ops Knowledge Base', indexType: 'CUSTOM', description: 'Custom operational manuals', documentCount: 800, status: 'INACTIVE', lastIndexedAt: '2026-07-01 12:00' },
 ];
 
-export const MOCK_DOCUMENTS: SearchDocumentRecord[] = [
+export const SEARCH_MOCK_DOCUMENTS: SearchDocumentRecord[] = [
   { id: 'DOC-9001', indexId: 'IDX-01', indexName: 'Corporate Documents', externalId: 'DMS-4412', title: 'Travel Allowance Policy 2026', content: 'Updated travel and per diem rules for staff deployments.', status: 'INDEXED', indexedAt: '2026-07-08 08:35' },
   { id: 'DOC-9002', indexId: 'IDX-01', indexName: 'Corporate Documents', externalId: 'DMS-4390', title: 'Vehicle Dispatch SOP', content: 'Standard operating procedure for convoy and courier dispatch.', status: 'INDEXED', indexedAt: '2026-07-08 08:20' },
   { id: 'DOC-9003', indexId: 'IDX-02', indexName: 'Personnel Directory', externalId: 'PER-11820', title: 'Capt. Uwimana Jean', content: 'Operations Directorate · HQ Complex', status: 'INDEXED', indexedAt: '2026-07-08 07:10' },

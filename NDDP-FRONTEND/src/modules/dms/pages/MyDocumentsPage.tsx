@@ -3,14 +3,14 @@ import { DmsSubNav } from '../components/DmsSubNav';
 import { DmsStatusBadge } from '../components/DmsStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { MOCK_DOCUMENTS, MOCK_APPROVALS, MOCK_SIGNATURES, MOCK_SHARED } from '../constants/dms-data';
+import { DMS_MOCK_DOCUMENTS, MOCK_APPROVALS, MOCK_SIGNATURES, MOCK_SHARED } from '../constants/dms-data';
 
 export function MyDocumentsPage() {
-  const mine = MOCK_DOCUMENTS.filter((d) => d.owner.includes('Alice') || d.status === 'DRAFT');
+  const mine = DMS_MOCK_DOCUMENTS.filter((d) => d.owner.includes('Alice') || d.status === 'DRAFT');
   const awaitingApproval = MOCK_APPROVALS.filter((a) => a.status === 'PENDING_APPROVAL' || a.status === 'IN_REVIEW');
   const awaitingSig = MOCK_SIGNATURES.filter((s) => s.status === 'PENDING_SIGNATURE');
-  const recent = MOCK_DOCUMENTS.slice(0, 3);
-  const favorites = MOCK_DOCUMENTS.filter((d) => d.status === 'APPROVED' || d.status === 'SIGNED').slice(0, 2);
+  const recent = DMS_MOCK_DOCUMENTS.slice(0, 3);
+  const favorites = DMS_MOCK_DOCUMENTS.filter((d) => d.status === 'APPROVED' || d.status === 'SIGNED').slice(0, 2);
 
   return (
     <div>

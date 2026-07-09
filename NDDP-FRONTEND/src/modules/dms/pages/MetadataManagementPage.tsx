@@ -2,7 +2,7 @@ import { DmsSubNav } from '../components/DmsSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_DOCUMENTS, type DmsDocument } from '../constants/dms-data';
+import { DMS_MOCK_DOCUMENTS, type DmsDocument } from '../constants/dms-data';
 
 export function MetadataManagementPage() {
   const columns: DataTableColumn<DmsDocument>[] = [
@@ -20,7 +20,7 @@ export function MetadataManagementPage() {
     <div>
       <PageHeader breadcrumbs={[{ label: 'DMS', path: '/dms/dashboard' }, { label: 'Metadata' }]} title="Metadata Management" description="Category-specific fields for Personnel, Procurement, Finance, Training, Medical" />
       <DmsSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={DMS_MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
     </div>
   );
 }

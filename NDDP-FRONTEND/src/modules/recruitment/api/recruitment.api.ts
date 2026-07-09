@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -12,14 +13,7 @@ import {
   type Interview,
 } from '../constants/recruitment-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapVacancy(raw: Record<string, unknown>): Vacancy {
   return {
@@ -58,7 +52,7 @@ export const recruitmentApi = baseApi.injectEndpoints({
     getVacancies: builder.query<PaginatedResponse<Vacancy>, { page?: number; limit?: number; search?: string; status?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_VACANCIES];
           if (params.search) {
             const q = params.search.toLowerCase();
@@ -81,7 +75,7 @@ export const recruitmentApi = baseApi.injectEndpoints({
     getApplications: builder.query<PaginatedResponse<Application>, { page?: number; limit?: number; status?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_APPLICATIONS];
           if (params.status) items = items.filter((a) => a.status === params.status);
           return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
@@ -113,7 +107,7 @@ export const recruitmentApi = baseApi.injectEndpoints({
     getPipelineStats: builder.query<{ stage: string; count: number }[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: RECRUITMENT_PIPELINE };
         }
         const result = await baseQuery(serviceQuery('recruitment', '/applications/pipeline/stats'));
@@ -132,7 +126,7 @@ export const recruitmentApi = baseApi.injectEndpoints({
 
     getInterviews: builder.query<Interview[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_INTERVIEWS };
       },
       providesTags: ['RecruitmentInterviews'],

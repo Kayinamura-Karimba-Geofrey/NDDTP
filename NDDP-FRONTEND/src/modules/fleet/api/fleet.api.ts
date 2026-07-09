@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -13,14 +14,7 @@ import {
   type VehicleInspection,
 } from '../constants/fleet-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapVehicle(raw: Record<string, unknown>): Vehicle {
   return {
@@ -73,7 +67,7 @@ export const fleetApi = baseApi.injectEndpoints({
     getFleetVehicles: builder.query<PaginatedResponse<Vehicle>, { page?: number; limit?: number }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: paginate(MOCK_VEHICLES, params.page ?? 1, params.limit ?? 50) };
         }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 50) });
@@ -88,7 +82,7 @@ export const fleetApi = baseApi.injectEndpoints({
     getFleetVehicle: builder.query<Vehicle | undefined, string>({
       queryFn: async (id, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 150));
+          await mockDelay(150);
           return { data: MOCK_VEHICLES.find((v) => v.id === id) };
         }
         const result = await baseQuery(serviceQuery('fleet', `/vehicles/${id}`));
@@ -102,7 +96,7 @@ export const fleetApi = baseApi.injectEndpoints({
     getFleetAssignments: builder.query<VehicleAssignment[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_ASSIGNMENTS };
         }
         const result = await baseQuery(serviceQuery('fleet', '/assignments?limit=50'));
@@ -118,7 +112,7 @@ export const fleetApi = baseApi.injectEndpoints({
 
     getFleetTrips: builder.query<TripRequest[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_TRIPS };
       },
       providesTags: ['FleetTrips'],
@@ -127,7 +121,7 @@ export const fleetApi = baseApi.injectEndpoints({
     getFleetInspections: builder.query<VehicleInspection[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_INSPECTIONS };
         }
         const result = await baseQuery(serviceQuery('fleet', '/inspections?limit=50'));

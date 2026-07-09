@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -15,14 +16,7 @@ import {
   type StockLevel,
 } from '../constants/inventory-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  return {
-    data: items.slice((page - 1) * limit, page * limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 function mapItem(raw: Record<string, unknown>): InventoryItem {
   const stock = raw.stockLevels as { quantity?: number; reservedQuantity?: number }[] | undefined;
@@ -90,7 +84,7 @@ export const inventoryApi = baseApi.injectEndpoints({
     getInventoryItems: builder.query<PaginatedResponse<InventoryItem>, { page?: number; limit?: number; category?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 250));
+          await mockDelay(250);
           let items = MOCK_ITEMS;
           if (params.category) items = items.filter((i) => i.category === params.category);
           return { data: paginate(items, params.page ?? 1, params.limit ?? 50) };
@@ -108,7 +102,7 @@ export const inventoryApi = baseApi.injectEndpoints({
     getWarehouses: builder.query<Warehouse[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_WAREHOUSES };
         }
         const result = await baseQuery(serviceQuery('inventory', '/warehouses'));
@@ -121,7 +115,7 @@ export const inventoryApi = baseApi.injectEndpoints({
 
     getInventoryCategories: builder.query<InventoryCategory[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_CATEGORIES };
       },
       providesTags: ['InventoryCategories'],
@@ -130,7 +124,7 @@ export const inventoryApi = baseApi.injectEndpoints({
     getStockRequests: builder.query<StockRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_REQUESTS };
         }
         const result = await baseQuery(serviceQuery('inventory', '/requests?limit=50'));
@@ -153,7 +147,7 @@ export const inventoryApi = baseApi.injectEndpoints({
 
     getStockLevels: builder.query<StockLevel[], void>({
       queryFn: async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        await mockDelay(200);
         return { data: MOCK_STOCK_LEVELS };
       },
       providesTags: ['InventoryStockLevels'],

@@ -9,6 +9,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const backendRoot = join(__dirname, '..');
+const registry = JSON.parse(
+  readFileSync(join(backendRoot, '../shared/service-registry.json'), 'utf8'),
+);
 
 const CORE_SERVICES = [
   'auth-service',
@@ -37,11 +40,11 @@ async function waitForHealth(port, path = '/api/v1/health/live', attempts = 30) 
 }
 
 const PORTS = {
-  'auth-service': 3001,
-  'authorization-service': 3002,
-  'user-service': 3003,
-  'notification-service': 3004,
-  'personnel-service': 3006,
+  'auth-service': registry.auth.port,
+  'authorization-service': registry.authorization.port,
+  'user-service': registry.user.port,
+  'notification-service': registry.notification.port,
+  'personnel-service': registry.personnel.port,
 };
 
 const children = [];

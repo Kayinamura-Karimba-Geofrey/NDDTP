@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -18,7 +19,7 @@ export const securityApi = baseApi.injectEndpoints({
     getSessions: builder.query<PaginatedResponse<AuthSession>, { page?: number; limit?: number; status?: string }>({
       queryFn: async ({ page = 1, limit = 20, status }, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 400));
+          await mockDelay(400);
           const filtered = status ? MOCK_SESSIONS.filter((s) => s.status === status) : MOCK_SESSIONS;
           return { data: paginate(filtered, page, limit) };
         }
@@ -36,7 +37,7 @@ export const securityApi = baseApi.injectEndpoints({
     revokeSession: builder.mutation<{ message: string }, string>({
       queryFn: async (sessionId, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           return { data: { message: 'Session revoked successfully' } };
         }
         const result = await baseQuery(
@@ -51,7 +52,7 @@ export const securityApi = baseApi.injectEndpoints({
     revokeAllSessions: builder.mutation<{ message: string }, void>({
       queryFn: async (_arg, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 400));
+          await mockDelay(400);
           return { data: { message: 'All other sessions revoked' } };
         }
         const result = await baseQuery(
@@ -66,7 +67,7 @@ export const securityApi = baseApi.injectEndpoints({
     getLoginHistory: builder.query<PaginatedResponse<LoginHistoryEntry>, { page?: number; limit?: number }>({
       queryFn: async ({ page = 1, limit = 20 }, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 400));
+          await mockDelay(400);
           return { data: paginate(MOCK_LOGIN_HISTORY, page, limit) };
         }
         const params = new URLSearchParams({ page: String(page), limit: String(limit) });
@@ -82,7 +83,7 @@ export const securityApi = baseApi.injectEndpoints({
     getDevices: builder.query<TrustedDevice[], void>({
       queryFn: async (_arg, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           return { data: MOCK_DEVICES };
         }
         const sessionsResult = await baseQuery(serviceQuery('auth', '/sessions?limit=50'));

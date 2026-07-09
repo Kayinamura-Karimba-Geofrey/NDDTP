@@ -4,10 +4,10 @@ import { DmsSubNav } from '../components/DmsSubNav';
 import { DmsStatusBadge } from '../components/DmsStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_DOCUMENTS } from '../constants/dms-data';
+import { DMS_MOCK_DOCUMENTS } from '../constants/dms-data';
 
 export function RecentDocumentsPage() {
-  const recent = [...MOCK_DOCUMENTS].sort((a, b) => dayjs(b.lastModified).valueOf() - dayjs(a.lastModified).valueOf());
+  const recent = [...DMS_MOCK_DOCUMENTS].sort((a, b) => dayjs(b.lastModified).valueOf() - dayjs(a.lastModified).valueOf());
 
   return (
     <div>

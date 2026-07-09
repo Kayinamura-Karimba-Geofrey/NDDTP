@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -74,7 +75,7 @@ export const facilitiesApi = baseApi.injectEndpoints({
     getFacilityTypes: builder.query<FacilityTypeRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_TYPES };
         }
         const result = await baseQuery(serviceQuery('facilities', '/types'));
@@ -89,7 +90,7 @@ export const facilitiesApi = baseApi.injectEndpoints({
     getFacilitiesDirectory: builder.query<FacilityRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_FACILITIES };
         }
         const result = await baseQuery(serviceQuery('facilities', '/facilities'));
@@ -104,7 +105,7 @@ export const facilitiesApi = baseApi.injectEndpoints({
     getFacilitySpaces: builder.query<FacilitySpace[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_SPACES };
         }
         const result = await baseQuery(serviceQuery('facilities', '/spaces'));
@@ -119,7 +120,7 @@ export const facilitiesApi = baseApi.injectEndpoints({
     getAvailableSpaces: builder.query<FacilitySpace[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_AVAILABLE_SPACES };
         }
         const result = await baseQuery(serviceQuery('facilities', '/spaces/available'));
@@ -134,7 +135,7 @@ export const facilitiesApi = baseApi.injectEndpoints({
     getSpaceBookings: builder.query<SpaceBooking[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_BOOKINGS };
         }
         const result = await baseQuery(serviceQuery('facilities', '/bookings?limit=50'));

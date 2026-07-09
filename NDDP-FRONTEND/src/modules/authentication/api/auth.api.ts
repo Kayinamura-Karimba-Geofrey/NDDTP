@@ -6,25 +6,23 @@ import { TOKEN_KEYS } from '@/constants/app';
 import {
   loginRequest,
   verifyMfaRequest,
-  mapTokenResponse,
-  buildAuthUser,
 } from '@/services/api/auth-profile';
-import { getErrorMessage } from '@/utils/api-response';
 import { serviceQuery } from '@/services/api/base-api';
 import { unwrapApiResponse } from '@/utils/api-response';
+import { mockDelay } from '@/utils/api-mock';
 
 const seedUsers: Record<string, AuthUser> = {
   [SEED_CREDENTIALS.admin.email]: {
-    id: '1',
+    id: 'USR-ME',
     email: SEED_CREDENTIALS.admin.email,
-    firstName: 'Jean',
-    lastName: 'Mukamana',
-    employeeNumber: 'MOD-00001',
+    firstName: 'Demo',
+    lastName: 'Administrator',
+    employeeNumber: 'EMP-0001',
     jobTitle: 'System Administrator',
     roles: ['SUPER_ADMIN'],
     permissions: ['*'],
-    department: 'Ministry of Defence',
-    rank: 'Colonel',
+    department: 'Directorate of Digital Transformation',
+    rank: '—',
   },
   [SEED_CREDENTIALS.officer.email]: {
     id: '2',
@@ -72,7 +70,7 @@ export const authApi = baseApi.injectEndpoints({
     >({
       queryFn: async (credentials) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 800));
+          await mockDelay(800);
           const key = `${credentials.email.toLowerCase()}:${credentials.password}`;
           if (!validLogins.has(key)) {
             return { error: { status: 401, data: { message: 'Invalid email or password' } } };
@@ -116,7 +114,7 @@ export const authApi = baseApi.injectEndpoints({
     forgotPassword: builder.mutation<{ message: string }, { email: string }>({
       queryFn: async (body, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 600));
+          await mockDelay(600);
           return { data: { message: 'If the email exists, a password reset link has been sent' } };
         }
         const result = await baseQuery(
@@ -129,7 +127,7 @@ export const authApi = baseApi.injectEndpoints({
     resetPassword: builder.mutation<{ message: string }, { token: string; password: string }>({
       queryFn: async (body, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 600));
+          await mockDelay(600);
           if (!body.token) {
             return { error: { status: 400, data: { message: 'Invalid or expired reset token' } } };
           }
@@ -149,7 +147,7 @@ export const authApi = baseApi.injectEndpoints({
     changePassword: builder.mutation<{ message: string }, { currentPassword: string; newPassword: string }>({
       queryFn: async (body, _api, _extra, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 600));
+          await mockDelay(600);
           return { data: { message: 'Password changed successfully. Please login again.' } };
         }
         const result = await baseQuery(
@@ -163,7 +161,7 @@ export const authApi = baseApi.injectEndpoints({
     verifyOtp: builder.mutation<{ user: AuthUser; tokens: AuthTokens }, { code: string }>({
       queryFn: async ({ code }) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 600));
+          await mockDelay(600);
           if (code !== SEED_CREDENTIALS.mfa.otp) {
             return { error: { status: 400, data: { message: 'Invalid verification code' } } };
           }
@@ -191,35 +189,24 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
-    refreshToken: builder.mutation<AuthTokens, { refreshToken: string }>({
-      query: (body) =>
-        serviceQuery('auth', '/auth/refresh', { method: 'POST', body, skipAuthRedirect: true }),
-      transformResponse: (response) => mapTokenResponse(unwrapApiResponse(response)),
-    }),
-    logout: builder.mutation<{ message: string }, { refreshToken?: string }>({
-      query: (body) => serviceQuery('auth', '/auth/logout', { method: 'POST', body }),
-      transformResponse: unwrapApiResponse<{ message: string }>,
-    }),
-    getProfile: builder.query<AuthUser, void>({
-      queryFn: async () => {
-        const token =
-          sessionStorage.getItem(TOKEN_KEYS.ACCESS) ?? localStorage.getItem(TOKEN_KEYS.ACCESS);
-        if (!token) {
-          return { error: { status: 401, data: { message: 'Not authenticated' } } };
+    logout: builder.mutation<{ message: string }, { refreshToken?: string } | void>({
+      queryFn: async (body, _api, _extra, baseQuery) => {
+        if (ENABLE_MOCK_API) {
+          await mockDelay(200);
+          return { data: { message: 'Logged out' } };
         }
-        try {
-          const user = await buildAuthUser(token);
-          return { data: user };
-        } catch (err) {
-          return {
-            error: {
-              status: 500,
-              data: { message: getErrorMessage(err, 'Failed to load profile') },
-            },
-          };
+        const result = await baseQuery(
+          serviceQuery('auth', '/auth/logout', {
+            method: 'POST',
+            body: body ?? {},
+            skipAuthRedirect: true,
+          }),
+        );
+        if (result.error) {
+          return { data: { message: 'Logged out locally' } };
         }
+        return { data: unwrapApiResponse<{ message: string }>(result.data) };
       },
-      providesTags: ['Auth', 'Profile'],
     }),
   }),
 });
@@ -230,7 +217,5 @@ export const {
   useResetPasswordMutation,
   useChangePasswordMutation,
   useVerifyOtpMutation,
-  useRefreshTokenMutation,
   useLogoutMutation,
-  useGetProfileQuery,
 } = authApi;

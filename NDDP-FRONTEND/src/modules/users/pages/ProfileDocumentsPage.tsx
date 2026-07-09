@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 import { FiDownload, FiEye } from 'react-icons/fi';
-import { MOCK_DOCUMENTS } from '../constants/users-data';
+import { USER_MOCK_DOCUMENTS } from '../constants/users-data';
 import { UserSubNav } from '../components/UserSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
@@ -33,7 +33,7 @@ export function ProfileDocumentsPage() {
     <div>
       <PageHeader breadcrumbs={[{ label: 'User Management', path: '/users/dashboard' }, { label: 'Documents' }]} title="Profile Documents" description="Employment letters, IDs, certificates with version history and expiry alerts" />
       <UserSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={USER_MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
     </div>
   );
 }

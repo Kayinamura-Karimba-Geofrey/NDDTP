@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -43,7 +44,7 @@ export const messagingApi = baseApi.injectEndpoints({
     getMyChannels: builder.query<MessagingChannel[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_CHANNELS };
         }
         const result = await baseQuery(serviceQuery('messaging', '/channels/mine'));
@@ -58,7 +59,7 @@ export const messagingApi = baseApi.injectEndpoints({
     getChannelMessages: builder.query<MessagingMessage[], string | void>({
       queryFn: async (channelId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API || !channelId) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: channelId ? MOCK_INBOX.filter((m) => m.channelId === channelId) : MOCK_INBOX };
         }
         const result = await baseQuery(serviceQuery('messaging', `/messages/channel/${channelId}?limit=50`));

@@ -1,10 +1,11 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
   MOCK_INDEXES,
-  MOCK_DOCUMENTS,
+  SEARCH_MOCK_DOCUMENTS,
   MOCK_QUERIES,
   type SearchIndexRecord,
   type SearchDocumentRecord,
@@ -66,7 +67,7 @@ export const searchApi = baseApi.injectEndpoints({
     getSearchIndexes: builder.query<SearchIndexRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_INDEXES };
         }
         const result = await baseQuery(serviceQuery('search', '/indexes'));
@@ -81,13 +82,13 @@ export const searchApi = baseApi.injectEndpoints({
     getSearchDocuments: builder.query<SearchDocumentRecord[], string | void>({
       queryFn: async (indexId, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
-          const data = indexId ? MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) : MOCK_DOCUMENTS;
+          await mockDelay(200);
+          const data = indexId ? SEARCH_MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) : SEARCH_MOCK_DOCUMENTS;
           return { data };
         }
-        if (!indexId) return { data: MOCK_DOCUMENTS };
+        if (!indexId) return { data: SEARCH_MOCK_DOCUMENTS };
         const result = await baseQuery(serviceQuery('search', `/documents/index/${indexId}`));
-        if (result.error) return { data: MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) };
+        if (result.error) return { data: SEARCH_MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
         const items = Array.isArray(raw) ? raw : raw.data ?? [];
         return { data: items.map(mapDocument) };
@@ -98,7 +99,7 @@ export const searchApi = baseApi.injectEndpoints({
     getSearchQueries: builder.query<SearchQueryRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_QUERIES };
         }
         const result = await baseQuery(serviceQuery('search', '/queries?limit=50'));
@@ -113,7 +114,7 @@ export const searchApi = baseApi.injectEndpoints({
     getMySearchQueries: builder.query<SearchQueryRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 200));
+          await mockDelay(200);
           return { data: MOCK_QUERIES.filter((q) => ['Q-701', 'Q-702'].includes(q.id)) };
         }
         const result = await baseQuery(serviceQuery('search', '/queries/mine'));

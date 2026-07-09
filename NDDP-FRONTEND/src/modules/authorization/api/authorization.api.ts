@@ -1,4 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
+import { mockDelay, paginate } from '@/utils/api-mock';
 import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
@@ -11,22 +12,14 @@ import {
   type RoleAssignment,
 } from '../constants/authorization-data';
 
-function paginate<T>(items: T[], page: number, limit: number): PaginatedResponse<T> {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  const start = (page - 1) * limit;
-  return {
-    data: items.slice(start, start + limit),
-    meta: { page, limit, total, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
-  };
-}
+
 
 export const authorizationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoles: builder.query<PaginatedResponse<AuthRole>, { page?: number; limit?: number; search?: string; status?: string }>({
       queryFn: async ({ page = 1, limit = 20, search, status }, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_ROLES];
           if (search) items = items.filter((r) => r.name.toLowerCase().includes(search.toLowerCase()) || r.code.toLowerCase().includes(search.toLowerCase()));
           if (status) items = items.filter((r) => r.status === status);
@@ -56,7 +49,7 @@ export const authorizationApi = baseApi.injectEndpoints({
     getPermissions: builder.query<PaginatedResponse<AuthPermission>, { page?: number; limit?: number; module?: string; search?: string }>({
       queryFn: async ({ page = 1, limit = 20, module, search }, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           let items = [...MOCK_PERMISSIONS];
           if (module) items = items.filter((p) => p.module === module);
           if (search) items = items.filter((p) => p.code.includes(search) || p.name.includes(search));
@@ -84,7 +77,7 @@ export const authorizationApi = baseApi.injectEndpoints({
     getAssignments: builder.query<RoleAssignment[], { userId?: string }>({
       queryFn: async ({ userId }, _a, _b, baseQuery) => {
         if (ENABLE_MOCK_API) {
-          await new Promise((r) => setTimeout(r, 300));
+          await mockDelay(300);
           const items = userId ? MOCK_ASSIGNMENTS.filter((a) => a.userId === userId) : MOCK_ASSIGNMENTS;
           return { data: items };
         }
