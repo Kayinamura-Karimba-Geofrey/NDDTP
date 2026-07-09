@@ -7,6 +7,8 @@ import { CommandPalette } from './CommandPalette';
 import { useAppSelector } from '@/store';
 import { cn } from '@/utils/cn';
 
+import { NetworkProgressBar } from '@/components/ui/NetworkProgressBar';
+
 export function MainLayout() {
   const collapsed = useAppSelector((s) => s.theme.sidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -14,6 +16,7 @@ export function MainLayout() {
 
   return (
     <div className="min-h-screen bg-page">
+      <NetworkProgressBar />
       <Sidebar />
       <MobileSidebarOverlay open={mobileOpen} onClose={() => setMobileOpen(false)} />
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />

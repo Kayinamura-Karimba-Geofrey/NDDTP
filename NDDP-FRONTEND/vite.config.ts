@@ -34,7 +34,11 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             if (id.includes('recharts')) return 'charts';
             if (id.includes('@reduxjs') || id.includes('react-redux')) return 'redux';
+            if (id.includes('framer-motion')) return 'motion';
+            if (id.includes('@tanstack/react-table')) return 'table';
+            if (id.includes('react-hook-form') || id.includes('@hookform/resolvers') || id.includes('zod')) return 'forms';
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor';
+            if (id.includes('lucide-react') || id.includes('react-icons')) return 'icons';
           }
         },
       },
