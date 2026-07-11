@@ -5,6 +5,7 @@ export type UserRole =
   | 'FINANCE_OFFICER'
   | 'LOGISTICS_OFFICER'
   | 'MEDICAL_OFFICER'
+  | 'RECRUITER'
   | 'EMPLOYEE'
   | 'VIEWER';
 
