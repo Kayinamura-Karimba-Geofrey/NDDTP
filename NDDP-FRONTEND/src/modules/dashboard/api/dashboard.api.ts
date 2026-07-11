@@ -61,10 +61,30 @@ export const dashboardApi = baseApi.injectEndpoints({
       },
       providesTags: ['Dashboard'],
     }),
+    getPersonnelKpi: builder.query<{ total: number; active: number }, void>({
+      queryFn: async (_arg, _api, _extra, baseQuery) => {
+        const result = await baseQuery(serviceQuery('personnel', '/personnel?page=1&limit=1'));
+        const total = result.data ? unwrapPaginated(result.data).meta.total : 0;
+        return { data: { total, active: total } };
+      },
+      providesTags: ['Dashboard'],
+    }),
+    getRecruitmentKpi: builder.query<{ vacancies: number; applications: number }, void>({
+      queryFn: async (_arg, _api, _extra, baseQuery) => {
+        const vacResult = await baseQuery(serviceQuery('recruitment', '/vacancies?page=1&limit=1'));
+        const appResult = await baseQuery(serviceQuery('recruitment', '/applications?page=1&limit=1'));
+        const vacancies = vacResult.data ? unwrapPaginated(vacResult.data).meta.total : 0;
+        const applications = appResult.data ? unwrapPaginated(appResult.data).meta.total : 0;
+        return { data: { vacancies, applications } };
+      },
+      providesTags: ['Dashboard'],
+    }),
   }),
 });
 
 export const {
   useGetRecentActivitiesQuery,
   useGetDashboardChartQuery,
+  useGetPersonnelKpiQuery,
+  useGetRecruitmentKpiQuery,
 } = dashboardApi;

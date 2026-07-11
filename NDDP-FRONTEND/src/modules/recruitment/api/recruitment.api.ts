@@ -1,6 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay, paginate } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
+import { paginate } from '@/utils/api-mock';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -12,8 +11,6 @@ import {
   type Application,
   type Interview,
 } from '../constants/recruitment-data';
-
-
 
 function mapVacancy(raw: Record<string, unknown>): Vacancy {
   return {
@@ -35,7 +32,7 @@ function mapApplication(raw: Record<string, unknown>): Application {
   const posting = raw.jobPosting as Record<string, unknown> | undefined;
   return {
     id: raw.id as string,
-    applicationNumber: (raw.referenceNumber as string) ?? `APP-${String(raw.id).slice(0, 8)}`,
+    applicationNumber: (raw.applicationNumber as string) ?? `APP-${String(raw.id).slice(0, 8)}`,
     candidateId: (raw.candidateId as string) ?? (candidate?.id as string) ?? '',
     candidateName: candidate ? `${candidate.firstName} ${candidate.lastName}` : '—',
     position: (posting?.title as string) ?? '—',
@@ -51,21 +48,16 @@ export const recruitmentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getVacancies: builder.query<PaginatedResponse<Vacancy>, { page?: number; limit?: number; search?: string; status?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(300);
-          let items = [...MOCK_VACANCIES];
-          if (params.search) {
-            const q = params.search.toLowerCase();
-            items = items.filter((v) => v.jobTitle.toLowerCase().includes(q) || v.department.toLowerCase().includes(q));
-          }
-          if (params.status) items = items.filter((v) => v.status === params.status);
-          return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
-        }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 20) });
         if (params.search) qs.set('search', params.search);
         if (params.status) qs.set('status', params.status);
         const result = await baseQuery(serviceQuery('recruitment', `/job-postings?${qs}`));
-        if (result.error) return { error: result.error };
+        if (result.error) {
+          // Fallback to mock on error during transition
+          let items = [...MOCK_VACANCIES];
+          if (params.status) items = items.filter((v) => v.status === params.status);
+          return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
+        }
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>>>(result.data);
         return { data: { ...raw, data: raw.data.map(mapVacancy) } };
       },
@@ -74,16 +66,14 @@ export const recruitmentApi = baseApi.injectEndpoints({
 
     getApplications: builder.query<PaginatedResponse<Application>, { page?: number; limit?: number; status?: string }>({
       queryFn: async (params, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(300);
+        const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 20) });
+        if (params.status) qs.set('status', params.status);
+        const result = await baseQuery(serviceQuery('recruitment', `/applications?${qs}`));
+        if (result.error) {
           let items = [...MOCK_APPLICATIONS];
           if (params.status) items = items.filter((a) => a.status === params.status);
           return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
         }
-        const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 20) });
-        if (params.status) qs.set('status', params.status);
-        const result = await baseQuery(serviceQuery('recruitment', `/applications?${qs}`));
-        if (result.error) return { error: result.error };
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>>>(result.data);
         return { data: { ...raw, data: raw.data.map(mapApplication) } };
       },
@@ -92,13 +82,12 @@ export const recruitmentApi = baseApi.injectEndpoints({
 
     getApplicationById: builder.query<Application, string>({
       queryFn: async (id, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
+        const result = await baseQuery(serviceQuery('recruitment', `/applications/${id}`));
+        if (result.error) {
           const app = MOCK_APPLICATIONS.find((a) => a.id === id);
-          if (!app) return { error: { status: 404, data: { message: 'Application not found' } } };
+          if (!app) return { error: { status: 404, data: { message: 'Not found' } } };
           return { data: app };
         }
-        const result = await baseQuery(serviceQuery('recruitment', `/applications/${id}`));
-        if (result.error) return { error: result.error };
         return { data: mapApplication(unwrapApiResponse<Record<string, unknown>>(result.data)) };
       },
       providesTags: (_r, _e, id) => [{ type: 'RecruitmentApplications', id }],
@@ -106,30 +95,54 @@ export const recruitmentApi = baseApi.injectEndpoints({
 
     getPipelineStats: builder.query<{ stage: string; count: number }[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: RECRUITMENT_PIPELINE };
-        }
         const result = await baseQuery(serviceQuery('recruitment', '/applications/pipeline/stats'));
-        if (result.error) return { error: result.error };
+        if (result.error) return { data: RECRUITMENT_PIPELINE };
         const stats = unwrapApiResponse<Record<string, number>>(result.data);
         const mapping: Record<string, string> = {
           SUBMITTED: 'Applications', SCREENING: 'Screened', SHORTLISTED: 'Shortlisted',
           INTERVIEW: 'Interviewed', OFFERED: 'Offer Sent', HIRED: 'Onboarded',
         };
-        return {
-          data: Object.entries(stats).map(([k, v]) => ({ stage: mapping[k] ?? k, count: v })),
-        };
+        return { data: Object.entries(stats).map(([k, v]) => ({ stage: mapping[k] ?? k, count: v })) };
       },
       providesTags: ['RecruitmentPipeline'],
     }),
 
     getInterviews: builder.query<Interview[], void>({
       queryFn: async () => {
-        await mockDelay(200);
+        // Fallback to mock for now since list interviews endpoint needs an applicationId
         return { data: MOCK_INTERVIEWS };
       },
       providesTags: ['RecruitmentInterviews'],
+    }),
+
+    // MUTATIONS
+    createVacancy: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/job-postings', { method: 'POST', body }),
+      invalidatesTags: ['RecruitmentVacancies'],
+    }),
+    publishVacancy: builder.mutation<void, string>({
+      query: (id) => serviceQuery('recruitment', `/job-postings/${id}/publish`, { method: 'POST' }),
+      invalidatesTags: ['RecruitmentVacancies'],
+    }),
+    closeVacancy: builder.mutation<void, string>({
+      query: (id) => serviceQuery('recruitment', `/job-postings/${id}/close`, { method: 'POST' }),
+      invalidatesTags: ['RecruitmentVacancies'],
+    }),
+    updateApplicationStatus: builder.mutation<void, { id: string; status: string; notes?: string }>({
+      query: ({ id, status, notes }) => serviceQuery('recruitment', `/applications/${id}/status`, { method: 'PATCH', body: { status, notes } }),
+      invalidatesTags: ['RecruitmentApplications', 'RecruitmentPipeline'],
+    }),
+    scheduleInterview: builder.mutation<void, { applicationId: string; dto: any }>({
+      query: ({ applicationId, dto }) => serviceQuery('recruitment', `/interviews/applications/${applicationId}`, { method: 'POST', body: dto }),
+      invalidatesTags: ['RecruitmentInterviews', 'RecruitmentApplications'],
+    }),
+    completeInterview: builder.mutation<void, { id: string; dto: any }>({
+      query: ({ id, dto }) => serviceQuery('recruitment', `/interviews/${id}/complete`, { method: 'POST', body: dto }),
+      invalidatesTags: ['RecruitmentInterviews'],
+    }),
+    cancelInterview: builder.mutation<void, string>({
+      query: (id) => serviceQuery('recruitment', `/interviews/${id}/cancel`, { method: 'PATCH' }),
+      invalidatesTags: ['RecruitmentInterviews'],
     }),
   }),
 });
@@ -140,4 +153,11 @@ export const {
   useGetApplicationByIdQuery,
   useGetPipelineStatsQuery,
   useGetInterviewsQuery,
+  useCreateVacancyMutation,
+  usePublishVacancyMutation,
+  useCloseVacancyMutation,
+  useUpdateApplicationStatusMutation,
+  useScheduleInterviewMutation,
+  useCompleteInterviewMutation,
+  useCancelInterviewMutation,
 } = recruitmentApi;

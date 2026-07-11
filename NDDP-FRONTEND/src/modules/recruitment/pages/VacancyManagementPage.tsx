@@ -3,17 +3,23 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
-import { useGetVacanciesQuery } from '../api/recruitment.api';
+import { useGetVacanciesQuery, usePublishVacancyMutation } from '../api/recruitment.api';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
+import { HasAccess } from '@/components/ui/HasAccess';
+import { usePermissions } from '@/hooks/usePermissions';
 import type { Vacancy } from '../constants/recruitment-data';
 
 export function VacancyManagementPage() {
+  const { hasRole } = usePermissions();
   const [statusFilter, setStatusFilter] = useState('');
   const { data, isLoading } = useGetVacanciesQuery({ page: 1, limit: 50, status: statusFilter || undefined });
+  const [publishVacancy] = usePublishVacancyMutation();
+
+  const canManage = hasRole(['SUPER_ADMIN', 'ADMIN', 'RECRUITER']);
 
   const columns: DataTableColumn<Vacancy>[] = [
     { key: 'num', header: 'Vacancy #', render: (v) => <code className="text-xs">{v.vacancyNumber}</code> },
@@ -30,18 +36,42 @@ export function VacancyManagementPage() {
       header: 'Actions',
       render: (v) => (
         <div className="flex flex-wrap gap-1">
-          <Button variant="ghost" size="sm" onClick={() => toast('Edit')}>Edit</Button>
-          {v.status === 'DRAFT' && <Button variant="ghost" size="sm" onClick={() => toast.success('Published')}>Publish</Button>}
           <Link to="/recruitment/applications"><Button variant="ghost" size="sm">Applicants</Button></Link>
-          <Button variant="ghost" size="sm" onClick={() => toast('Duplicated')}>Duplicate</Button>
+          {canManage && (
+            <>
+              <Button variant="ghost" size="sm" onClick={() => toast('Edit')}>Edit</Button>
+              {v.status === 'DRAFT' && <Button variant="ghost" size="sm" onClick={() => handlePublish(v.id)}>Publish</Button>}
+              <Button variant="ghost" size="sm" onClick={() => toast('Duplicated')}>Duplicate</Button>
+            </>
+          )}
         </div>
       ),
     },
   ];
 
+  const handlePublish = async (id: string) => {
+    try {
+      await publishVacancy(id).unwrap();
+      toast.success('Vacancy published successfully');
+    } catch (err) {
+      toast.error('Failed to publish vacancy');
+    }
+  };
+
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Vacancy Management' }]} title="Vacancy Management" description="Central page for all open and closed vacancies" actions={<Button onClick={() => toast('Create vacancy')}><FiPlus className="h-4 w-4" /> Create Vacancy</Button>} />
+      <PageHeader
+        breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Vacancy Management' }]}
+        title="Vacancy Management"
+        description="Central page for all open and closed vacancies"
+        actions={
+          <HasAccess roles={['SUPER_ADMIN', 'ADMIN', 'RECRUITER']}>
+            <Button onClick={() => toast('Create vacancy')}>
+              <FiPlus className="h-4 w-4" /> Create Vacancy
+            </Button>
+          </HasAccess>
+        }
+      />
       <RecruitmentSubNav />
       <Card>
         <CardContent className="pt-6">

@@ -25,28 +25,41 @@ const RecruitmentReportsPage = lazy(() => import('@/modules/recruitment/pages/Re
 const RecruitmentSettingsPage = lazy(() => import('@/modules/recruitment/pages/RecruitmentSettingsPage').then((m) => ({ default: m.RecruitmentSettingsPage })));
 const CandidateProfilePage = lazy(() => import('@/modules/recruitment/pages/CandidateProfilePage').then((m) => ({ default: m.CandidateProfilePage })));
 
+import { ProtectedRoute } from '@/app/guards/RouteGuards';
+import { Outlet } from 'react-router-dom';
+
 export const recruitmentRoutes: RouteObject[] = [
-  { path: 'recruitment', element: <Navigate to="/recruitment/dashboard" replace /> },
-  { path: 'recruitment/dashboard', element: wrap(<RecruitmentDashboardPage />) },
-  { path: 'recruitment/workforce-requests', element: wrap(<WorkforceRequestsPage />) },
-  { path: 'recruitment/requisitions', element: wrap(<JobRequisitionsPage />) },
-  { path: 'recruitment/vacancies', element: wrap(<VacancyManagementPage />) },
-  { path: 'recruitment/advertisements', element: wrap(<JobAdvertisementsPage />) },
-  { path: 'recruitment/candidate-portal', element: wrap(<CandidatePortalPage />) },
-  { path: 'recruitment/applications', element: wrap(<ApplicationsPage />) },
-  { path: 'recruitment/resumes', element: wrap(<ResumeManagementPage />) },
-  { path: 'recruitment/screening', element: wrap(<ScreeningPage />) },
-  { path: 'recruitment/shortlisting', element: wrap(<ShortlistingPage />) },
-  { path: 'recruitment/assessments', element: wrap(<AssessmentsPage />) },
-  { path: 'recruitment/interviews', element: wrap(<InterviewSchedulingPage />) },
-  { path: 'recruitment/interview-panel', element: wrap(<InterviewPanelPage />) },
-  { path: 'recruitment/evaluations', element: wrap(<CandidateEvaluationPage />) },
-  { path: 'recruitment/background-verification', element: wrap(<BackgroundVerificationPage />) },
-  { path: 'recruitment/offers', element: wrap(<OfferManagementPage />) },
-  { path: 'recruitment/onboarding', element: wrap(<OnboardingPage />) },
-  { path: 'recruitment/talent-pool', element: wrap(<TalentPoolPage />) },
-  { path: 'recruitment/calendar', element: wrap(<RecruitmentCalendarPage />) },
-  { path: 'recruitment/reports', element: wrap(<RecruitmentReportsPage />) },
-  { path: 'recruitment/settings', element: wrap(<RecruitmentSettingsPage />) },
-  { path: 'recruitment/candidates/:id', element: wrap(<CandidateProfilePage />) },
+  {
+    path: 'recruitment',
+    element: wrap(
+      <ProtectedRoute roles={['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'RECRUITER']}>
+        <Outlet />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: 'dashboard', element: wrap(<RecruitmentDashboardPage />) },
+      { path: 'workforce-requests', element: wrap(<WorkforceRequestsPage />) },
+      { path: 'requisitions', element: wrap(<JobRequisitionsPage />) },
+      { path: 'vacancies', element: wrap(<VacancyManagementPage />) },
+      { path: 'advertisements', element: wrap(<JobAdvertisementsPage />) },
+      { path: 'candidate-portal', element: wrap(<CandidatePortalPage />) },
+      { path: 'applications', element: wrap(<ApplicationsPage />) },
+      { path: 'resumes', element: wrap(<ResumeManagementPage />) },
+      { path: 'screening', element: wrap(<ScreeningPage />) },
+      { path: 'shortlisting', element: wrap(<ShortlistingPage />) },
+      { path: 'assessments', element: wrap(<AssessmentsPage />) },
+      { path: 'interviews', element: wrap(<InterviewSchedulingPage />) },
+      { path: 'interview-panel', element: wrap(<InterviewPanelPage />) },
+      { path: 'evaluations', element: wrap(<CandidateEvaluationPage />) },
+      { path: 'background-verification', element: wrap(<BackgroundVerificationPage />) },
+      { path: 'offers', element: wrap(<OfferManagementPage />) },
+      { path: 'onboarding', element: wrap(<OnboardingPage />) },
+      { path: 'talent-pool', element: wrap(<TalentPoolPage />) },
+      { path: 'calendar', element: wrap(<RecruitmentCalendarPage />) },
+      { path: 'reports', element: wrap(<RecruitmentReportsPage />) },
+      { path: 'settings', element: wrap(<RecruitmentSettingsPage />) },
+      { path: 'candidates/:id', element: wrap(<CandidateProfilePage />) },
+    ],
+  },
 ];

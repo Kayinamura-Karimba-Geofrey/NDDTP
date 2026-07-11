@@ -13,5 +13,5 @@ export function resolveService(key: string): { key: ServiceKey; port: number; ho
 
 export function upstreamBaseUrl(key: ServiceKey): string {
   const host = process.env.SERVICE_HOST || '127.0.0.1';
-  return `http://${host}:${MICROSERVICES[key].port}/api/v1`;
+  return `http://${host}:${MICROSERVICES[key].port}`;
 }

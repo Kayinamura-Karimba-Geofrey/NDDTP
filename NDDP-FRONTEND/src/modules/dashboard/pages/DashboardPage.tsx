@@ -18,16 +18,43 @@ import { ReportsWidget } from '../components/ReportsWidget';
 import { AuditSummary } from '../components/AuditSummary';
 import { GlobalSearchWidget } from '../components/GlobalSearchWidget';
 
+import { useGetPersonnelKpiQuery, useGetRecruitmentKpiQuery } from '../api/dashboard.api';
+
 export function DashboardPage() {
   const visibility = useDashboardVisibility();
+  
+  const { data: personnelKpi } = useGetPersonnelKpiQuery(undefined, { skip: !visibility.canSeeDomain('personnel') });
+  const { data: recruitmentKpi } = useGetRecruitmentKpiQuery(undefined, { skip: !visibility.canSeeDomain('workflow') });
 
-  const kpiCategories = useMemo(
-    () =>
-      KPI_CATEGORIES.filter((cat) =>
-        visibility.canSeeDomain(cat.id, cat.permissions),
-      ),
-    [visibility],
-  );
+  const kpiCategories = useMemo(() => {
+    return KPI_CATEGORIES.filter((cat) => visibility.canSeeDomain(cat.id, cat.permissions))
+      .map(cat => {
+        // Inject real Personnel data
+        if (cat.id === 'personnel' && personnelKpi) {
+          return {
+            ...cat,
+            metrics: cat.metrics.map(m => {
+              if (m.id === 'p1') return { ...m, value: personnelKpi.total };
+              if (m.id === 'p2') return { ...m, value: personnelKpi.active };
+              return m;
+            })
+          };
+        }
+        // Inject real Recruitment data into Workflow category (for lack of a better place, or if recruitment is its own category)
+        if (cat.id === 'workflow' && recruitmentKpi) {
+          return {
+            ...cat,
+            metrics: cat.metrics.map(m => {
+              // Assuming we repurpose Workflow pending for Recruitment pending
+              if (m.id === 'w1') return { ...m, label: 'Pending Applications', value: recruitmentKpi.applications };
+              if (m.id === 'w3') return { ...m, label: 'Active Vacancies', value: recruitmentKpi.vacancies };
+              return m;
+            })
+          };
+        }
+        return cat;
+      });
+  }, [visibility, personnelKpi, recruitmentKpi]);
 
   return (
     <div className="space-y-8">

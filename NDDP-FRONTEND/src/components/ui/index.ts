@@ -9,3 +9,4 @@ export { EmptyState } from './EmptyState';
 export { Breadcrumbs } from './Breadcrumbs';
 export { Avatar } from './Avatar';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs';
+export { HasAccess } from './HasAccess';

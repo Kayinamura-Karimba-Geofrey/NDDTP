@@ -76,6 +76,18 @@ services:
     volumes:
       - integration-personnel-pg:/var/lib/postgresql/data
 
+  recruitment-postgres:
+    <<: *postgres-defaults
+    container_name: nddtp-integration-recruitment-postgres
+    environment:
+      <<: *pg-env
+      POSTGRES_USER: nddtp_recruitment
+      POSTGRES_DB: nddtp_recruitment
+    ports:
+      - '5440:5432'
+    volumes:
+      - integration-recruitment-pg:/var/lib/postgresql/data
+
   redis:
     image: redis:7-alpine
     container_name: nddtp-integration-redis
@@ -100,3 +112,4 @@ volumes:
   integration-user-pg:
   integration-notification-pg:
   integration-personnel-pg:
+  integration-recruitment-pg:

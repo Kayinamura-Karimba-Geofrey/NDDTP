@@ -19,6 +19,7 @@ const CORE_SERVICES = [
   'user-service',
   'personnel-service',
   'notification-service',
+  'recruitment-service',
 ];
 
 function sleep(ms) {
@@ -45,6 +46,7 @@ const PORTS = {
   'user-service': registry.user.port,
   'notification-service': registry.notification.port,
   'personnel-service': registry.personnel.port,
+  'recruitment-service': registry.recruitment.port,
 };
 
 const children = [];
@@ -106,3 +108,6 @@ for (const [dir, port] of Object.entries(PORTS)) {
 }
 
 console.log('\nCore services launch attempted. Gateway: npm run gateway:dev');
+
+// Keep process alive so the task runner doesn't kill detached children
+setInterval(() => {}, 1000 * 60 * 60);

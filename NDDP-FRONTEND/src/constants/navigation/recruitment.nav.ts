@@ -6,6 +6,7 @@ export const recruitmentNav: NavItem = {
     path: '/recruitment/dashboard',
     icon: 'FiUserPlus',
     module: 'recruitment',
+    roles: ['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'RECRUITER'],
     permissions: ['recruitment:read:applications', 'recruitment:read:postings'],
     children: [
       { id: 'recruitment-dashboard', label: 'Dashboard', path: '/recruitment/dashboard', icon: 'FiGrid', module: 'recruitment' },

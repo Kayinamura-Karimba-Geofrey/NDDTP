@@ -24,7 +24,7 @@ export class Interview {
   @Column({ name: 'scheduled_at', type: 'timestamptz' })
   scheduledAt: Date;
 
-  @Column({ type: 'int', default: 60 })
+  @Column({ name: 'duration_minutes', type: 'int', default: 60 })
   durationMinutes: number;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
