@@ -4,9 +4,12 @@ import { MedicalStatusBadge } from '../components/MedicalStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_VACCINATIONS, type VaccinationRecord } from '../constants/medical-data';
+import { useGetVaccinationRecordsQuery } from '../api/medical.api';
+import type { VaccinationRecord } from '../constants/medical-data';
 
 export function VaccinationRecordsPage() {
+  const { data: vaccinations = [], isLoading } = useGetVaccinationRecordsQuery();
+
   const columns: DataTableColumn<VaccinationRecord>[] = [
     { key: 'emp', header: 'Personnel', render: (r) => <span className="font-medium">{r.personnelName}</span> },
     { key: 'vaccine', header: 'Vaccine' },
@@ -23,7 +26,9 @@ export function VaccinationRecordsPage() {
       <MedicalSubNav />
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_VACCINATIONS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={vaccinations as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
     </div>

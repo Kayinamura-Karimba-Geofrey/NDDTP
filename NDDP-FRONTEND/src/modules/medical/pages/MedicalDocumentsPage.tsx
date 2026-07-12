@@ -1,12 +1,16 @@
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_DOCUMENTS, type MedicalDocument } from '../constants/medical-data';
+import { useGetMedicalDocumentsQuery, useUploadDocumentMutation } from '../api/medical.api';
+import type { MedicalDocument } from '../constants/medical-data';
+import toast from 'react-hot-toast';
 
 export function MedicalDocumentsPage() {
+  const { data: documents = [], isLoading } = useGetMedicalDocumentsQuery();
+  const [uploadDocument] = useUploadDocumentMutation();
+
   const columns: DataTableColumn<MedicalDocument>[] = [
     { key: 'name', header: 'Document', render: (r) => <span className="font-medium">{r.name}</span> },
     { key: 'type', header: 'Type' },
@@ -26,7 +30,9 @@ export function MedicalDocumentsPage() {
       <MedicalSubNav />
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={documents as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
     </div>

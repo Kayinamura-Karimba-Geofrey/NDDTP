@@ -4,9 +4,12 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Card, CardContent } from '@/components/ui';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { MedicalStatusBadge } from '../components/MedicalStatusBadge';
-import { MOCK_PROFILES, type MedicalProfile } from '../constants/medical-data';
+import { useGetMedicalProfilesQuery } from '../api/medical.api';
+import type { MedicalProfile } from '../constants/medical-data';
 
 export function MedicalProfilesPage() {
+  const { data: profiles = [], isLoading } = useGetMedicalProfilesQuery();
+
   const columns: DataTableColumn<MedicalProfile>[] = [
     { key: 'name', header: 'Personnel', render: (r) => <Link to={`/medical/profiles/${r.id}`} className="font-medium underline">{r.firstName} {r.lastName}</Link> },
     { key: 'num', header: 'Personnel #', render: (r) => <code className="text-xs">{r.personnelNumber}</code> },
@@ -27,7 +30,9 @@ export function MedicalProfilesPage() {
       </Card>
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_PROFILES as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={profiles as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
     </div>

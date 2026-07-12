@@ -1,14 +1,28 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { MedicalStatusBadge } from '../components/MedicalStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_ASSESSMENTS, type MedicalAssessment } from '../constants/medical-data';
+import { useGetMedicalAssessmentsQuery, useCreateAssessmentMutation } from '../api/medical.api';
+import type { MedicalAssessment } from '../constants/medical-data';
+import toast from 'react-hot-toast';
 
 export function MedicalAssessmentsPage() {
+  const { data: assessments = [], isLoading } = useGetMedicalAssessmentsQuery();
+  const [createAssessment, { isLoading: isCreating }] = useCreateAssessmentMutation();
+
+  const handleNew = async () => {
+    try {
+      await createAssessment({ category: 'Annual Assessment', status: 'PENDING' }).unwrap();
+      toast.success('Assessment created');
+    } catch {
+      toast.error('Failed to create assessment');
+    }
+  };
+
   const columns: DataTableColumn<MedicalAssessment>[] = [
     { key: 'emp', header: 'Personnel', render: (r) => <span className="font-medium">{r.personnelName}</span> },
     { key: 'category', header: 'Category' },
@@ -20,11 +34,13 @@ export function MedicalAssessmentsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Assessments' }]} title="Medical Assessments" description="Periodic medical examinations and fitness evaluations" actions={<Button onClick={() => toast('New assessment form')}><FiPlus className="h-4 w-4" /> New Assessment</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Assessments' }]} title="Medical Assessments" description="Periodic medical examinations and fitness evaluations" actions={<Button onClick={handleNew} isLoading={isCreating}><FiPlus className="h-4 w-4" /> New Assessment</Button>} />
       <MedicalSubNav />
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_ASSESSMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={assessments as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
     </div>

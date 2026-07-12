@@ -1,17 +1,20 @@
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
-import { FiUpload } from 'react-icons/fi';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { MedicalStatusBadge } from '../components/MedicalStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_LAB_RESULTS, type LabResult } from '../constants/medical-data';
+import { useGetLabResultsQuery } from '../api/medical.api';
+import type { LabResult } from '../constants/medical-data';
+import { FiUpload } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 export function LaboratoryResultsPage() {
+  const { data: results = [], isLoading } = useGetLabResultsQuery();
+
   const columns: DataTableColumn<LabResult>[] = [
     { key: 'emp', header: 'Personnel', render: (r) => <span className="font-medium">{r.personnelName}</span> },
-    { key: 'test', header: 'Test' },
+    { key: 'test', header: 'Test', render: (r) => r.testName },
     { key: 'date', header: 'Result Date', render: (r) => dayjs(r.resultDate).format('MMM D, YYYY') },
     { key: 'provider', header: 'Provider' },
     { key: 'status', header: 'Status', render: (r) => <MedicalStatusBadge status={r.status} /> },
@@ -32,7 +35,9 @@ export function LaboratoryResultsPage() {
       </Card>
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_LAB_RESULTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={results as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
     </div>
