@@ -9,9 +9,16 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { MedicalAppointment } from '../constants/medical-data';
+import { ScheduleAppointmentModal } from '../components/ScheduleAppointmentModal';
+import { ActionAppointmentModal } from '../components/ActionAppointmentModal';
 
 export function MedicalAppointmentsPage() {
   const [statusFilter, setStatusFilter] = useState('');
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedActionAppointment, setSelectedActionAppointment] = useState<{
+    appointment: MedicalAppointment;
+    action: 'CANCELLED' | 'COMPLETED' | 'RESCHEDULED';
+  } | null>(null);
   const { data, isLoading } = useGetMedicalAppointmentsQuery({ page: 1, limit: 50 });
   const rows = (data?.data ?? []).filter((r) => !statusFilter || r.status === statusFilter);
 
@@ -27,15 +34,16 @@ export function MedicalAppointmentsPage() {
     { key: 'status', header: 'Status', render: (r) => <MedicalStatusBadge status={r.status} /> },
     { key: 'actions', header: 'Actions', render: () => (
       <div className="flex gap-1">
-        <Button variant="ghost" size="sm" onClick={() => toast('View appointment')}>View</Button>
-        <Button variant="ghost" size="sm" onClick={() => toast('Rescheduled')}>Reschedule</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedActionAppointment({ appointment: r, action: 'COMPLETED' })}>Complete</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedActionAppointment({ appointment: r, action: 'RESCHEDULED' })}>Reschedule</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedActionAppointment({ appointment: r, action: 'CANCELLED' })} className="text-destructive hover:text-destructive">Cancel</Button>
       </div>
     ) },
   ];
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Appointments' }]} title="Medical Appointments" description="Schedule and manage medical appointments" actions={<Button onClick={() => toast('Schedule appointment')}><FiPlus className="h-4 w-4" /> Schedule</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Appointments' }]} title="Medical Appointments" description="Schedule and manage medical appointments" actions={<Button onClick={() => setIsScheduleModalOpen(true)}><FiPlus className="h-4 w-4" /> Schedule</Button>} />
       <MedicalSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -49,6 +57,18 @@ export function MedicalAppointmentsPage() {
           )}
         </CardContent>
       </Card>
+
+      <ScheduleAppointmentModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+      />
+
+      <ActionAppointmentModal
+        isOpen={!!selectedActionAppointment}
+        onClose={() => setSelectedActionAppointment(null)}
+        appointment={selectedActionAppointment?.appointment ?? null}
+        action={selectedActionAppointment?.action ?? null}
+      />
     </div>
   );
 }

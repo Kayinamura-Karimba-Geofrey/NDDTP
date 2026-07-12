@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { useGetPendingMedicalApprovalsQuery } from '../api/medical.api';
@@ -7,9 +8,14 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { MedicalApproval } from '../constants/medical-data';
+import { ActionApprovalModal } from '../components/ActionApprovalModal';
 
 export function MedicalApprovalCenterPage() {
   const { data: queue = [], isLoading } = useGetPendingMedicalApprovalsQuery();
+  const [selectedApproval, setSelectedApproval] = useState<{
+    approval: MedicalApproval;
+    action: 'APPROVED' | 'REJECTED' | 'MORE_INFO';
+  } | null>(null);
 
   const columns: DataTableColumn<MedicalApproval>[] = [
     { key: 'emp', header: 'Personnel', render: (r) => <span className="font-medium">{r.personnelName}</span> },
@@ -19,8 +25,9 @@ export function MedicalApprovalCenterPage() {
     { key: 'submitted', header: 'Submitted', render: (r) => dayjs(r.submittedAt).format('MMM D, YYYY') },
     { key: 'actions', header: 'Actions', render: (r) => (
       <div className="flex gap-1">
-        <Button variant="ghost" size="sm" onClick={() => toast(`Approved ${r.request}`)}>Approve</Button>
-        <Button variant="ghost" size="sm" onClick={() => toast(`Rejected ${r.request}`)}>Reject</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedApproval({ approval: r, action: 'APPROVED' })}>Approve</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedApproval({ approval: r, action: 'REJECTED' })} className="text-destructive hover:text-destructive">Reject</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelectedApproval({ approval: r, action: 'MORE_INFO' })}>More Info</Button>
       </div>
     ) },
   ];
@@ -36,6 +43,13 @@ export function MedicalApprovalCenterPage() {
           )}
         </CardContent>
       </Card>
+
+      <ActionApprovalModal
+        isOpen={!!selectedApproval}
+        onClose={() => setSelectedApproval(null)}
+        approval={selectedApproval?.approval ?? null}
+        action={selectedApproval?.action ?? null}
+      />
     </div>
   );
 }

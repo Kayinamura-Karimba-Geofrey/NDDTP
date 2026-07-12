@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
@@ -7,8 +8,10 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { MOCK_REFERRALS, type MedicalReferral } from '../constants/medical-data';
+import { CreateReferralModal } from '../components/CreateReferralModal';
 
 export function MedicalReferralsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const columns: DataTableColumn<MedicalReferral>[] = [
     { key: 'num', header: 'Referral #', render: (r) => <code className="text-xs">{r.referralNumber}</code> },
     { key: 'emp', header: 'Personnel', render: (r) => <span className="font-medium">{r.personnelName}</span> },
@@ -21,7 +24,7 @@ export function MedicalReferralsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Referrals' }]} title="Medical Referrals" description="Specialist referrals and outcomes" actions={<Button onClick={() => toast('Create referral')}><FiPlus className="h-4 w-4" /> New Referral</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Medical', path: '/medical/dashboard' }, { label: 'Referrals' }]} title="Medical Referrals" description="Specialist referrals and outcomes" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Referral</Button>} />
       <MedicalSubNav />
       <Card className="mb-4">
         <CardContent className="pt-4">
@@ -41,6 +44,11 @@ export function MedicalReferralsPage() {
           <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_REFERRALS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
         </CardContent>
       </Card>
+
+      <CreateReferralModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

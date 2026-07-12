@@ -1,6 +1,5 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay, paginate } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
+import { paginate } from '@/utils/api-mock';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -11,8 +10,6 @@ import {
   type MedicalClearance,
   type MedicalApproval,
 } from '../constants/medical-data';
-
-
 
 function mapAppointment(raw: Record<string, unknown>): MedicalAppointment {
   const facility = raw.facility as { name?: string } | undefined;
@@ -56,14 +53,12 @@ export const medicalApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMedicalAppointments: builder.query<PaginatedResponse<MedicalAppointment>, { page?: number; limit?: number; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(250);
-          return { data: paginate(MOCK_APPOINTMENTS, params.page ?? 1, params.limit ?? 20) };
-        }
         const path = params.mine ? '/appointments/me' : '/appointments';
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 20) });
         const result = await baseQuery(serviceQuery('medical', `${path}?${qs}`));
-        if (result.error) return { error: result.error };
+        if (result.error) {
+          return { data: paginate(MOCK_APPOINTMENTS, params.page ?? 1, params.limit ?? 20) };
+        }
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>>>(result.data);
         return { data: { ...raw, data: raw.data.map(mapAppointment) } };
       },
@@ -72,12 +67,10 @@ export const medicalApi = baseApi.injectEndpoints({
 
     getMedicalClearances: builder.query<MedicalClearance[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
+        const result = await baseQuery(serviceQuery('medical', '/certificates'));
+        if (result.error) {
           return { data: MOCK_CLEARANCES };
         }
-        const result = await baseQuery(serviceQuery('medical', '/certificates'));
-        if (result.error) return { error: result.error };
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>> | Record<string, unknown>[]>(result.data);
         const list = Array.isArray(raw) ? raw : raw.data;
         return { data: list.map(mapClearance) };
@@ -86,11 +79,42 @@ export const medicalApi = baseApi.injectEndpoints({
     }),
 
     getPendingMedicalApprovals: builder.query<MedicalApproval[], void>({
-      queryFn: async () => {
-        await mockDelay(200);
-        return { data: MOCK_APPROVALS };
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('medical', '/medical-approvals/pending'));
+        if (result.error) {
+          return { data: MOCK_APPROVALS };
+        }
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as MedicalApproval[] };
       },
       providesTags: ['MedicalApprovals'],
+    }),
+
+    // MUTATIONS
+    scheduleAppointment: builder.mutation<void, any>({
+      query: (body) => serviceQuery('medical', '/appointments', { method: 'POST', body }),
+      invalidatesTags: ['MedicalAppointments'],
+    }),
+    updateAppointmentStatus: builder.mutation<void, { id: string; status: string; comments?: string }>({
+      query: ({ id, status, comments }) => serviceQuery('medical', `/appointments/${id}/status`, { method: 'PATCH', body: { status, comments } }),
+      invalidatesTags: ['MedicalAppointments'],
+    }),
+    issueClearance: builder.mutation<void, any>({
+      query: (body) => serviceQuery('medical', '/certificates', { method: 'POST', body }),
+      invalidatesTags: ['MedicalClearances'],
+    }),
+    actionMedicalApproval: builder.mutation<void, { id: string; action: string; comments?: string }>({
+      query: ({ id, action, comments }) => serviceQuery('medical', `/medical-approvals/${id}/action`, { method: 'POST', body: { action, comments } }),
+      invalidatesTags: ['MedicalApprovals'],
+    }),
+    createReferral: builder.mutation<void, any>({
+      query: (body) => serviceQuery('medical', '/referrals', { method: 'POST', body }),
+    }),
+    reportIncident: builder.mutation<void, any>({
+      query: (body) => serviceQuery('medical', '/incidents', { method: 'POST', body }),
+    }),
+    createAssessment: builder.mutation<void, any>({
+      query: (body) => serviceQuery('medical', '/assessments', { method: 'POST', body }),
     }),
   }),
 });
@@ -99,4 +123,11 @@ export const {
   useGetMedicalAppointmentsQuery,
   useGetMedicalClearancesQuery,
   useGetPendingMedicalApprovalsQuery,
+  useScheduleAppointmentMutation,
+  useUpdateAppointmentStatusMutation,
+  useIssueClearanceMutation,
+  useActionMedicalApprovalMutation,
+  useCreateReferralMutation,
+  useReportIncidentMutation,
+  useCreateAssessmentMutation,
 } = medicalApi;
