@@ -9,4 +9,5 @@ export { EmptyState } from './EmptyState';
 export { Breadcrumbs } from './Breadcrumbs';
 export { Avatar } from './Avatar';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs';
+export { Modal } from './Modal';
 export { HasAccess } from './HasAccess';

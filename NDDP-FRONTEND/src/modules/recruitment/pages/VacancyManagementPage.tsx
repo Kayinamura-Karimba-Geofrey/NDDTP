@@ -12,14 +12,36 @@ import { Button, Card, CardContent } from '@/components/ui';
 import { HasAccess } from '@/components/ui/HasAccess';
 import { usePermissions } from '@/hooks/usePermissions';
 import type { Vacancy } from '../constants/recruitment-data';
+import { CreateVacancyModal } from '../components/CreateVacancyModal';
 
 export function VacancyManagementPage() {
   const { hasRole } = usePermissions();
   const [statusFilter, setStatusFilter] = useState('');
+  
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialData, setModalInitialData] = useState<any>(undefined);
+
   const { data, isLoading } = useGetVacanciesQuery({ page: 1, limit: 50, status: statusFilter || undefined });
   const [publishVacancy] = usePublishVacancyMutation();
 
   const canManage = hasRole(['SUPER_ADMIN', 'ADMIN', 'RECRUITER']);
+
+  const handleDuplicate = (v: Vacancy) => {
+    setModalInitialData({
+      jobTitle: v.jobTitle + ' (Copy)',
+      department: v.department,
+      location: v.location,
+      employmentType: v.employmentType,
+      closingDate: dayjs().add(30, 'day').format('YYYY-MM-DD'),
+      description: 'Copied from ' + v.vacancyNumber,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (v: Vacancy) => {
+    toast('Edit functionality coming soon');
+  };
 
   const columns: DataTableColumn<Vacancy>[] = [
     { key: 'num', header: 'Vacancy #', render: (v) => <code className="text-xs">{v.vacancyNumber}</code> },
@@ -39,9 +61,9 @@ export function VacancyManagementPage() {
           <Link to="/recruitment/applications"><Button variant="ghost" size="sm">Applicants</Button></Link>
           {canManage && (
             <>
-              <Button variant="ghost" size="sm" onClick={() => toast('Edit')}>Edit</Button>
+              <Button variant="ghost" size="sm" onClick={() => handleEdit(v)}>Edit</Button>
               {v.status === 'DRAFT' && <Button variant="ghost" size="sm" onClick={() => handlePublish(v.id)}>Publish</Button>}
-              <Button variant="ghost" size="sm" onClick={() => toast('Duplicated')}>Duplicate</Button>
+              <Button variant="ghost" size="sm" onClick={() => handleDuplicate(v)}>Duplicate</Button>
             </>
           )}
         </div>
@@ -66,7 +88,7 @@ export function VacancyManagementPage() {
         description="Central page for all open and closed vacancies"
         actions={
           <HasAccess roles={['SUPER_ADMIN', 'ADMIN', 'RECRUITER']}>
-            <Button onClick={() => toast('Create vacancy')}>
+            <Button onClick={() => { setModalInitialData(undefined); setIsModalOpen(true); }}>
               <FiPlus className="h-4 w-4" /> Create Vacancy
             </Button>
           </HasAccess>
@@ -85,6 +107,12 @@ export function VacancyManagementPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateVacancyModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        initialData={modalInitialData}
+      />
     </div>
   );
 }
