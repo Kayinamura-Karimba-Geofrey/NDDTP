@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
@@ -7,8 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { MOCK_REQUISITIONS, type JobRequisition } from '../constants/recruitment-data';
+import { CreateRequisitionModal } from '../components/CreateRequisitionModal';
 
 export function JobRequisitionsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<JobRequisition>[] = [
     { key: 'num', header: 'Requisition #', render: (r) => <code className="text-xs">{r.requisitionNumber}</code> },
     { key: 'dept', header: 'Department' },
@@ -21,19 +25,26 @@ export function JobRequisitionsPage() {
     { key: 'status', header: 'Status', render: (r) => <RecruitmentStatusBadge status={r.status} /> },
     { key: 'actions', header: 'Actions', render: (r) => (
       <div className="flex gap-1">
-        <Button variant="ghost" size="sm" onClick={() => toast('Edit')}>Edit</Button>
-        {r.status === 'APPROVED' && <Button variant="ghost" size="sm" onClick={() => toast('Create vacancy')}>Create Vacancy</Button>}
+        <Button variant="ghost" size="sm" onClick={() => toast('Edit functionality coming soon')}>Edit</Button>
+        {r.status === 'APPROVED' && <Button variant="ghost" size="sm" onClick={() => toast('Navigate to Create Vacancy')}>Create Vacancy</Button>}
       </div>
     )},
   ];
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Job Requisitions' }]} title="Job Requisitions" description="Convert approved workforce requests into formal recruitment requests" actions={<Button onClick={() => toast('New requisition')}><FiPlus className="h-4 w-4" /> New Requisition</Button>} />
+      <PageHeader 
+        breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Job Requisitions' }]} 
+        title="Job Requisitions" 
+        description="Convert approved workforce requests into formal recruitment requests" 
+        actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Requisition</Button>} 
+      />
       <RecruitmentSubNav />
       <Card><CardContent className="pt-6">
         <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_REQUISITIONS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
       </CardContent></Card>
+      
+      <CreateRequisitionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

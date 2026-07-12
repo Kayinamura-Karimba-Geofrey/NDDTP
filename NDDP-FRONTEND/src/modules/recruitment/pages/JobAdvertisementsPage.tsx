@@ -1,15 +1,24 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { MOCK_VACANCIES } from '../constants/recruitment-data';
+import { PublishAdModal } from '../components/PublishAdModal';
 
 export function JobAdvertisementsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const vacancy = MOCK_VACANCIES[0];
+  
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Job Advertisements' }]} title="Job Advertisements" description="Manage public and internal job postings" actions={<Button onClick={() => toast('Publish')}>Publish Advertisement</Button>} />
+      <PageHeader 
+        breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Job Advertisements' }]} 
+        title="Job Advertisements" 
+        description="Manage public and internal job postings" 
+        actions={<Button onClick={() => setIsModalOpen(true)}>Publish Advertisement</Button>} 
+      />
       <RecruitmentSubNav />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -40,6 +49,8 @@ export function JobAdvertisementsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <PublishAdModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
