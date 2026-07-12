@@ -69,7 +69,7 @@ export function ActionApprovalModal({ isOpen, approval, action, onClose }: Props
           <div className="rounded-lg border bg-muted/50 p-3 text-sm">
             <p><strong>Request:</strong> {approval.request}</p>
             <p><strong>Patient:</strong> {approval.personnelName}</p>
-            <p><strong>Date:</strong> {approval.date}</p>
+            <p><strong>Submitted:</strong> {approval.submittedAt}</p>
             <p><strong>Status:</strong> {approval.status}</p>
           </div>
         )}
