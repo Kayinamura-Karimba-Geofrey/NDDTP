@@ -57,17 +57,15 @@ export const leaveApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getLeaveRequests: builder.query<PaginatedResponse<LeaveRequest>, { page?: number; limit?: number; status?: string; mine?: boolean }>({
       queryFn: async (params, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(300);
-          let items = [...MOCK_LEAVE_REQUESTS];
-          if (params.status) items = items.filter((r) => r.status === params.status);
-          return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
-        }
         const path = params.mine ? '/leave-requests/me' : '/leave-requests';
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 20) });
         if (params.status) qs.set('status', params.status);
         const result = await baseQuery(serviceQuery('leave', `${path}?${qs}`));
-        if (result.error) return { error: result.error };
+        if (result.error) {
+          let items = [...MOCK_LEAVE_REQUESTS];
+          if (params.status) items = items.filter((r) => r.status === params.status);
+          return { data: paginate(items, params.page ?? 1, params.limit ?? 20) };
+        }
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>>>(result.data);
         return { data: { ...raw, data: raw.data.map(mapLeaveRequest) } };
       },
@@ -76,12 +74,10 @@ export const leaveApi = baseApi.injectEndpoints({
 
     getPendingApprovals: builder.query<LeaveRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
+        const result = await baseQuery(serviceQuery('leave', '/leave-requests/pending-approvals'));
+        if (result.error) {
           return { data: MOCK_LEAVE_REQUESTS.filter((r) => r.status === 'PENDING_APPROVAL') };
         }
-        const result = await baseQuery(serviceQuery('leave', '/leave-requests/pending-approvals'));
-        if (result.error) return { error: result.error };
         const raw = unwrapApiResponse<Record<string, unknown>[] | { data: Record<string, unknown>[] }>(result.data);
         const list = Array.isArray(raw) ? raw : raw.data;
         return { data: list.map(mapLeaveRequest) };
@@ -91,12 +87,10 @@ export const leaveApi = baseApi.injectEndpoints({
 
     getMyLeaveBalances: builder.query<LeaveBalance[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
+        const result = await baseQuery(serviceQuery('leave', '/leave-balances/me'));
+        if (result.error) {
           return { data: MOCK_BALANCES.filter((b) => b.userId === 'u1') };
         }
-        const result = await baseQuery(serviceQuery('leave', '/leave-balances/me'));
-        if (result.error) return { error: result.error };
         const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
         return { data: raw.map(mapLeaveBalance) };
       },
@@ -104,21 +98,23 @@ export const leaveApi = baseApi.injectEndpoints({
     }),
 
     getAllLeaveBalances: builder.query<LeaveBalance[], void>({
-      queryFn: async () => {
-        await mockDelay(200);
-        return { data: MOCK_BALANCES };
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('leave', '/leave-balances'));
+        if (result.error) {
+          return { data: MOCK_BALANCES };
+        }
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw.map(mapLeaveBalance) };
       },
       providesTags: ['LeaveBalances'],
     }),
 
     getLeaveTypes: builder.query<LeaveType[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
+        const result = await baseQuery(serviceQuery('leave', '/leave-types'));
+        if (result.error) {
           return { data: MOCK_LEAVE_TYPES };
         }
-        const result = await baseQuery(serviceQuery('leave', '/leave-types'));
-        if (result.error) return { error: result.error };
         const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
         return {
           data: raw.map((t) => ({
