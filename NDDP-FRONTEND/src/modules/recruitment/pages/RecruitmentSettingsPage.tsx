@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button, Card, CardContent, Input } from '@/components/ui';
+import { useUpdateSettingsMutation } from '../api/recruitment.api';
 
 const settingsSchema = z.object({
   numberingFormat: z.string().min(1, 'Format is required'),
@@ -20,7 +21,7 @@ const settingsSchema = z.object({
 type SettingsFormValues = z.infer<typeof settingsSchema>;
 
 export function RecruitmentSettingsPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [updateSettings, { isLoading }] = useUpdateSettingsMutation();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -36,14 +37,11 @@ export function RecruitmentSettingsPage() {
   });
 
   const onSubmit = async (data: SettingsFormValues) => {
-    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await updateSettings(data).unwrap();
       toast.success('Recruitment settings saved successfully');
     } catch (error) {
       toast.error('Failed to save settings');
-    } finally {
-      setIsLoading(false);
     }
   };
 

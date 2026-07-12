@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Modal, Input, Button } from '@/components/ui';
-import { useGetApplicationsQuery } from '../api/recruitment.api';
+import { useGetApplicationsQuery, useCreateOfferMutation } from '../api/recruitment.api';
 import toast from 'react-hot-toast';
 
 const offerSchema = z.object({
@@ -23,7 +23,7 @@ interface CreateOfferModalProps {
 }
 
 export function CreateOfferModal({ isOpen, onClose }: CreateOfferModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [createOffer, { isLoading }] = useCreateOfferMutation();
   const { data: appsData } = useGetApplicationsQuery({ limit: 100 });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<OfferFormValues>({
@@ -43,16 +43,13 @@ export function CreateOfferModal({ isOpen, onClose }: CreateOfferModalProps) {
   }, [isOpen, reset]);
 
   const onSubmit = async (data: OfferFormValues) => {
-    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await createOffer(data).unwrap();
       toast.success('Offer successfully created and saved as DRAFT');
       onClose();
       reset();
     } catch (error) {
       toast.error('Failed to create offer');
-    } finally {
-      setIsLoading(false);
     }
   };
 

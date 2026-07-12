@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Modal, Input, Button } from '@/components/ui';
+import { useCreateRequisitionMutation } from '../api/recruitment.api';
 import toast from 'react-hot-toast';
 
 const requisitionSchema = z.object({
@@ -23,7 +24,7 @@ interface CreateRequisitionModalProps {
 }
 
 export function CreateRequisitionModal({ isOpen, onClose }: CreateRequisitionModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [createRequisition, { isLoading }] = useCreateRequisitionMutation();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<RequisitionFormValues>({
     resolver: zodResolver(requisitionSchema),
@@ -43,17 +44,13 @@ export function CreateRequisitionModal({ isOpen, onClose }: CreateRequisitionMod
   }, [isOpen, reset]);
 
   const onSubmit = async (data: RequisitionFormValues) => {
-    setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await createRequisition(data).unwrap();
       toast.success('Job requisition created successfully and sent for budget approval');
       onClose();
       reset();
     } catch (error) {
       toast.error('Failed to create requisition');
-    } finally {
-      setIsLoading(false);
     }
   };
 

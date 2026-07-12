@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_VACANCIES } from '../constants/recruitment-data';
+import { useGetVacanciesQuery } from '../api/recruitment.api';
 
 export function CandidatePortalPage() {
+  const { data: vacanciesData, isLoading } = useGetVacanciesQuery({ limit: 100 });
+  const vacancies = vacanciesData?.data || [];
   return (
     <div>
       <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Candidate Portal' }]} title="Candidate Portal" description="Public-facing portal configuration and preview" />
@@ -14,7 +16,7 @@ export function CandidatePortalPage() {
         <Link to="/recruitment/vacancies"><Button variant="outline">View Published Vacancies (Admin)</Button></Link>
       </CardContent></Card>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {MOCK_VACANCIES.filter((v) => v.status === 'OPEN').map((v) => (
+        {isLoading ? <div className="col-span-full p-8 text-center text-muted-foreground">Loading vacancies...</div> : vacancies.filter((v) => v.status === 'OPEN').map((v) => (
           <Card key={v.id}>
             <CardContent className="pt-6">
               <h3 className="font-semibold">{v.jobTitle}</h3>

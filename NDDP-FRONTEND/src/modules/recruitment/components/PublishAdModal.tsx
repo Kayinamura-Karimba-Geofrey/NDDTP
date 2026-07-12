@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Modal, Input, Button } from '@/components/ui';
+import { usePublishAdMutation } from '../api/recruitment.api';
 import toast from 'react-hot-toast';
 
 const adSchema = z.object({
@@ -21,7 +22,7 @@ interface PublishAdModalProps {
 }
 
 export function PublishAdModal({ isOpen, onClose }: PublishAdModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [publishAd, { isLoading }] = usePublishAdMutation();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<AdFormValues>({
     resolver: zodResolver(adSchema),
@@ -39,16 +40,13 @@ export function PublishAdModal({ isOpen, onClose }: PublishAdModalProps) {
   }, [isOpen, reset]);
 
   const onSubmit = async (data: AdFormValues) => {
-    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await publishAd(data).unwrap();
       toast.success('Advertisement successfully scheduled for publication');
       onClose();
       reset();
     } catch (error) {
       toast.error('Failed to publish advertisement');
-    } finally {
-      setIsLoading(false);
     }
   };
 

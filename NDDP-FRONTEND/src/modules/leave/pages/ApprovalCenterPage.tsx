@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 import { useGetPendingApprovalsQuery } from '../api/leave.api';
@@ -6,10 +7,12 @@ import { LeaveStatusBadge } from '../components/LeaveStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
+import { ActionLeaveRequestModal } from '../components/ActionLeaveRequestModal';
 import type { LeaveRequest } from '../constants/leave-data';
 
 export function ApprovalCenterPage() {
   const { data: pending = [], isLoading } = useGetPendingApprovalsQuery();
+  const [selectedRequest, setSelectedRequest] = useState<{ request: LeaveRequest, action: 'APPROVED' | 'REJECTED' | 'MORE_INFO' } | null>(null);
 
   const columns: DataTableColumn<LeaveRequest>[] = [
     { key: 'emp', header: 'Employee', render: (r) => <span className="font-medium">{r.employeeName}</span> },
@@ -22,11 +25,11 @@ export function ApprovalCenterPage() {
     {
       key: 'actions',
       header: 'Actions',
-      render: () => (
+      render: (r) => (
         <div className="flex flex-wrap gap-1">
-          <Button variant="ghost" size="sm" onClick={() => toast.success('Approved')}>Approve</Button>
-          <Button variant="ghost" size="sm" onClick={() => toast.error('Rejected')}>Reject</Button>
-          <Button variant="ghost" size="sm" onClick={() => toast('More info requested')}>Info</Button>
+          <Button variant="ghost" size="sm" onClick={() => setSelectedRequest({ request: r, action: 'APPROVED' })}>Approve</Button>
+          <Button variant="ghost" size="sm" onClick={() => setSelectedRequest({ request: r, action: 'REJECTED' })}>Reject</Button>
+          <Button variant="ghost" size="sm" onClick={() => setSelectedRequest({ request: r, action: 'MORE_INFO' })}>Info</Button>
         </div>
       ),
     },
@@ -42,6 +45,13 @@ export function ApprovalCenterPage() {
           <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={pending as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
         )}
       </CardContent></Card>
+
+      <ActionLeaveRequestModal
+        isOpen={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+        request={selectedRequest?.request || null}
+        action={selectedRequest?.action || null}
+      />
     </div>
   );
 }

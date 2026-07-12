@@ -2,9 +2,11 @@ import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_ASSESSMENTS, type Assessment } from '../constants/recruitment-data';
+import { type Assessment } from '../constants/recruitment-data';
+import { useGetAssessmentsQuery } from '../api/recruitment.api';
 
 export function AssessmentsPage() {
+  const { data: assessments = [], isLoading } = useGetAssessmentsQuery();
   const columns: DataTableColumn<Assessment>[] = [
     { key: 'name', header: 'Candidate', render: (a) => <span className="font-medium">{a.candidateName}</span> },
     { key: 'type', header: 'Assessment Type' },
@@ -18,7 +20,9 @@ export function AssessmentsPage() {
       <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Assessments' }]} title="Assessments" description="Written tests, technical assessments, practical exercises, and language assessments" />
       <RecruitmentSubNav />
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_ASSESSMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={assessments as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
     </div>
   );

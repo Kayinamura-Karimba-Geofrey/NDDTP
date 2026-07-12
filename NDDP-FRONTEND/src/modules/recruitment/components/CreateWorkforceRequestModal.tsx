@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Modal, Input, Button } from '@/components/ui';
+import { useCreateWorkforceRequestMutation } from '../api/recruitment.api';
 import toast from 'react-hot-toast';
 
 const requestSchema = z.object({
@@ -21,7 +22,7 @@ interface CreateWorkforceRequestModalProps {
 }
 
 export function CreateWorkforceRequestModal({ isOpen, onClose }: CreateWorkforceRequestModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [createRequest, { isLoading }] = useCreateWorkforceRequestMutation();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<RequestFormValues>({
     resolver: zodResolver(requestSchema),
@@ -39,17 +40,13 @@ export function CreateWorkforceRequestModal({ isOpen, onClose }: CreateWorkforce
   }, [isOpen, reset]);
 
   const onSubmit = async (data: RequestFormValues) => {
-    setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await createRequest(data).unwrap();
       toast.success('Workforce request submitted for command review');
       onClose();
       reset();
     } catch (error) {
       toast.error('Failed to submit request');
-    } finally {
-      setIsLoading(false);
     }
   };
 

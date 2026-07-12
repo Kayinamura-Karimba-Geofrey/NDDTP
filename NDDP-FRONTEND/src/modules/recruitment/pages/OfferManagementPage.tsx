@@ -7,11 +7,13 @@ import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_OFFERS, type Offer } from '../constants/recruitment-data';
+import { type Offer } from '../constants/recruitment-data';
+import { useGetOffersQuery } from '../api/recruitment.api';
 import { CreateOfferModal } from '../components/CreateOfferModal';
 
 export function OfferManagementPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: offers = [], isLoading } = useGetOffersQuery();
 
   const columns: DataTableColumn<Offer>[] = [
     { key: 'name', header: 'Candidate', render: (o) => <span className="font-medium">{o.candidateName}</span> },
@@ -38,7 +40,9 @@ export function OfferManagementPage() {
       />
       <RecruitmentSubNav />
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_OFFERS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={offers as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
 
       <CreateOfferModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

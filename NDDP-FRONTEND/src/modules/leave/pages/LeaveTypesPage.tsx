@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetLeaveTypesQuery } from '../api/leave.api';
@@ -5,9 +6,11 @@ import { LeaveSubNav } from '../components/LeaveSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
+import { CreateLeaveTypeModal } from '../components/CreateLeaveTypeModal';
 import type { LeaveType } from '../constants/leave-data';
 
 export function LeaveTypesPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: types = [], isLoading } = useGetLeaveTypesQuery();
 
   const columns: DataTableColumn<LeaveType>[] = [
@@ -23,13 +26,14 @@ export function LeaveTypesPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Leave', path: '/leave/dashboard' }, { label: 'Leave Types' }]} title="Leave Types" description="Manage leave categories and rules" actions={<Button onClick={() => toast('Add type')}><FiPlus className="h-4 w-4" /> Add Type</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Leave', path: '/leave/dashboard' }, { label: 'Leave Types' }]} title="Leave Types" description="Manage leave categories and rules" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Add Type</Button>} />
       <LeaveSubNav />
       <Card><CardContent className="pt-6">
         {isLoading ? <div className="data-table-empty">Loading...</div> : (
           <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={types as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
         )}
       </CardContent></Card>
+      <CreateLeaveTypeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

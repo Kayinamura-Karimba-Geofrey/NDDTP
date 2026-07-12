@@ -12,8 +12,6 @@ import {
   type LeaveType,
 } from '../constants/leave-data';
 
-
-
 function mapLeaveRequest(raw: Record<string, unknown>): LeaveRequest {
   const leaveType = raw.leaveType as { id?: string; name?: string } | undefined;
   return {
@@ -138,6 +136,30 @@ export const leaveApi = baseApi.injectEndpoints({
       },
       providesTags: ['LeaveTypes'],
     }),
+
+    // MUTATIONS
+    submitLeaveRequest: builder.mutation<void, any>({
+      query: (body) => serviceQuery('leave', '/leave-requests', { method: 'POST', body }),
+      invalidatesTags: ['LeaveRequests', 'LeaveBalances'],
+    }),
+    updateLeaveRequestStatus: builder.mutation<void, { id: string; status: string; comments?: string }>({
+      query: ({ id, status, comments }) => serviceQuery('leave', `/leave-requests/${id}/status`, { method: 'PATCH', body: { status, comments } }),
+      invalidatesTags: ['LeaveRequests', 'LeaveApprovals', 'LeaveBalances'],
+    }),
+    createPublicHoliday: builder.mutation<void, any>({
+      query: (body) => serviceQuery('leave', '/public-holidays', { method: 'POST', body }),
+    }),
+    createLeaveType: builder.mutation<void, any>({
+      query: (body) => serviceQuery('leave', '/leave-types', { method: 'POST', body }),
+      invalidatesTags: ['LeaveTypes'],
+    }),
+    createDelegation: builder.mutation<void, any>({
+      query: (body) => serviceQuery('leave', '/delegations', { method: 'POST', body }),
+    }),
+    adjustLeaveBalance: builder.mutation<void, any>({
+      query: (body) => serviceQuery('leave', '/leave-balances/adjust', { method: 'POST', body }),
+      invalidatesTags: ['LeaveBalances'],
+    }),
   }),
 });
 
@@ -147,4 +169,10 @@ export const {
   useGetMyLeaveBalancesQuery,
   useGetAllLeaveBalancesQuery,
   useGetLeaveTypesQuery,
+  useSubmitLeaveRequestMutation,
+  useUpdateLeaveRequestStatusMutation,
+  useCreatePublicHolidayMutation,
+  useCreateLeaveTypeMutation,
+  useCreateDelegationMutation,
+  useAdjustLeaveBalanceMutation,
 } = leaveApi;

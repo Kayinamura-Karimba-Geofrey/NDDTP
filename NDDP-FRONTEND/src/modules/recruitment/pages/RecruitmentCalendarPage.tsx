@@ -3,15 +3,19 @@ import { useGetInterviewsQuery } from '../api/recruitment.api';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_VACANCIES, MOCK_OFFERS } from '../constants/recruitment-data';
+import { useGetVacanciesQuery, useGetOffersQuery } from '../api/recruitment.api';
 
 export function RecruitmentCalendarPage() {
   const { data: interviews = [] } = useGetInterviewsQuery();
+  const { data: vacanciesData } = useGetVacanciesQuery({ limit: 100 });
+  const { data: offers = [] } = useGetOffersQuery();
+
+  const vacancies = vacanciesData?.data || [];
 
   const events = [
     ...interviews.map((i) => ({ date: i.scheduledDate, title: `Interview: ${i.candidateName}`, type: 'Interview' })),
-    ...MOCK_VACANCIES.filter((v) => v.status === 'OPEN').map((v) => ({ date: v.closingDate, title: `Deadline: ${v.jobTitle}`, type: 'Deadline' })),
-    ...MOCK_OFFERS.filter((o) => o.status === 'SENT').map((o) => ({ date: o.expiryDate, title: `Offer expires: ${o.candidateName}`, type: 'Offer' })),
+    ...vacancies.filter((v) => v.status === 'OPEN').map((v) => ({ date: v.closingDate, title: `Deadline: ${v.jobTitle}`, type: 'Deadline' })),
+    ...offers.filter((o) => o.status === 'SENT').map((o) => ({ date: o.expiryDate, title: `Offer expires: ${o.candidateName}`, type: 'Offer' })),
   ].sort((a, b) => a.date.localeCompare(b.date));
 
   return (

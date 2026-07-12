@@ -6,14 +6,17 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_CANDIDATES, MOCK_APPLICATIONS } from '../constants/recruitment-data';
+import { useGetCandidatesQuery, useGetApplicationsQuery } from '../api/recruitment.api';
 
 const TABS = ['Overview', 'Education', 'Experience', 'Skills', 'Documents', 'Applications', 'Assessments', 'Interviews', 'References', 'Background', 'Offer', 'Notes', 'Timeline'] as const;
 
 export function CandidateProfilePage() {
   const { id } = useParams<{ id: string }>();
-  const candidate = MOCK_CANDIDATES.find((c) => c.id === id) ?? MOCK_CANDIDATES[0];
-  const applications = MOCK_APPLICATIONS.filter((a) => a.candidateId === candidate.id);
+  const { data: candidates = [] } = useGetCandidatesQuery();
+  const { data: appsData } = useGetApplicationsQuery({ limit: 100 });
+  
+  const candidate = candidates.find((c) => c.id === id) ?? candidates[0] ?? { firstName: 'Unknown', lastName: '', email: '', source: '' };
+  const applications = (appsData?.data || []).filter((a) => a.candidateId === candidate.id);
   const [tab, setTab] = useState<(typeof TABS)[number]>('Overview');
 
   return (

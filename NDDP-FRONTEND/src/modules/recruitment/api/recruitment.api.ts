@@ -6,10 +6,22 @@ import {
   MOCK_VACANCIES,
   MOCK_APPLICATIONS,
   MOCK_INTERVIEWS,
+  MOCK_REQUISITIONS,
+  MOCK_WORKFORCE_REQUESTS,
+  MOCK_OFFERS,
+  MOCK_CANDIDATES,
+  MOCK_ASSESSMENTS,
+  MOCK_TALENT_POOL,
   RECRUITMENT_PIPELINE,
   type Vacancy,
   type Application,
   type Interview,
+  type JobRequisition,
+  type WorkforceRequest,
+  type Offer,
+  type Candidate,
+  type Assessment,
+  type TalentPoolCandidate,
 } from '../constants/recruitment-data';
 
 function mapVacancy(raw: Record<string, unknown>): Vacancy {
@@ -144,6 +156,52 @@ export const recruitmentApi = baseApi.injectEndpoints({
       query: (id) => serviceQuery('recruitment', `/interviews/${id}/cancel`, { method: 'PATCH' }),
       invalidatesTags: ['RecruitmentInterviews'],
     }),
+
+    // NEW QUERIES
+    getRequisitions: builder.query<JobRequisition[], void>({
+      queryFn: async () => { return { data: MOCK_REQUISITIONS }; },
+      providesTags: ['RecruitmentRequisitions'],
+    }),
+    getWorkforceRequests: builder.query<WorkforceRequest[], void>({
+      queryFn: async () => { return { data: MOCK_WORKFORCE_REQUESTS }; },
+      providesTags: ['RecruitmentWorkforceRequests'],
+    }),
+    getOffers: builder.query<Offer[], void>({
+      queryFn: async () => { return { data: MOCK_OFFERS }; },
+      providesTags: ['RecruitmentOffers'],
+    }),
+    getCandidates: builder.query<Candidate[], void>({
+      queryFn: async () => { return { data: MOCK_CANDIDATES }; },
+      providesTags: ['RecruitmentCandidates'],
+    }),
+    getAssessments: builder.query<Assessment[], void>({
+      queryFn: async () => { return { data: MOCK_ASSESSMENTS }; },
+      providesTags: ['RecruitmentAssessments'],
+    }),
+    getTalentPool: builder.query<TalentPoolCandidate[], void>({
+      queryFn: async () => { return { data: MOCK_TALENT_POOL }; },
+      providesTags: ['RecruitmentTalentPool'],
+    }),
+
+    // NEW MUTATIONS
+    createRequisition: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/requisitions', { method: 'POST', body }),
+      invalidatesTags: ['RecruitmentRequisitions'],
+    }),
+    createWorkforceRequest: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/workforce-requests', { method: 'POST', body }),
+      invalidatesTags: ['RecruitmentWorkforceRequests'],
+    }),
+    createOffer: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/offers', { method: 'POST', body }),
+      invalidatesTags: ['RecruitmentOffers'],
+    }),
+    publishAd: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/advertisements', { method: 'POST', body }),
+    }),
+    updateSettings: builder.mutation<void, any>({
+      query: (body) => serviceQuery('recruitment', '/settings', { method: 'PUT', body }),
+    }),
   }),
 });
 
@@ -160,4 +218,15 @@ export const {
   useScheduleInterviewMutation,
   useCompleteInterviewMutation,
   useCancelInterviewMutation,
+  useGetRequisitionsQuery,
+  useGetWorkforceRequestsQuery,
+  useGetOffersQuery,
+  useGetCandidatesQuery,
+  useGetAssessmentsQuery,
+  useGetTalentPoolQuery,
+  useCreateRequisitionMutation,
+  useCreateWorkforceRequestMutation,
+  useCreateOfferMutation,
+  usePublishAdMutation,
+  useUpdateSettingsMutation,
 } = recruitmentApi;

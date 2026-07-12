@@ -4,10 +4,12 @@ import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_APPLICATIONS, type Application } from '../constants/recruitment-data';
+import { type Application } from '../constants/recruitment-data';
+import { useGetApplicationsQuery } from '../api/recruitment.api';
 
 export function ShortlistingPage() {
-  const shortlisted = MOCK_APPLICATIONS.filter((a) => ['SHORTLISTED', 'INTERVIEW', 'OFFERED'].includes(a.status));
+  const { data: appsData, isLoading } = useGetApplicationsQuery({ limit: 100 });
+  const shortlisted = (appsData?.data || []).filter((a) => ['SHORTLISTED', 'INTERVIEW', 'OFFERED'].includes(a.status));
 
   const columns: DataTableColumn<Application>[] = [
     { key: 'rank', header: '#', render: (_, i) => (i ?? 0) + 1 },
@@ -27,7 +29,9 @@ export function ShortlistingPage() {
       <PageHeader breadcrumbs={[{ label: 'Recruitment', path: '/recruitment/dashboard' }, { label: 'Shortlisting' }]} title="Shortlisting" description="Screened candidates ready for interview stage" actions={<Button onClick={() => toast('Bulk shortlist')}>Bulk Shortlist</Button>} />
       <RecruitmentSubNav />
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={shortlisted as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={shortlisted as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
     </div>
   );

@@ -7,11 +7,13 @@ import { RecruitmentStatusBadge } from '../components/RecruitmentStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_REQUISITIONS, type JobRequisition } from '../constants/recruitment-data';
+import { type JobRequisition } from '../constants/recruitment-data';
+import { useGetRequisitionsQuery } from '../api/recruitment.api';
 import { CreateRequisitionModal } from '../components/CreateRequisitionModal';
 
 export function JobRequisitionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: requisitions = [], isLoading } = useGetRequisitionsQuery();
 
   const columns: DataTableColumn<JobRequisition>[] = [
     { key: 'num', header: 'Requisition #', render: (r) => <code className="text-xs">{r.requisitionNumber}</code> },
@@ -41,7 +43,9 @@ export function JobRequisitionsPage() {
       />
       <RecruitmentSubNav />
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_REQUISITIONS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={requisitions as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
       
       <CreateRequisitionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

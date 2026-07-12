@@ -1,13 +1,16 @@
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { LeaveSubNav } from '../components/LeaveSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
+import { CreateHolidayModal } from '../components/CreateHolidayModal';
 import { MOCK_HOLIDAYS, type PublicHoliday } from '../constants/leave-data';
 
 export function PublicHolidaysPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const columns: DataTableColumn<PublicHoliday>[] = [
     { key: 'name', header: 'Holiday', render: (h) => <span className="font-medium">{h.name}</span> },
     { key: 'date', header: 'Date', render: (h) => dayjs(h.date).format('MMM D, YYYY') },
@@ -19,11 +22,12 @@ export function PublicHolidaysPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Leave', path: '/leave/dashboard' }, { label: 'Public Holidays' }]} title="Public Holidays" description="Organization-wide holidays displayed in leave calendar" actions={<Button onClick={() => toast('Add holiday')}><FiPlus className="h-4 w-4" /> Add Holiday</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Leave', path: '/leave/dashboard' }, { label: 'Public Holidays' }]} title="Public Holidays" description="Organization-wide holidays displayed in leave calendar" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Add Holiday</Button>} />
       <LeaveSubNav />
       <Card><CardContent className="pt-6">
         <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_HOLIDAYS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
       </CardContent></Card>
+      <CreateHolidayModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
