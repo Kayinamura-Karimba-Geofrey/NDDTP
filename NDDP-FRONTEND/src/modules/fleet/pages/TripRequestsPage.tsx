@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetFleetTripsQuery } from '../api/fleet.api';
 import { FleetSubNav } from '../components/FleetSubNav';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { TripRequest } from '../constants/fleet-data';
+import { CreateTripRequestModal } from '../components/CreateTripRequestModal';
 
 export function TripRequestsPage() {
   const { data: trips = [], isLoading } = useGetFleetTripsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<TripRequest>[] = [
     { key: 'num', header: 'Trip #', render: (r) => <code className="text-xs">{r.tripNumber}</code> },
@@ -26,9 +28,14 @@ export function TripRequestsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Trip Requests' }]} title="Trip Requests" description="Personnel transportation requests and workflow" actions={<Button onClick={() => toast('Create trip request')}><FiPlus className="h-4 w-4" /> New Request</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Trip Requests' }]} title="Trip Requests" description="Personnel transportation requests and workflow" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Request</Button>} />
       <FleetSubNav />
-      <Card><CardContent className="pt-6">{isLoading ? <div className="data-table-empty">Loading...</div> : <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={trips as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />}</CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={trips as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateTripRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

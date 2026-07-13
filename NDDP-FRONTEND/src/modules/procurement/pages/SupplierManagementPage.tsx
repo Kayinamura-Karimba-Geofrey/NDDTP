@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useGetSuppliersQuery } from '../api/procurement.api';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { Supplier } from '../constants/procurement-data';
+import { CreateSupplierModal } from '../components/CreateSupplierModal';
 
 export function SupplierManagementPage() {
   const { data: suppliers = [], isLoading } = useGetSuppliersQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<Supplier>[] = [
     { key: 'code', header: 'Code', render: (r) => <Link to={`/procurement/suppliers/${r.id}`} className="font-mono text-xs underline">{r.code}</Link> },
@@ -24,7 +26,7 @@ export function SupplierManagementPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Suppliers' }]} title="Supplier Management" description="Maintain supplier information and profiles" actions={<Button onClick={() => toast('Register supplier')}><FiPlus className="h-4 w-4" /> Register Supplier</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Suppliers' }]} title="Supplier Management" description="Maintain supplier information and profiles" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Register Supplier</Button>} />
       <ProcurementSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -33,6 +35,7 @@ export function SupplierManagementPage() {
           )}
         </CardContent>
       </Card>
+      <CreateSupplierModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

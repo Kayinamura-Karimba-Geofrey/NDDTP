@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetFleetInspectionsQuery } from '../api/fleet.api';
 import { FleetSubNav } from '../components/FleetSubNav';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { VehicleInspection } from '../constants/fleet-data';
+import { CreateVehicleInspectionModal } from '../components/CreateVehicleInspectionModal';
 
 export function VehicleInspectionsPage() {
   const { data: inspections = [], isLoading } = useGetFleetInspectionsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<VehicleInspection>[] = [
     { key: 'num', header: 'Inspection #', render: (r) => <code className="text-xs">{r.inspectionNumber}</code> },
@@ -23,9 +25,14 @@ export function VehicleInspectionsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Inspections' }]} title="Vehicle Inspections" description="Checklist: tires, brakes, lights, engine, fluids, safety equipment, body" actions={<Button onClick={() => toast('Start inspection')}><FiPlus className="h-4 w-4" /> New Inspection</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Inspections' }]} title="Vehicle Inspections" description="Checklist: tires, brakes, lights, engine, fluids, safety equipment, body" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Inspection</Button>} />
       <FleetSubNav />
-      <Card><CardContent className="pt-6">{isLoading ? <div className="data-table-empty">Loading...</div> : <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={inspections as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />}</CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={inspections as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateVehicleInspectionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

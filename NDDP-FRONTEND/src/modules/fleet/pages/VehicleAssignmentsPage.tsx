@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetFleetAssignmentsQuery } from '../api/fleet.api';
 import { FleetSubNav } from '../components/FleetSubNav';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { VehicleAssignment } from '../constants/fleet-data';
+import { CreateVehicleAssignmentModal } from '../components/CreateVehicleAssignmentModal';
 
 export function VehicleAssignmentsPage() {
   const { data: assignments = [], isLoading } = useGetFleetAssignmentsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<VehicleAssignment>[] = [
     { key: 'vehicle', header: 'Vehicle', render: (r) => <span className="font-medium">{r.vehicle}</span> },
@@ -24,9 +26,14 @@ export function VehicleAssignmentsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Assignments' }]} title="Vehicle Assignments" description="Assign vehicles to departments or personnel" actions={<Button onClick={() => toast('New assignment request')}><FiPlus className="h-4 w-4" /> Request Assignment</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Assignments' }]} title="Vehicle Assignments" description="Assign vehicles to departments or personnel" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Request Assignment</Button>} />
       <FleetSubNav />
-      <Card><CardContent className="pt-6">{isLoading ? <div className="data-table-empty">Loading...</div> : <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={assignments as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />}</CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={assignments as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateVehicleAssignmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

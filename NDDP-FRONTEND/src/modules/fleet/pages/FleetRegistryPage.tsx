@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { FiPlus, FiSearch } from 'react-icons/fi';
 import { useGetFleetVehiclesQuery } from '../api/fleet.api';
 import { FleetSubNav } from '../components/FleetSubNav';
@@ -9,12 +8,14 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent, Input } from '@/components/ui';
 import type { Vehicle } from '../constants/fleet-data';
+import { CreateVehicleModal } from '../components/CreateVehicleModal';
 
 export function FleetRegistryPage() {
   const { data, isLoading } = useGetFleetVehiclesQuery({ page: 1, limit: 100 });
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const rows = useMemo(() => {
     let list = data?.data ?? [];
@@ -47,7 +48,7 @@ export function FleetRegistryPage() {
         breadcrumbs={[{ label: 'Fleet', path: '/fleet/dashboard' }, { label: 'Registry' }]}
         title="Fleet Registry"
         description="Master list of all vehicles"
-        actions={<Button onClick={() => toast('Register vehicle')}><FiPlus className="h-4 w-4" /> Register Vehicle</Button>}
+        actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Register Vehicle</Button>}
       />
       <FleetSubNav />
       <Card>
@@ -80,6 +81,7 @@ export function FleetRegistryPage() {
           )}
         </CardContent>
       </Card>
+      <CreateVehicleModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

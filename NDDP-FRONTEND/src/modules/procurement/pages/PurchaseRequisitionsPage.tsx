@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetPurchaseRequisitionsQuery } from '../api/procurement.api';
 import { ProcurementSubNav } from '../components/ProcurementSubNav';
@@ -9,11 +8,13 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { PurchaseRequisition } from '../constants/procurement-data';
+import { CreateRequisitionModal } from '../components/CreateRequisitionModal';
 
 export function PurchaseRequisitionsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const { data, isLoading } = useGetPurchaseRequisitionsQuery({ page: 1, limit: 100 });
   const rows = (data?.data ?? []).filter((r) => !statusFilter || r.status === statusFilter);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<PurchaseRequisition>[] = [
     { key: 'num', header: 'Requisition #', render: (r) => <code className="text-xs">{r.requisitionNumber}</code> },
@@ -28,7 +29,7 @@ export function PurchaseRequisitionsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Requisitions' }]} title="Purchase Requisitions" description="Department requests for goods and services" actions={<Button onClick={() => toast('New requisition')}><FiPlus className="h-4 w-4" /> New Requisition</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Requisitions' }]} title="Purchase Requisitions" description="Department requests for goods and services" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Requisition</Button>} />
       <ProcurementSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -42,6 +43,7 @@ export function PurchaseRequisitionsPage() {
           )}
         </CardContent>
       </Card>
+      <CreateRequisitionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

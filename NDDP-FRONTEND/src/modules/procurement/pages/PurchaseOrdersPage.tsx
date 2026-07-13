@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetPurchaseOrdersQuery } from '../api/procurement.api';
 import { ProcurementSubNav } from '../components/ProcurementSubNav';
@@ -8,10 +8,12 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { PurchaseOrder } from '../constants/procurement-data';
+import { CreatePurchaseOrderModal } from '../components/CreatePurchaseOrderModal';
 
 export function PurchaseOrdersPage() {
   const { data, isLoading } = useGetPurchaseOrdersQuery({ page: 1, limit: 100 });
   const rows = data?.data ?? [];
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<PurchaseOrder>[] = [
     { key: 'num', header: 'PO #', render: (r) => <code className="text-xs">{r.poNumber}</code> },
@@ -25,7 +27,7 @@ export function PurchaseOrdersPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Purchase Orders' }]} title="Purchase Orders" description="Official purchasing documents issued to suppliers" actions={<Button onClick={() => toast('Create PO')}><FiPlus className="h-4 w-4" /> Create PO</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Procurement', path: '/procurement/dashboard' }, { label: 'Purchase Orders' }]} title="Purchase Orders" description="Official purchasing documents issued to suppliers" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Create PO</Button>} />
       <ProcurementSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -34,6 +36,7 @@ export function PurchaseOrdersPage() {
           )}
         </CardContent>
       </Card>
+      <CreatePurchaseOrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
