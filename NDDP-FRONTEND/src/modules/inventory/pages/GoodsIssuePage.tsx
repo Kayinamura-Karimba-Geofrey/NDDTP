@@ -1,13 +1,18 @@
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
+import { useGetGoodsIssuesQuery } from '../api/inventory.api';
 import { InventorySubNav } from '../components/InventorySubNav';
 import { InventoryStatusBadge } from '../components/InventoryStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_ISSUES, type GoodsIssue } from '../constants/inventory-data';
+import type { GoodsIssue } from '../constants/inventory-data';
+import { CreateGoodsIssueModal } from '../components/CreateGoodsIssueModal';
 
 export function GoodsIssuePage() {
+  const { data: issues = [], isLoading } = useGetGoodsIssuesQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<GoodsIssue>[] = [
     { key: 'num', header: 'Issue #', render: (r) => <code className="text-xs">{r.issueNumber}</code> },
     { key: 'dept', header: 'Department' },
@@ -21,13 +26,16 @@ export function GoodsIssuePage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Goods Issue' }]} title="Goods Issue" description="Issue stock to departments and personnel" actions={<Button onClick={() => toast('New issue')}><FiPlus className="h-4 w-4" /> New Issue</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Goods Issue' }]} title="Goods Issue" description="Issue stock to departments and personnel" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Issue</Button>} />
       <InventorySubNav />
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_ISSUES as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={issues as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
+      <CreateGoodsIssueModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

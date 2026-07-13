@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetInventoryItemsQuery } from '../api/inventory.api';
 import { InventorySubNav } from '../components/InventorySubNav';
@@ -8,11 +7,13 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { InventoryItem } from '../constants/inventory-data';
+import { CreateInventoryItemModal } from '../components/CreateInventoryItemModal';
 
 export function InventoryItemsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const { data, isLoading } = useGetInventoryItemsQuery({ page: 1, limit: 100 });
   const rows = (data?.data ?? []).filter((r) => !statusFilter || r.status === statusFilter);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<InventoryItem>[] = [
     { key: 'code', header: 'Item Code', render: (r) => <code className="text-xs">{r.itemCode}</code> },
@@ -29,7 +30,7 @@ export function InventoryItemsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Items' }]} title="Inventory Items" description="Master list of consumable stock items" actions={<Button onClick={() => toast('Add item')}><FiPlus className="h-4 w-4" /> Add Item</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Items' }]} title="Inventory Items" description="Master list of consumable stock items" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Add Item</Button>} />
       <InventorySubNav />
       <Card>
         <CardContent className="pt-6">
@@ -43,6 +44,7 @@ export function InventoryItemsPage() {
           )}
         </CardContent>
       </Card>
+      <CreateInventoryItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

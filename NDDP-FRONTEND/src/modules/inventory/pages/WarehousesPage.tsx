@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useGetWarehousesQuery } from '../api/inventory.api';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { Warehouse } from '../constants/inventory-data';
+import { CreateWarehouseModal } from '../components/CreateWarehouseModal';
 
 export function WarehousesPage() {
   const { data: warehouses = [], isLoading } = useGetWarehousesQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<Warehouse>[] = [
     { key: 'code', header: 'Code', render: (r) => <Link to={`/inventory/warehouses/${r.id}`} className="font-mono text-xs underline">{r.code}</Link> },
@@ -24,7 +26,7 @@ export function WarehousesPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Warehouses' }]} title="Warehouses" description="Physical storage locations for consumable stock" actions={<Button onClick={() => toast('Add warehouse')}><FiPlus className="h-4 w-4" /> Add Warehouse</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Warehouses' }]} title="Warehouses" description="Physical storage locations for consumable stock" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Add Warehouse</Button>} />
       <InventorySubNav />
       <Card>
         <CardContent className="pt-6">
@@ -33,6 +35,7 @@ export function WarehousesPage() {
           )}
         </CardContent>
       </Card>
+      <CreateWarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

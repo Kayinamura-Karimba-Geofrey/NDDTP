@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetStockRequestsQuery } from '../api/inventory.api';
 import { InventorySubNav } from '../components/InventorySubNav';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { StockRequest } from '../constants/inventory-data';
+import { CreateStockRequestModal } from '../components/CreateStockRequestModal';
 
 export function StockRequestsPage() {
   const { data: requests = [], isLoading } = useGetStockRequestsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<StockRequest>[] = [
     { key: 'num', header: 'Request #', render: (r) => <code className="text-xs">{r.requestNumber}</code> },
@@ -23,7 +25,7 @@ export function StockRequestsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Stock Requests' }]} title="Stock Requests" description="Department requests for inventory items" actions={<Button onClick={() => toast('New request')}><FiPlus className="h-4 w-4" /> New Request</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Stock Requests' }]} title="Stock Requests" description="Department requests for inventory items" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Request</Button>} />
       <InventorySubNav />
       <Card>
         <CardContent className="pt-6">
@@ -32,6 +34,7 @@ export function StockRequestsPage() {
           )}
         </CardContent>
       </Card>
+      <CreateStockRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

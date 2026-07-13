@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
+import { useGetStockAdjustmentsQuery } from '../api/inventory.api';
 import { InventorySubNav } from '../components/InventorySubNav';
 import { InventoryStatusBadge } from '../components/InventoryStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_ADJUSTMENTS, type StockAdjustment } from '../constants/inventory-data';
+import type { StockAdjustment } from '../constants/inventory-data';
+import { CreateStockAdjustmentModal } from '../components/CreateStockAdjustmentModal';
 
 export function StockAdjustmentsPage() {
+  const { data: adjustments = [], isLoading } = useGetStockAdjustmentsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<StockAdjustment>[] = [
     { key: 'num', header: 'Adjustment #', render: (r) => <code className="text-xs">{r.adjustmentNumber}</code> },
     { key: 'item', header: 'Item', render: (r) => <span className="font-medium">{r.itemName}</span> },
@@ -22,13 +27,16 @@ export function StockAdjustmentsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Adjustments' }]} title="Stock Adjustments" description="Correct inventory discrepancies with justification and approval" actions={<Button onClick={() => toast('New adjustment')}><FiPlus className="h-4 w-4" /> New Adjustment</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Inventory', path: '/inventory/dashboard' }, { label: 'Adjustments' }]} title="Stock Adjustments" description="Correct inventory discrepancies with justification and approval" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Adjustment</Button>} />
       <InventorySubNav />
       <Card>
         <CardContent className="pt-6">
-          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_ADJUSTMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          {isLoading ? <div className="data-table-empty">Loading...</div> : (
+            <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={adjustments as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+          )}
         </CardContent>
       </Card>
+      <CreateStockAdjustmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
