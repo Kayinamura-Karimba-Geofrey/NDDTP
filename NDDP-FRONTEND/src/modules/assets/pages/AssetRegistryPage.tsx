@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetAssetsQuery } from '../api/asset.api';
 import { AssetSubNav } from '../components/AssetSubNav';
@@ -10,11 +9,13 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { AssetRecord } from '../constants/asset-data';
+import { CreateAssetModal } from '../components/CreateAssetModal';
 
 export function AssetRegistryPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const { data, isLoading } = useGetAssetsQuery({ page: 1, limit: 100 });
   const rows = (data?.data ?? []).filter((r) => !statusFilter || r.status === statusFilter);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<AssetRecord>[] = [
     { key: 'num', header: 'Asset #', render: (r) => <Link to={`/assets/profiles/${r.id}`} className="font-mono text-xs underline">{r.assetNumber}</Link> },
@@ -31,7 +32,7 @@ export function AssetRegistryPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Registry' }]} title="Asset Registry" description="Master register of all organizational assets" actions={<Button onClick={() => toast('Register asset')}><FiPlus className="h-4 w-4" /> Register Asset</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Registry' }]} title="Asset Registry" description="Master register of all organizational assets" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Register Asset</Button>} />
       <AssetSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -45,6 +46,7 @@ export function AssetRegistryPage() {
           )}
         </CardContent>
       </Card>
+      <CreateAssetModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
+import { useGetAssetMaintenanceQuery } from '../api/asset.api';
 import { AssetSubNav } from '../components/AssetSubNav';
 import { AssetStatusBadge } from '../components/AssetStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_MAINTENANCE, type MaintenanceRecord } from '../constants/asset-data';
+import type { MaintenanceRecord } from '../constants/asset-data';
+import { RequestMaintenanceModal } from '../components/RequestMaintenanceModal';
 
 export function MaintenanceManagementPage() {
+  const { data: maintenance = [], isLoading } = useGetAssetMaintenanceQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<MaintenanceRecord>[] = [
     { key: 'num', header: 'Maintenance #', render: (r) => <code className="text-xs">{r.maintenanceNumber}</code> },
     { key: 'asset', header: 'Asset', render: (r) => `${r.assetNumber} — ${r.assetName}` },
@@ -22,9 +27,14 @@ export function MaintenanceManagementPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Maintenance' }]} title="Maintenance Management" description="Preventive and corrective maintenance" actions={<Button onClick={() => toast('Schedule maintenance')}><FiPlus className="h-4 w-4" /> Schedule</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Maintenance' }]} title="Maintenance Management" description="Preventive and corrective maintenance" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Schedule</Button>} />
       <AssetSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_MAINTENANCE as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={maintenance as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <RequestMaintenanceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

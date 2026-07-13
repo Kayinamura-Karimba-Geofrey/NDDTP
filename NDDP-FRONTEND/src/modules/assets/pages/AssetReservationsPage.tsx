@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
+import { useGetAssetReservationsQuery } from '../api/asset.api';
 import { AssetSubNav } from '../components/AssetSubNav';
 import { AssetStatusBadge } from '../components/AssetStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_RESERVATIONS, type AssetReservation } from '../constants/asset-data';
+import type { AssetReservation } from '../constants/asset-data';
+import { ReserveAssetModal } from '../components/ReserveAssetModal';
 
 export function AssetReservationsPage() {
+  const { data: reservations = [], isLoading } = useGetAssetReservationsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<AssetReservation>[] = [
     { key: 'asset', header: 'Asset', render: (r) => <span className="font-medium">{r.assetName}</span> },
     { key: 'requester', header: 'Requester' },
@@ -19,10 +24,15 @@ export function AssetReservationsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Reservations' }]} title="Asset Reservations" description="Reserve shared assets — projectors, equipment, meeting kits" actions={<Button onClick={() => toast('New reservation')}><FiPlus className="h-4 w-4" /> Reserve</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Assets', path: '/assets/dashboard' }, { label: 'Reservations' }]} title="Asset Reservations" description="Reserve shared assets — projectors, equipment, meeting kits" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Reserve</Button>} />
       <AssetSubNav />
       <Card className="mb-4"><CardContent className="pt-4 text-sm text-muted-foreground">Workflow: Request → Approval → Reservation → Collection → Return</CardContent></Card>
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_RESERVATIONS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={reservations as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <ReserveAssetModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
