@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetPersonnelTransfersQuery } from '../api/personnel.api';
 import { PersonnelSubNav } from '../components/PersonnelSubNav';
@@ -7,9 +7,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { TransferRecord } from '../constants/personnel-data';
+import { InitiateTransferModal } from '../components/InitiateTransferModal';
 
 export function TransfersPage() {
   const { data: transfers = [], isLoading } = useGetPersonnelTransfersQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<TransferRecord>[] = [
     { key: 'person', header: 'Personnel', render: (t) => <span className="font-medium">{t.personnelName}</span> },
@@ -25,13 +27,15 @@ export function TransfersPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Personnel', path: '/personnel/dashboard' }, { label: 'Transfers' }]} title="Transfers" description="Transfer personnel between departments, units, locations, and supervisors" actions={<Button onClick={() => toast('Initiate transfer')}><FiPlus className="h-4 w-4" /> New Transfer</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Personnel', path: '/personnel/dashboard' }, { label: 'Transfers' }]} title="Transfers" description="Transfer personnel between departments, units, locations, and supervisors" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Transfer</Button>} />
       <PersonnelSubNav />
       <Card><CardContent className="pt-6">
         {isLoading ? <div className="data-table-empty">Loading...</div> : (
           <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={transfers as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
         )}
       </CardContent></Card>
+
+      <InitiateTransferModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

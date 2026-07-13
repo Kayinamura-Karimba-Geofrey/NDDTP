@@ -1,12 +1,15 @@
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
+import { useGetPersonnelDocumentsQuery } from '../api/personnel.api';
 import { PersonnelSubNav } from '../components/PersonnelSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_DOCUMENTS, type PersonnelDocument } from '../constants/personnel-data';
+import type { PersonnelDocument } from '../constants/personnel-data';
 
 export function PersonnelDocumentsPage() {
+  const { data: documents = [], isLoading } = useGetPersonnelDocumentsQuery();
+
   const columns: DataTableColumn<PersonnelDocument>[] = [
     { key: 'person', header: 'Personnel', render: (d) => d.personnelName },
     { key: 'name', header: 'Document' },
@@ -17,10 +20,10 @@ export function PersonnelDocumentsPage() {
     {
       key: 'actions',
       header: 'Actions',
-      render: () => (
+      render: (d) => (
         <div className="flex gap-1">
-          <Button variant="ghost" size="sm" onClick={() => toast('Preview')}>Preview</Button>
-          <Button variant="ghost" size="sm" onClick={() => toast('Download')}>Download</Button>
+          <Button variant="ghost" size="sm" onClick={() => toast(`Preview ${d.name}`)}>Preview</Button>
+          <Button variant="ghost" size="sm" onClick={() => toast('Downloading...')}>Download</Button>
         </div>
       ),
     },
@@ -31,7 +34,9 @@ export function PersonnelDocumentsPage() {
       <PageHeader breadcrumbs={[{ label: 'Personnel', path: '/personnel/dashboard' }, { label: 'Documents' }]} title="Profile Documents" description="Employment contracts, certificates, ID documents with version history and expiry alerts" />
       <PersonnelSubNav />
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_DOCUMENTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={documents as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
     </div>
   );

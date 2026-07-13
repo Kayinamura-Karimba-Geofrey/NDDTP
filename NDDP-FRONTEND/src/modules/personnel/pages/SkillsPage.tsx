@@ -1,10 +1,13 @@
+import { useGetPersonnelSkillsQuery } from '../api/personnel.api';
 import { PersonnelSubNav } from '../components/PersonnelSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Card, CardContent } from '@/components/ui';
-import { MOCK_SKILLS, SKILL_CATALOGUE, type SkillRecord } from '../constants/personnel-data';
+import { SKILL_CATALOGUE, type SkillRecord } from '../constants/personnel-data';
 
 export function SkillsPage() {
+  const { data: skills = [], isLoading } = useGetPersonnelSkillsQuery();
+
   const columns: DataTableColumn<SkillRecord>[] = [
     { key: 'person', header: 'Personnel', render: (s) => <span className="font-medium">{s.personnelName}</span> },
     { key: 'category', header: 'Category' },
@@ -25,7 +28,9 @@ export function SkillsPage() {
         </div>
       </CardContent></Card>
       <Card><CardContent className="pt-6">
-        <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_SKILLS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={skills as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
       </CardContent></Card>
     </div>
   );
