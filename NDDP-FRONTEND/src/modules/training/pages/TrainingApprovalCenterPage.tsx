@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { useGetPendingTrainingApprovalsQuery } from '../api/training.api';
 import { TrainingSubNav } from '../components/TrainingSubNav';
 import { TrainingStatusBadge } from '../components/TrainingStatusBadge';
@@ -7,9 +7,14 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { TrainingApproval } from '../constants/training-data';
+import { ActionTrainingApprovalModal } from '../components/ActionTrainingApprovalModal';
 
 export function TrainingApprovalCenterPage() {
   const { data: queue = [], isLoading } = useGetPendingTrainingApprovalsQuery();
+  const [selected, setSelected] = useState<{
+    approval: TrainingApproval;
+    action: 'APPROVED' | 'REJECTED' | 'RETURNED';
+  } | null>(null);
 
   const columns: DataTableColumn<TrainingApproval>[] = [
     { key: 'emp', header: 'Employee', render: (r) => <span className="font-medium">{r.employeeName}</span> },
@@ -19,9 +24,9 @@ export function TrainingApprovalCenterPage() {
     { key: 'status', header: 'Status', render: (r) => <TrainingStatusBadge status={r.status} /> },
     { key: 'actions', header: 'Actions', render: (r) => (
       <div className="flex gap-1">
-        <Button variant="ghost" size="sm" onClick={() => toast(`Approved ${r.course}`)}>Approve</Button>
-        <Button variant="ghost" size="sm" onClick={() => toast(`Rejected ${r.course}`)}>Reject</Button>
-        <Button variant="ghost" size="sm" onClick={() => toast('Returned for revision')}>Return</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelected({ approval: r, action: 'APPROVED' })}>Approve</Button>
+        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => setSelected({ approval: r, action: 'REJECTED' })}>Reject</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSelected({ approval: r, action: 'RETURNED' })}>Return</Button>
       </div>
     ) },
   ];
@@ -37,6 +42,13 @@ export function TrainingApprovalCenterPage() {
           )}
         </CardContent>
       </Card>
+
+      <ActionTrainingApprovalModal
+        isOpen={!!selected}
+        approval={selected?.approval ?? null}
+        action={selected?.action ?? null}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }
