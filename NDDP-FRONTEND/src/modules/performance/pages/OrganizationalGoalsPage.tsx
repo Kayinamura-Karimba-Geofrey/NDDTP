@@ -6,6 +6,7 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { PerformanceGoal } from '../constants/performance-data';
 import toast from 'react-hot-toast';
+import { FiPlus } from "react-icons/fi";
 
 export function OrganizationalGoalsPage() {
   const { data: orgGoals = [], isLoading } = useGetOrgGoalsQuery();

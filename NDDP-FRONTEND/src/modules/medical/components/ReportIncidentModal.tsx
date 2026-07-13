@@ -101,7 +101,7 @@ export function ReportIncidentModal({ isOpen, onClose }: Props) {
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" isLoading={isLoading} variant="destructive">
+          <Button type="submit" isLoading={isLoading} variant="danger">
             Submit Report
           </Button>
         </div>

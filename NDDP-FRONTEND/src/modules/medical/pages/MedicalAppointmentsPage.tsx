@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetMedicalAppointmentsQuery } from '../api/medical.api';
 import { MedicalSubNav } from '../components/MedicalSubNav';
@@ -32,7 +31,7 @@ export function MedicalAppointmentsPage() {
     { key: 'location', header: 'Location' },
     { key: 'type', header: 'Type' },
     { key: 'status', header: 'Status', render: (r) => <MedicalStatusBadge status={r.status} /> },
-    { key: 'actions', header: 'Actions', render: () => (
+    { key: 'actions', header: 'Actions', render: (r) => (
       <div className="flex gap-1">
         <Button variant="ghost" size="sm" onClick={() => setSelectedActionAppointment({ appointment: r, action: 'COMPLETED' })}>Complete</Button>
         <Button variant="ghost" size="sm" onClick={() => setSelectedActionAppointment({ appointment: r, action: 'RESCHEDULED' })}>Reschedule</Button>

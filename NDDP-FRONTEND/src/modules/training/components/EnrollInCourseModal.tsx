@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Modal, Input, Button } from '@/components/ui';
+import { Modal, Button } from '@/components/ui';
 import { useEnrollInCourseMutation } from '../api/training.api';
 import type { TrainingCourse } from '../constants/training-data';
 import toast from 'react-hot-toast';

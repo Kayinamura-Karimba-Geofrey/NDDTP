@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { MedicalStatusBadge } from '../components/MedicalStatusBadge';

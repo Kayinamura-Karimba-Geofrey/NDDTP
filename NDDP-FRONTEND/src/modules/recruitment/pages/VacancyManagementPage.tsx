@@ -39,7 +39,7 @@ export function VacancyManagementPage() {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (v: Vacancy) => {
+  const handleEdit = (_v: Vacancy) => {
     toast('Edit functionality coming soon');
   };
 

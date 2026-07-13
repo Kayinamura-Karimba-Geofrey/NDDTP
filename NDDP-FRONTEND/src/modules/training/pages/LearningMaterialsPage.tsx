@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { useGetLearningMaterialsQuery, useUploadMaterialMutation } from '../api/training.api';
 import { TrainingSubNav } from '../components/TrainingSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
@@ -7,10 +6,10 @@ import { Button, Card, CardContent } from '@/components/ui';
 import type { LearningMaterial } from '../constants/training-data';
 import { FiUpload } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import { useGetLearningMaterialsQuery } from "../api/training.api";
 
 export function LearningMaterialsPage() {
   const { data: materials = [], isLoading } = useGetLearningMaterialsQuery();
-  const [uploadMaterial] = useUploadMaterialMutation();
 
   const columns: DataTableColumn<LearningMaterial>[] = [
     { key: 'name', header: 'Name', render: (r) => <span className="font-medium">{r.name}</span> },

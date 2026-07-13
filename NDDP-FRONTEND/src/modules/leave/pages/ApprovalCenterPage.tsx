@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
+
 import { useGetPendingApprovalsQuery } from '../api/leave.api';
 import { LeaveSubNav } from '../components/LeaveSubNav';
 import { LeaveStatusBadge } from '../components/LeaveStatusBadge';

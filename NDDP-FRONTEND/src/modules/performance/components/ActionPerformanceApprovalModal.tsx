@@ -57,7 +57,7 @@ export function ActionPerformanceApprovalModal({ isOpen, approval, action, onClo
         </div>
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant={action === 'REJECTED' ? 'destructive' : 'default'} isLoading={isLoading}>Confirm</Button>
+          <Button type="submit" variant={action === 'REJECTED' ? 'danger' : 'primary'} isLoading={isLoading}>Confirm</Button>
         </div>
       </form>
     </Modal>

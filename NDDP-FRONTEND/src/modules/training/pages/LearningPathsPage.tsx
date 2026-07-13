@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { useGetLearningPathsQuery, useEnrollInLearningPathMutation } from '../api/training.api';
 import { TrainingSubNav } from '../components/TrainingSubNav';

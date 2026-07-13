@@ -20,7 +20,7 @@ export function InterviewSchedulingPage() {
   const handleReschedule = (i: Interview) => {
     setModalInitialData({
       applicationId: i.applicationId,
-      interviewType: i.type,
+      interviewType: i.interviewType,
       scheduledDate: i.scheduledDate.split('T')[0],
       scheduledTime: i.scheduledTime,
       location: i.location,

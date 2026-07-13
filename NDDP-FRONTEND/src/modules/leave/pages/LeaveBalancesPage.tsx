@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+
 import { useGetAllLeaveBalancesQuery } from '../api/leave.api';
 import { LeaveSubNav } from '../components/LeaveSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';

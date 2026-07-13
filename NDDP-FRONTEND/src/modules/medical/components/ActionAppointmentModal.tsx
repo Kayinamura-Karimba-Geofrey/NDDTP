@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Modal, Input, Button } from '@/components/ui';
+import { Modal, Button } from '@/components/ui';
 import { useUpdateAppointmentStatusMutation } from '../api/medical.api';
 import type { MedicalAppointment } from '../constants/medical-data';
 import toast from 'react-hot-toast';
@@ -53,7 +53,7 @@ export function ActionAppointmentModal({ isOpen, appointment, action, onClose }:
   };
 
   const actionColors = {
-    CANCELLED: 'destructive',
+    CANCELLED: 'danger',
     COMPLETED: 'default',
     RESCHEDULED: 'secondary',
   };

@@ -3,13 +3,12 @@ import { MedicalSubNav } from '../components/MedicalSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { useGetMedicalDocumentsQuery, useUploadDocumentMutation } from '../api/medical.api';
 import type { MedicalDocument } from '../constants/medical-data';
 import toast from 'react-hot-toast';
+import { useGetMedicalDocumentsQuery } from "../api/medical.api";
 
 export function MedicalDocumentsPage() {
   const { data: documents = [], isLoading } = useGetMedicalDocumentsQuery();
-  const [uploadDocument] = useUploadDocumentMutation();
 
   const columns: DataTableColumn<MedicalDocument>[] = [
     { key: 'name', header: 'Document', render: (r) => <span className="font-medium">{r.name}</span> },

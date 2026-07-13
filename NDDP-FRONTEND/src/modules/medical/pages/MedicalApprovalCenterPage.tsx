@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { useGetPendingMedicalApprovalsQuery } from '../api/medical.api';
 import { MedicalSubNav } from '../components/MedicalSubNav';
 import { MedicalStatusBadge } from '../components/MedicalStatusBadge';

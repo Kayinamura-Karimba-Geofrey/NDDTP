@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast';
 import { RecruitmentSubNav } from '../components/RecruitmentSubNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button, Card, CardContent } from '@/components/ui';
