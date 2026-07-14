@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetExpendituresQuery } from '../api/finance.api';
 import { FinanceSubNav } from '../components/FinanceSubNav';
@@ -9,11 +8,13 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { Expenditure } from '../constants/finance-data';
+import { CreateExpenditureModal } from '../components/CreateExpenditureModal';
 
 export function ExpenditureManagementPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const { data, isLoading } = useGetExpendituresQuery({ page: 1, limit: 100 });
   const rows = (data?.data ?? []).filter((r) => !statusFilter || r.status === statusFilter);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<Expenditure>[] = [
     { key: 'num', header: 'Expenditure #', render: (r) => <code className="text-xs">{r.expenditureNumber}</code> },
@@ -29,7 +30,7 @@ export function ExpenditureManagementPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Finance', path: '/finance/dashboard' }, { label: 'Expenditures' }]} title="Expenditure Management" description="Track actual spending against budgets" actions={<Button onClick={() => toast('New expenditure')}><FiPlus className="h-4 w-4" /> New Expenditure</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Finance', path: '/finance/dashboard' }, { label: 'Expenditures' }]} title="Expenditure Management" description="Track actual spending against budgets" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Expenditure</Button>} />
       <FinanceSubNav />
       <Card>
         <CardContent className="pt-6">
@@ -41,6 +42,7 @@ export function ExpenditureManagementPage() {
           {isLoading ? <div className="data-table-empty">Loading...</div> : <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={rows as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />}
         </CardContent>
       </Card>
+      <CreateExpenditureModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
