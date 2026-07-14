@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { CalendarSubNav } from '../components/CalendarSubNav';
 import { CalendarStatusBadge } from '../components/CalendarStatusBadge';
@@ -7,9 +7,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetCalendarsQuery } from '../api/calendar.api';
 import type { CalendarRecord } from '../constants/calendar-data';
+import { CreateCalendarModal } from '../components/CreateCalendarModal';
 
 export function CalendarCalendarsPage() {
-  const { data: calendars = [] } = useGetCalendarsQuery();
+  const { data: calendars = [], isLoading } = useGetCalendarsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<CalendarRecord>[] = [
     { key: 'name', header: 'Calendar', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -22,9 +24,14 @@ export function CalendarCalendarsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Calendar', path: '/calendar/dashboard' }, { label: 'Calendars' }]} title="Calendars" description="Organizational, department, and personal calendars" actions={<Button onClick={() => toast('Create calendar')}><FiPlus className="h-4 w-4" /> New Calendar</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Calendar', path: '/calendar/dashboard' }, { label: 'Calendars' }]} title="Calendars" description="Organizational, department, and personal calendars" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Calendar</Button>} />
       <CalendarSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={calendars as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={calendars as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateCalendarModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

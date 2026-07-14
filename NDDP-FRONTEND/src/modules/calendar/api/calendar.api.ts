@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -8,9 +6,15 @@ import {
   MOCK_EVENTS,
   MOCK_MY_EVENTS,
   MOCK_INVITATIONS,
+  MOCK_ROOMS,
+  MOCK_HOLIDAYS,
+  MOCK_CONFLICTS,
   type CalendarRecord,
   type CalendarEvent,
   type CalendarAttendee,
+  type RoomBooking,
+  type HolidayItem,
+  type ConflictItem,
   type CalendarType,
   type CalendarEventType,
   type CalendarStatus,
@@ -58,12 +62,9 @@ function mapAttendee(raw: Record<string, unknown>): CalendarAttendee {
 
 export const calendarApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getCalendars: builder.query<CalendarRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_CALENDARS };
-        }
         const result = await baseQuery(serviceQuery('calendar', '/calendars'));
         if (result.error) return { data: MOCK_CALENDARS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -75,10 +76,6 @@ export const calendarApi = baseApi.injectEndpoints({
 
     getCalendarEvents: builder.query<CalendarEvent[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_EVENTS };
-        }
         const result = await baseQuery(serviceQuery('calendar', '/events?limit=50'));
         if (result.error) return { data: MOCK_EVENTS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -90,10 +87,6 @@ export const calendarApi = baseApi.injectEndpoints({
 
     getMyCalendarEvents: builder.query<CalendarEvent[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_MY_EVENTS };
-        }
         const result = await baseQuery(serviceQuery('calendar', '/events/me?limit=50'));
         if (result.error) return { data: MOCK_MY_EVENTS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -105,10 +98,6 @@ export const calendarApi = baseApi.injectEndpoints({
 
     getMyInvitations: builder.query<CalendarAttendee[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_INVITATIONS };
-        }
         const result = await baseQuery(serviceQuery('calendar', '/attendees/me'));
         if (result.error) return { data: MOCK_INVITATIONS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -116,6 +105,67 @@ export const calendarApi = baseApi.injectEndpoints({
         return { data: items.map(mapAttendee) };
       },
       providesTags: ['CalendarAttendees'],
+    }),
+
+    getRoomBookings: builder.query<RoomBooking[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('calendar', '/rooms/bookings'));
+        if (result.error) return { data: MOCK_ROOMS };
+        const raw = unwrapApiResponse<RoomBooking[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['CalendarRooms'],
+    }),
+
+    getHolidays: builder.query<HolidayItem[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('calendar', '/holidays'));
+        if (result.error) return { data: MOCK_HOLIDAYS };
+        const raw = unwrapApiResponse<HolidayItem[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['CalendarHolidays'],
+    }),
+
+    getConflicts: builder.query<ConflictItem[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('calendar', '/conflicts'));
+        if (result.error) return { data: MOCK_CONFLICTS };
+        const raw = unwrapApiResponse<ConflictItem[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['CalendarConflicts'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createCalendar: builder.mutation<void, any>({
+      query: (body) => serviceQuery('calendar', '/calendars', { method: 'POST', body }),
+      invalidatesTags: ['Calendars'],
+    }),
+
+    createCalendarEvent: builder.mutation<void, any>({
+      query: (body) => serviceQuery('calendar', '/events', { method: 'POST', body }),
+      invalidatesTags: ['CalendarEvents', 'CalendarConflicts'],
+    }),
+
+    respondToInvitation: builder.mutation<void, { id: string; rsvp: 'ACCEPTED' | 'DECLINED' | 'TENTATIVE' }>({
+      query: ({ id, rsvp }) => serviceQuery('calendar', `/attendees/${id}/rsvp`, { method: 'POST', body: { rsvp } }),
+      invalidatesTags: ['CalendarAttendees', 'CalendarEvents'],
+    }),
+
+    bookRoom: builder.mutation<void, any>({
+      query: (body) => serviceQuery('calendar', '/rooms/bookings', { method: 'POST', body }),
+      invalidatesTags: ['CalendarRooms'],
+    }),
+
+    createHoliday: builder.mutation<void, any>({
+      query: (body) => serviceQuery('calendar', '/holidays', { method: 'POST', body }),
+      invalidatesTags: ['CalendarHolidays', 'CalendarEvents'],
+    }),
+
+    resolveConflict: builder.mutation<void, { id: string; resolution: string }>({
+      query: ({ id, resolution }) => serviceQuery('calendar', `/conflicts/${id}/resolve`, { method: 'POST', body: { resolution } }),
+      invalidatesTags: ['CalendarConflicts', 'CalendarEvents'],
     }),
   }),
 });
@@ -125,4 +175,13 @@ export const {
   useGetCalendarEventsQuery,
   useGetMyCalendarEventsQuery,
   useGetMyInvitationsQuery,
+  useGetRoomBookingsQuery,
+  useGetHolidaysQuery,
+  useGetConflictsQuery,
+  useCreateCalendarMutation,
+  useCreateCalendarEventMutation,
+  useRespondToInvitationMutation,
+  useBookRoomMutation,
+  useCreateHolidayMutation,
+  useResolveConflictMutation,
 } = calendarApi;

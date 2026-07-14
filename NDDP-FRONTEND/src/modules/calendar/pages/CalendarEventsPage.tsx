@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
 import { CalendarSubNav } from '../components/CalendarSubNav';
@@ -7,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetCalendarEventsQuery } from '../api/calendar.api';
 import type { CalendarEvent } from '../constants/calendar-data';
+import { CreateCalendarEventModal } from '../components/CreateCalendarEventModal';
 
 export function CalendarEventsPage() {
-  const { data: events = [] } = useGetCalendarEventsQuery();
+  const { data: events = [], isLoading } = useGetCalendarEventsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<CalendarEvent>[] = [
     { key: 'title', header: 'Event', render: (r) => <span className="font-medium">{r.title}</span> },
@@ -28,9 +31,14 @@ export function CalendarEventsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Calendar', path: '/calendar/dashboard' }, { label: 'Events' }]} title="All Events" description="Meetings, trainings, ceremonies, leave blocks, and other scheduled activities" actions={<Link to="/calendar/events/new"><Button><FiPlus className="h-4 w-4" /> New Event</Button></Link>} />
+      <PageHeader breadcrumbs={[{ label: 'Calendar', path: '/calendar/dashboard' }, { label: 'Events' }]} title="All Events" description="Meetings, trainings, ceremonies, leave blocks, and other scheduled activities" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Event</Button>} />
       <CalendarSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={events as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={events as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateCalendarEventModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
