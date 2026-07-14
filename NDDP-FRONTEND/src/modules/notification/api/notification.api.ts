@@ -1,14 +1,26 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
   MOCK_INBOX,
   MOCK_MASTER_TEMPLATES,
   MOCK_PREFERENCES,
+  MOCK_ANNOUNCEMENTS,
+  MOCK_BROADCASTS,
+  MOCK_SCHEDULED,
+  MOCK_REMINDERS,
+  MOCK_DELIVERY,
+  MOCK_FAILED,
+  MOCK_RETRY_QUEUE,
   type InboxNotification,
   type NotificationTemplate,
+  type Announcement,
+  type BroadcastMessage,
+  type ScheduledNotification,
+  type ReminderRule,
+  type DeliveryRecord,
+  type FailedDelivery,
+  type RetryQueueItem,
 } from '../constants/notification-data';
 
 function mapInbox(raw: Record<string, unknown>): InboxNotification {
@@ -40,12 +52,9 @@ function mapTemplate(raw: Record<string, unknown>): NotificationTemplate {
 
 export const notificationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getNotificationInbox: builder.query<InboxNotification[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_INBOX };
-        }
         const result = await baseQuery(serviceQuery('notification', '/notifications/inbox?limit=50'));
         if (result.error) return { data: MOCK_INBOX };
         const raw = unwrapApiResponse<PaginatedResponse<Record<string, unknown>> | Record<string, unknown>[]>(result.data);
@@ -57,10 +66,6 @@ export const notificationApi = baseApi.injectEndpoints({
 
     getNotificationTemplates: builder.query<NotificationTemplate[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_MASTER_TEMPLATES };
-        }
         const result = await baseQuery(serviceQuery('notification', '/templates'));
         if (result.error) return { data: MOCK_MASTER_TEMPLATES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -72,10 +77,6 @@ export const notificationApi = baseApi.injectEndpoints({
 
     getNotificationPreferences: builder.query<typeof MOCK_PREFERENCES, void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_PREFERENCES };
-        }
         const result = await baseQuery(serviceQuery('notification', '/preferences'));
         if (result.error) return { data: MOCK_PREFERENCES };
         const raw = unwrapApiResponse<Record<string, unknown>>(result.data);
@@ -94,6 +95,112 @@ export const notificationApi = baseApi.injectEndpoints({
       },
       providesTags: ['NotificationPreferences'],
     }),
+
+    getAnnouncements: builder.query<Announcement[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/announcements'));
+        if (result.error) return { data: MOCK_ANNOUNCEMENTS };
+        const raw = unwrapApiResponse<Announcement[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationAnnouncements'],
+    }),
+
+    getBroadcasts: builder.query<BroadcastMessage[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/broadcasts'));
+        if (result.error) return { data: MOCK_BROADCASTS };
+        const raw = unwrapApiResponse<BroadcastMessage[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationBroadcasts'],
+    }),
+
+    getScheduledNotifications: builder.query<ScheduledNotification[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/scheduled'));
+        if (result.error) return { data: MOCK_SCHEDULED };
+        const raw = unwrapApiResponse<ScheduledNotification[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationScheduled'],
+    }),
+
+    getReminderRules: builder.query<ReminderRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/reminders'));
+        if (result.error) return { data: MOCK_REMINDERS };
+        const raw = unwrapApiResponse<ReminderRule[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationReminders'],
+    }),
+
+    getDeliveryRecords: builder.query<DeliveryRecord[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/delivery-logs'));
+        if (result.error) return { data: MOCK_DELIVERY };
+        const raw = unwrapApiResponse<DeliveryRecord[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationDeliveries'],
+    }),
+
+    getFailedDeliveries: builder.query<FailedDelivery[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/failed-logs'));
+        if (result.error) return { data: MOCK_FAILED };
+        const raw = unwrapApiResponse<FailedDelivery[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationFailed'],
+    }),
+
+    getRetryQueueItems: builder.query<RetryQueueItem[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('notification', '/retry-queue'));
+        if (result.error) return { data: MOCK_RETRY_QUEUE };
+        const raw = unwrapApiResponse<RetryQueueItem[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['NotificationRetryQueue'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    publishAnnouncement: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/announcements', { method: 'POST', body }),
+      invalidatesTags: ['NotificationAnnouncements'],
+    }),
+
+    sendBroadcast: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/broadcasts', { method: 'POST', body }),
+      invalidatesTags: ['NotificationBroadcasts', 'NotificationDeliveries'],
+    }),
+
+    createNotificationTemplate: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/templates', { method: 'POST', body }),
+      invalidatesTags: ['NotificationTemplates'],
+    }),
+
+    scheduleNotification: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/scheduled', { method: 'POST', body }),
+      invalidatesTags: ['NotificationScheduled'],
+    }),
+
+    createReminderRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/reminders', { method: 'POST', body }),
+      invalidatesTags: ['NotificationReminders'],
+    }),
+
+    updateNotificationPreferences: builder.mutation<void, any>({
+      query: (body) => serviceQuery('notification', '/preferences', { method: 'POST', body }),
+      invalidatesTags: ['NotificationPreferences'],
+    }),
+
+    retryNotification: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('notification', `/retry-queue/${id}/retry`, { method: 'POST' }),
+      invalidatesTags: ['NotificationRetryQueue', 'NotificationFailed', 'NotificationDeliveries'],
+    }),
   }),
 });
 
@@ -101,4 +208,18 @@ export const {
   useGetNotificationInboxQuery,
   useGetNotificationTemplatesQuery,
   useGetNotificationPreferencesQuery,
+  useGetAnnouncementsQuery,
+  useGetBroadcastsQuery,
+  useGetScheduledNotificationsQuery,
+  useGetReminderRulesQuery,
+  useGetDeliveryRecordsQuery,
+  useGetFailedDeliveriesQuery,
+  useGetRetryQueueItemsQuery,
+  usePublishAnnouncementMutation,
+  useSendBroadcastMutation,
+  useCreateNotificationTemplateMutation,
+  useScheduleNotificationMutation,
+  useCreateReminderRuleMutation,
+  useUpdateNotificationPreferencesMutation,
+  useRetryNotificationMutation,
 } = notificationApi;
