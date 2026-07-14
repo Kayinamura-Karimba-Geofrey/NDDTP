@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -64,12 +62,9 @@ function mapQuery(raw: Record<string, unknown>): SearchQueryRecord {
 
 export const searchApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getSearchIndexes: builder.query<SearchIndexRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_INDEXES };
-        }
         const result = await baseQuery(serviceQuery('search', '/indexes'));
         if (result.error) return { data: MOCK_INDEXES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -81,11 +76,6 @@ export const searchApi = baseApi.injectEndpoints({
 
     getSearchDocuments: builder.query<SearchDocumentRecord[], string | void>({
       queryFn: async (indexId, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          const data = indexId ? SEARCH_MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) : SEARCH_MOCK_DOCUMENTS;
-          return { data };
-        }
         if (!indexId) return { data: SEARCH_MOCK_DOCUMENTS };
         const result = await baseQuery(serviceQuery('search', `/documents/index/${indexId}`));
         if (result.error) return { data: SEARCH_MOCK_DOCUMENTS.filter((d) => d.indexId === indexId) };
@@ -98,10 +88,6 @@ export const searchApi = baseApi.injectEndpoints({
 
     getSearchQueries: builder.query<SearchQueryRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_QUERIES };
-        }
         const result = await baseQuery(serviceQuery('search', '/queries?limit=50'));
         if (result.error) return { data: MOCK_QUERIES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -113,10 +99,6 @@ export const searchApi = baseApi.injectEndpoints({
 
     getMySearchQueries: builder.query<SearchQueryRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_QUERIES.filter((q) => ['Q-701', 'Q-702'].includes(q.id)) };
-        }
         const result = await baseQuery(serviceQuery('search', '/queries/mine'));
         if (result.error) return { data: MOCK_QUERIES.filter((q) => ['Q-701', 'Q-702'].includes(q.id)) };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -124,6 +106,27 @@ export const searchApi = baseApi.injectEndpoints({
         return { data: items.map(mapQuery) };
       },
       providesTags: ['SearchQueries'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createSearchIndex: builder.mutation<void, any>({
+      query: (body) => serviceQuery('search', '/indexes', { method: 'POST', body }),
+      invalidatesTags: ['SearchIndexes'],
+    }),
+
+    rebuildSearchIndex: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('search', `/indexes/${id}/rebuild`, { method: 'POST' }),
+      invalidatesTags: ['SearchIndexes', 'SearchDocuments'],
+    }),
+
+    createSearchDocument: builder.mutation<void, any>({
+      query: (body) => serviceQuery('search', '/documents', { method: 'POST', body }),
+      invalidatesTags: ['SearchDocuments', 'SearchIndexes'],
+    }),
+
+    submitSearchQuery: builder.mutation<SearchQueryRecord, any>({
+      query: (body) => serviceQuery('search', '/queries', { method: 'POST', body }),
+      invalidatesTags: ['SearchQueries'],
     }),
   }),
 });
@@ -133,4 +136,8 @@ export const {
   useGetSearchDocumentsQuery,
   useGetSearchQueriesQuery,
   useGetMySearchQueriesQuery,
+  useCreateSearchIndexMutation,
+  useRebuildSearchIndexMutation,
+  useCreateSearchDocumentMutation,
+  useSubmitSearchQueryMutation,
 } = searchApi;
