@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FiPlus } from 'react-icons/fi';
 import { AiAssistantSubNav } from '../components/AiAssistantSubNav';
 import { AiAssistantStatusBadge } from '../components/AiAssistantStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -6,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetMyAiConversationsQuery } from '../api/ai-assistant.api';
 import type { AiConversationRecord } from '../constants/ai-assistant-data';
+import { CreateAiConversationModal } from '../components/CreateAiConversationModal';
 
 export function AiAssistantMyConversationsPage() {
-  const { data: conversations = [] } = useGetMyAiConversationsQuery();
+  const { data: conversations = [], isLoading } = useGetMyAiConversationsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<AiConversationRecord>[] = [
     { key: 'title', header: 'Title', render: (r) => <span className="font-medium">{r.title}</span> },
@@ -25,9 +29,14 @@ export function AiAssistantMyConversationsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'AI Assistant', path: '/ai-assistant/dashboard' }, { label: 'My Chats' }]} title="My Conversations" description="Chats you started with platform assistants" actions={<Link to="/ai-assistant/conversations/new"><Button>New Chat</Button></Link>} />
+      <PageHeader breadcrumbs={[{ label: 'AI Assistant', path: '/ai-assistant/dashboard' }, { label: 'My Chats' }]} title="My Conversations" description="Chats you started with platform assistants" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Chat</Button>} />
       <AiAssistantSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={conversations as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={conversations as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateAiConversationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

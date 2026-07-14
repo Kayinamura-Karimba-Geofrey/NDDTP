@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -64,12 +62,9 @@ function mapMessage(raw: Record<string, unknown>): AiMessageRecord {
 
 export const aiAssistantApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getAiAgents: builder.query<AiAgentRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_AGENTS };
-        }
         const result = await baseQuery(serviceQuery('ai-assistant', '/agents'));
         if (result.error) return { data: MOCK_AGENTS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -81,10 +76,6 @@ export const aiAssistantApi = baseApi.injectEndpoints({
 
     getMyAiConversations: builder.query<AiConversationRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_MY_CONVERSATIONS };
-        }
         const result = await baseQuery(serviceQuery('ai-assistant', '/conversations/me'));
         if (result.error) return { data: MOCK_MY_CONVERSATIONS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -96,11 +87,6 @@ export const aiAssistantApi = baseApi.injectEndpoints({
 
     getAiConversations: builder.query<AiConversationRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_CONVERSATIONS };
-        }
-        // No admin list endpoint — fall back to /me with broader mock when live fails
         const result = await baseQuery(serviceQuery('ai-assistant', '/conversations/me'));
         if (result.error) return { data: MOCK_CONVERSATIONS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -112,10 +98,6 @@ export const aiAssistantApi = baseApi.injectEndpoints({
 
     getAiMessages: builder.query<AiMessageRecord[], string>({
       queryFn: async (conversationId, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_MESSAGES.filter((m) => m.conversationId === conversationId) };
-        }
         const result = await baseQuery(serviceQuery('ai-assistant', `/messages/conversation/${conversationId}`));
         if (result.error) return { data: MOCK_MESSAGES.filter((m) => m.conversationId === conversationId) };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -123,6 +105,27 @@ export const aiAssistantApi = baseApi.injectEndpoints({
         return { data: items.map(mapMessage) };
       },
       providesTags: ['AiMessages'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createAiAgent: builder.mutation<void, any>({
+      query: (body) => serviceQuery('ai-assistant', '/agents', { method: 'POST', body }),
+      invalidatesTags: ['AiAgents'],
+    }),
+
+    createAiConversation: builder.mutation<AiConversationRecord, any>({
+      query: (body) => serviceQuery('ai-assistant', '/conversations', { method: 'POST', body }),
+      invalidatesTags: ['AiConversations'],
+    }),
+
+    postAiMessage: builder.mutation<void, any>({
+      query: (body) => serviceQuery('ai-assistant', '/messages', { method: 'POST', body }),
+      invalidatesTags: ['AiMessages', 'AiConversations'],
+    }),
+
+    closeAiConversation: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('ai-assistant', `/conversations/${id}/close`, { method: 'POST' }),
+      invalidatesTags: ['AiConversations'],
     }),
   }),
 });
@@ -132,4 +135,8 @@ export const {
   useGetMyAiConversationsQuery,
   useGetAiConversationsQuery,
   useGetAiMessagesQuery,
+  useCreateAiAgentMutation,
+  useCreateAiConversationMutation,
+  usePostAiMessageMutation,
+  useCloseAiConversationMutation,
 } = aiAssistantApi;
