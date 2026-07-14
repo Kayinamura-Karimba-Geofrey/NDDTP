@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
 import { MaintenanceSubNav } from '../components/MaintenanceSubNav';
@@ -7,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetWorkOrdersQuery } from '../api/maintenance.api';
 import type { WorkOrder } from '../constants/maintenance-data';
+import { CreateWorkOrderModal } from '../components/CreateWorkOrderModal';
 
 export function MaintenanceWorkOrdersPage() {
-  const { data: orders = [] } = useGetWorkOrdersQuery();
+  const { data: orders = [], isLoading } = useGetWorkOrdersQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<WorkOrder>[] = [
     { key: 'id', header: 'WO ID', render: (r) => <span className="font-mono text-xs">{r.id}</span> },
@@ -30,9 +33,14 @@ export function MaintenanceWorkOrdersPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Maintenance', path: '/maintenance/dashboard' }, { label: 'Work Orders' }]} title="Work Orders" description="Schedule, start, complete, and track facility and equipment maintenance" actions={<Link to="/maintenance/requests/new"><Button><FiPlus className="h-4 w-4" /> From Request</Button></Link>} />
+      <PageHeader breadcrumbs={[{ label: 'Maintenance', path: '/maintenance/dashboard' }, { label: 'Work Orders' }]} title="Work Orders" description="Schedule, start, complete, and track facility and equipment maintenance" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Create Work Order</Button>} />
       <MaintenanceSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={orders as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={orders as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateWorkOrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

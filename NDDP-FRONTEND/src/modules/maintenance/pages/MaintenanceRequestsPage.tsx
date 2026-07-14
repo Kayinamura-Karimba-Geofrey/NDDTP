@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
 import { MaintenanceSubNav } from '../components/MaintenanceSubNav';
@@ -7,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetMaintenanceRequestsQuery } from '../api/maintenance.api';
 import type { MaintenanceRequest } from '../constants/maintenance-data';
+import { CreateMaintenanceRequestModal } from '../components/CreateMaintenanceRequestModal';
 
 export function MaintenanceRequestsPage() {
-  const { data: requests = [] } = useGetMaintenanceRequestsQuery();
+  const { data: requests = [], isLoading } = useGetMaintenanceRequestsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<MaintenanceRequest>[] = [
     { key: 'id', header: 'Request ID', render: (r) => <span className="font-mono text-xs">{r.id}</span> },
@@ -30,9 +33,14 @@ export function MaintenanceRequestsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Maintenance', path: '/maintenance/dashboard' }, { label: 'Requests' }]} title="Maintenance Requests" description="Corrective, preventive, emergency, and inspection requests" actions={<Link to="/maintenance/requests/new"><Button><FiPlus className="h-4 w-4" /> New Request</Button></Link>} />
+      <PageHeader breadcrumbs={[{ label: 'Maintenance', path: '/maintenance/dashboard' }, { label: 'Requests' }]} title="Maintenance Requests" description="Corrective, preventive, emergency, and inspection requests" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Request</Button>} />
       <MaintenanceSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={requests as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={requests as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateMaintenanceRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

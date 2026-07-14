@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -8,12 +6,20 @@ import {
   MOCK_REQUESTS,
   MOCK_PENDING,
   MOCK_WORK_ORDERS,
+  MOCK_TECHNICIANS,
+  MOCK_PARTS,
+  MOCK_PREVENTIVE,
+  MOCK_SLA,
   type MaintenanceCategory,
   type MaintenanceRequest,
   type WorkOrder,
   type MaintenanceType,
   type MaintenancePriority,
   type MaintenanceStatus,
+  type Technician,
+  type MaintenancePart,
+  type PreventiveSchedule,
+  type SlaRule,
 } from '../constants/maintenance-data';
 
 function mapCategory(raw: Record<string, unknown>): MaintenanceCategory {
@@ -57,12 +63,9 @@ function mapWorkOrder(raw: Record<string, unknown>): WorkOrder {
 
 export const maintenanceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getMaintenanceCategories: builder.query<MaintenanceCategory[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_CATEGORIES };
-        }
         const result = await baseQuery(serviceQuery('maintenance', '/categories'));
         if (result.error) return { data: MOCK_CATEGORIES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -74,10 +77,6 @@ export const maintenanceApi = baseApi.injectEndpoints({
 
     getMaintenanceRequests: builder.query<MaintenanceRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_REQUESTS };
-        }
         const result = await baseQuery(serviceQuery('maintenance', '/requests?limit=50'));
         if (result.error) return { data: MOCK_REQUESTS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -89,10 +88,6 @@ export const maintenanceApi = baseApi.injectEndpoints({
 
     getPendingMaintenanceRequests: builder.query<MaintenanceRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_PENDING };
-        }
         const result = await baseQuery(serviceQuery('maintenance', '/requests/pending'));
         if (result.error) return { data: MOCK_PENDING };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -104,10 +99,6 @@ export const maintenanceApi = baseApi.injectEndpoints({
 
     getWorkOrders: builder.query<WorkOrder[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_WORK_ORDERS };
-        }
         const result = await baseQuery(serviceQuery('maintenance', '/work-orders?limit=50'));
         if (result.error) return { data: MOCK_WORK_ORDERS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -115,6 +106,87 @@ export const maintenanceApi = baseApi.injectEndpoints({
         return { data: items.map(mapWorkOrder) };
       },
       providesTags: ['WorkOrders'],
+    }),
+
+    getMaintenanceTechnicians: builder.query<Technician[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('maintenance', '/technicians'));
+        if (result.error) return { data: MOCK_TECHNICIANS };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as Technician[] };
+      },
+      providesTags: ['MaintenanceTechnicians'],
+    }),
+
+    getMaintenanceParts: builder.query<MaintenancePart[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('maintenance', '/parts'));
+        if (result.error) return { data: MOCK_PARTS };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as MaintenancePart[] };
+      },
+      providesTags: ['MaintenanceParts'],
+    }),
+
+    getMaintenancePreventive: builder.query<PreventiveSchedule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('maintenance', '/preventive-schedules'));
+        if (result.error) return { data: MOCK_PREVENTIVE };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as PreventiveSchedule[] };
+      },
+      providesTags: ['MaintenancePreventive'],
+    }),
+
+    getMaintenanceSla: builder.query<SlaRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('maintenance', '/sla-rules'));
+        if (result.error) return { data: MOCK_SLA };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as SlaRule[] };
+      },
+      providesTags: ['MaintenanceSla'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createMaintenanceCategory: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/categories', { method: 'POST', body }),
+      invalidatesTags: ['MaintenanceCategories'],
+    }),
+
+    createMaintenanceRequest: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/requests', { method: 'POST', body }),
+      invalidatesTags: ['MaintenanceRequests'],
+    }),
+
+    createWorkOrder: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/work-orders', { method: 'POST', body }),
+      invalidatesTags: ['WorkOrders', 'MaintenanceRequests'],
+    }),
+
+    createTechnician: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/technicians', { method: 'POST', body }),
+      invalidatesTags: ['MaintenanceTechnicians'],
+    }),
+
+    createMaintenancePart: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/parts', { method: 'POST', body }),
+      invalidatesTags: ['MaintenanceParts'],
+    }),
+
+    createPreventiveSchedule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/preventive-schedules', { method: 'POST', body }),
+      invalidatesTags: ['MaintenancePreventive'],
+    }),
+
+    createSlaRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('maintenance', '/sla-rules', { method: 'POST', body }),
+      invalidatesTags: ['MaintenanceSla'],
+    }),
+
+    processMaintenanceRequestApproval: builder.mutation<void, { id: string; action: 'APPROVE' | 'REJECT' }>({
+      query: ({ id, action }) => serviceQuery('maintenance', `/requests/${id}/action`, { method: 'POST', body: { action } }),
+      invalidatesTags: ['MaintenanceRequests', 'WorkOrders'],
     }),
   }),
 });
@@ -124,4 +196,16 @@ export const {
   useGetMaintenanceRequestsQuery,
   useGetPendingMaintenanceRequestsQuery,
   useGetWorkOrdersQuery,
+  useGetMaintenanceTechniciansQuery,
+  useGetMaintenancePartsQuery,
+  useGetMaintenancePreventiveQuery,
+  useGetMaintenanceSlaQuery,
+  useCreateMaintenanceCategoryMutation,
+  useCreateMaintenanceRequestMutation,
+  useCreateWorkOrderMutation,
+  useCreateTechnicianMutation,
+  useCreateMaintenancePartMutation,
+  useCreatePreventiveScheduleMutation,
+  useCreateSlaRuleMutation,
+  useProcessMaintenanceRequestApprovalMutation,
 } = maintenanceApi;
