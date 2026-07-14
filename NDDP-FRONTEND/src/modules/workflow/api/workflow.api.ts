@@ -1,18 +1,29 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay, paginate } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
+import { paginate } from '@/utils/api-mock';
 import {
   MOCK_TEMPLATES,
   MOCK_RUNNING,
   MOCK_TASKS,
+  MOCK_CHAINS,
+  MOCK_RULES,
+  MOCK_DELEGATIONS,
+  MOCK_ESCALATIONS,
+  MOCK_SLAS,
+  MOCK_AUTOMATION,
+  MOCK_HISTORY,
   type WorkflowTemplate,
   type RunningWorkflow,
   type WorkflowTask,
+  type ApprovalChain,
+  type BusinessRule,
+  type Delegation,
+  type EscalationRule,
+  type SlaRule,
+  type AutomationRule,
+  type WorkflowHistoryEvent,
 } from '../constants/workflow-data';
-
-
 
 function mapTemplate(raw: Record<string, unknown>): WorkflowTemplate {
   return {
@@ -60,12 +71,9 @@ function mapTask(raw: Record<string, unknown>): WorkflowTask {
 
 export const workflowApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getWorkflowTemplates: builder.query<WorkflowTemplate[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_TEMPLATES };
-        }
         const result = await baseQuery(serviceQuery('workflow', '/definitions'));
         if (result.error) return { data: MOCK_TEMPLATES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -77,10 +85,6 @@ export const workflowApi = baseApi.injectEndpoints({
 
     getRunningWorkflows: builder.query<PaginatedResponse<RunningWorkflow>, { page?: number; limit?: number }>({
       queryFn: async (params, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: paginate(MOCK_RUNNING, params.page ?? 1, params.limit ?? 50) };
-        }
         const qs = new URLSearchParams({ page: String(params.page ?? 1), limit: String(params.limit ?? 50) });
         const result = await baseQuery(serviceQuery('workflow', `/instances?${qs}`));
         if (result.error) return { data: paginate(MOCK_RUNNING, params.page ?? 1, params.limit ?? 50) };
@@ -92,10 +96,6 @@ export const workflowApi = baseApi.injectEndpoints({
 
     getPendingTasks: builder.query<WorkflowTask[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_TASKS };
-        }
         const result = await baseQuery(serviceQuery('workflow', '/tasks/me?limit=50'));
         if (result.error) {
           const fallback = await baseQuery(serviceQuery('workflow', '/tasks/pending?limit=50'));
@@ -108,6 +108,122 @@ export const workflowApi = baseApi.injectEndpoints({
       },
       providesTags: ['WorkflowTasks'],
     }),
+
+    getApprovalChains: builder.query<ApprovalChain[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/approval-chains'));
+        if (result.error) return { data: MOCK_CHAINS };
+        const raw = unwrapApiResponse<ApprovalChain[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowChains'],
+    }),
+
+    getBusinessRules: builder.query<BusinessRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/business-rules'));
+        if (result.error) return { data: MOCK_RULES };
+        const raw = unwrapApiResponse<BusinessRule[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowRules'],
+    }),
+
+    getDelegations: builder.query<Delegation[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/delegations'));
+        if (result.error) return { data: MOCK_DELEGATIONS };
+        const raw = unwrapApiResponse<Delegation[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowDelegations'],
+    }),
+
+    getEscalationRules: builder.query<EscalationRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/escalations'));
+        if (result.error) return { data: MOCK_ESCALATIONS };
+        const raw = unwrapApiResponse<EscalationRule[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowEscalations'],
+    }),
+
+    getSlaRules: builder.query<SlaRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/sla-rules'));
+        if (result.error) return { data: MOCK_SLAS };
+        const raw = unwrapApiResponse<SlaRule[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowSla'],
+    }),
+
+    getAutomationRules: builder.query<AutomationRule[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/automations'));
+        if (result.error) return { data: MOCK_AUTOMATION };
+        const raw = unwrapApiResponse<AutomationRule[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowAutomation'],
+    }),
+
+    getWorkflowHistory: builder.query<WorkflowHistoryEvent[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('workflow', '/history'));
+        if (result.error) return { data: MOCK_HISTORY };
+        const raw = unwrapApiResponse<WorkflowHistoryEvent[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['WorkflowHistory'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createWorkflowTemplate: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/definitions', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowTemplates'],
+    }),
+
+    startWorkflowInstance: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/instances', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowInstances'],
+    }),
+
+    processTaskApproval: builder.mutation<void, { id: string; action: 'APPROVE' | 'REJECT' | 'DELEGATE'; details?: any }>({
+      query: ({ id, action, details }) => serviceQuery('workflow', `/tasks/${id}/action`, { method: 'POST', body: { action, ...details } }),
+      invalidatesTags: ['WorkflowTasks', 'WorkflowInstances', 'WorkflowHistory'],
+    }),
+
+    createApprovalChain: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/approval-chains', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowChains'],
+    }),
+
+    createBusinessRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/business-rules', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowRules'],
+    }),
+
+    createDelegation: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/delegations', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowDelegations'],
+    }),
+
+    createEscalationRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/escalations', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowEscalations'],
+    }),
+
+    createSlaRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/sla-rules', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowSla'],
+    }),
+
+    createAutomationRule: builder.mutation<void, any>({
+      query: (body) => serviceQuery('workflow', '/automations', { method: 'POST', body }),
+      invalidatesTags: ['WorkflowAutomation'],
+    }),
   }),
 });
 
@@ -115,4 +231,20 @@ export const {
   useGetWorkflowTemplatesQuery,
   useGetRunningWorkflowsQuery,
   useGetPendingTasksQuery,
+  useGetApprovalChainsQuery,
+  useGetBusinessRulesQuery,
+  useGetDelegationsQuery,
+  useGetEscalationRulesQuery,
+  useGetSlaRulesQuery,
+  useGetAutomationRulesQuery,
+  useGetWorkflowHistoryQuery,
+  useCreateWorkflowTemplateMutation,
+  useStartWorkflowInstanceMutation,
+  useProcessTaskApprovalMutation,
+  useCreateApprovalChainMutation,
+  useCreateBusinessRuleMutation,
+  useCreateDelegationMutation,
+  useCreateEscalationRuleMutation,
+  useCreateSlaRuleMutation,
+  useCreateAutomationRuleMutation,
 } = workflowApi;

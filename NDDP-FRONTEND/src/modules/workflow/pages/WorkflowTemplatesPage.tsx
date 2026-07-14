@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import dayjs from 'dayjs';
-import toast from 'react-hot-toast';
 import { FiPlus } from 'react-icons/fi';
 import { useGetWorkflowTemplatesQuery } from '../api/workflow.api';
 import { WorkflowSubNav } from '../components/WorkflowSubNav';
@@ -8,9 +8,11 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import type { WorkflowTemplate } from '../constants/workflow-data';
+import { CreateWorkflowTemplateModal } from '../components/CreateWorkflowTemplateModal';
 
 export function WorkflowTemplatesPage() {
   const { data: templates = [], isLoading } = useGetWorkflowTemplatesQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<WorkflowTemplate>[] = [
     { key: 'name', header: 'Template', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -25,9 +27,14 @@ export function WorkflowTemplatesPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Workflow', path: '/workflow/dashboard' }, { label: 'Templates' }]} title="Workflow Templates" description="Reusable workflow definitions for leave, procurement, finance, fleet, and more" actions={<Button onClick={() => toast('Create template')}><FiPlus className="h-4 w-4" /> New Template</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Workflow', path: '/workflow/dashboard' }, { label: 'Templates' }]} title="Workflow Templates" description="Reusable workflow definitions for leave, procurement, finance, fleet, and more" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Template</Button>} />
       <WorkflowSubNav />
-      <Card><CardContent className="pt-6">{isLoading ? <div className="data-table-empty">Loading...</div> : <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={templates as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />}</CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={templates as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateWorkflowTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
