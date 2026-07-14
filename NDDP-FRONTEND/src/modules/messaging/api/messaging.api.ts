@@ -1,13 +1,18 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
   MOCK_CHANNELS,
   MOCK_INBOX,
+  MOCK_MEMBERS,
+  MOCK_RECEIPTS,
+  MOCK_PRESENCE,
+  MOCK_FILES,
   type MessagingChannel,
   type MessagingMessage,
+  type ChannelMember,
+  type MessageReceipt,
+  type PresenceUser,
   type ChannelType,
   type MessagingStatus,
 } from '../constants/messaging-data';
@@ -41,12 +46,9 @@ function mapMessage(raw: Record<string, unknown>): MessagingMessage {
 
 export const messagingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getMyChannels: builder.query<MessagingChannel[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_CHANNELS };
-        }
         const result = await baseQuery(serviceQuery('messaging', '/channels/mine'));
         if (result.error) return { data: MOCK_CHANNELS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -58,17 +60,82 @@ export const messagingApi = baseApi.injectEndpoints({
 
     getChannelMessages: builder.query<MessagingMessage[], string | void>({
       queryFn: async (channelId, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API || !channelId) {
-          await mockDelay(200);
-          return { data: channelId ? MOCK_INBOX.filter((m) => m.channelId === channelId) : MOCK_INBOX };
-        }
+        if (!channelId) return { data: MOCK_INBOX };
         const result = await baseQuery(serviceQuery('messaging', `/messages/channel/${channelId}?limit=50`));
-        if (result.error) return { data: MOCK_INBOX };
+        if (result.error) return { data: MOCK_INBOX.filter((m) => m.channelId === channelId) };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
         const items = Array.isArray(raw) ? raw : raw.data ?? [];
         return { data: items.map(mapMessage) };
       },
       providesTags: ['MessagingMessages'],
+    }),
+
+    getChannelMembers: builder.query<ChannelMember[], string | void>({
+      queryFn: async (channelId, _a, _b, baseQuery) => {
+        const url = channelId ? `/channels/${channelId}/members` : '/members';
+        const result = await baseQuery(serviceQuery('messaging', url));
+        if (result.error) return { data: MOCK_MEMBERS };
+        const raw = unwrapApiResponse<ChannelMember[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['MessagingMembers'],
+    }),
+
+    getMessageReceipts: builder.query<MessageReceipt[], string | void>({
+      queryFn: async (messageId, _a, _b, baseQuery) => {
+        const url = messageId ? `/messages/${messageId}/receipts` : '/receipts';
+        const result = await baseQuery(serviceQuery('messaging', url));
+        if (result.error) return { data: MOCK_RECEIPTS };
+        const raw = unwrapApiResponse<MessageReceipt[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['MessagingReceipts'],
+    }),
+
+    getPresenceUsers: builder.query<PresenceUser[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('messaging', '/presence'));
+        if (result.error) return { data: MOCK_PRESENCE };
+        const raw = unwrapApiResponse<PresenceUser[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['MessagingPresence'],
+    }),
+
+    getMessagingFiles: builder.query<typeof MOCK_FILES, void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('messaging', '/files'));
+        if (result.error) return { data: MOCK_FILES };
+        const raw = unwrapApiResponse<typeof MOCK_FILES>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['MessagingFiles'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createChannel: builder.mutation<void, any>({
+      query: (body) => serviceQuery('messaging', '/channels', { method: 'POST', body }),
+      invalidatesTags: ['MessagingChannels'],
+    }),
+
+    postMessage: builder.mutation<void, any>({
+      query: (body) => serviceQuery('messaging', '/messages', { method: 'POST', body }),
+      invalidatesTags: ['MessagingMessages', 'MessagingChannels'],
+    }),
+
+    updatePresence: builder.mutation<void, { status: MessagingStatus }>({
+      query: (body) => serviceQuery('messaging', '/presence/update', { method: 'POST', body }),
+      invalidatesTags: ['MessagingPresence'],
+    }),
+
+    addMemberToChannel: builder.mutation<void, { channelId: string; userId: string }>({
+      query: ({ channelId, userId }) => serviceQuery('messaging', `/channels/${channelId}/members`, { method: 'POST', body: { userId } }),
+      invalidatesTags: ['MessagingMembers', 'MessagingChannels'],
+    }),
+
+    deleteMessage: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('messaging', `/messages/${id}`, { method: 'DELETE' }),
+      invalidatesTags: ['MessagingMessages'],
     }),
   }),
 });
@@ -76,4 +143,13 @@ export const messagingApi = baseApi.injectEndpoints({
 export const {
   useGetMyChannelsQuery,
   useGetChannelMessagesQuery,
+  useGetChannelMembersQuery,
+  useGetMessageReceiptsQuery,
+  useGetPresenceUsersQuery,
+  useGetMessagingFilesQuery,
+  useCreateChannelMutation,
+  usePostMessageMutation,
+  useUpdatePresenceMutation,
+  useAddMemberToChannelMutation,
+  useDeleteMessageMutation,
 } = messagingApi;
