@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -9,6 +7,9 @@ import {
   MOCK_SPACES,
   MOCK_BOOKINGS,
   MOCK_AVAILABLE_SPACES,
+  MOCK_UTILITIES,
+  MOCK_INSPECTIONS,
+  MOCK_ACCESS,
   type FacilityTypeRecord,
   type FacilityRecord,
   type FacilitySpace,
@@ -16,6 +17,9 @@ import {
   type FacilityTypeCategory,
   type SpaceType,
   type FacilitiesStatus,
+  type UtilityReading,
+  type FacilityInspection,
+  type AccessZone,
 } from '../constants/facilities-data';
 
 function mapType(raw: Record<string, unknown>): FacilityTypeRecord {
@@ -72,12 +76,9 @@ function mapBooking(raw: Record<string, unknown>): SpaceBooking {
 
 export const facilitiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getFacilityTypes: builder.query<FacilityTypeRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_TYPES };
-        }
         const result = await baseQuery(serviceQuery('facilities', '/types'));
         if (result.error) return { data: MOCK_TYPES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -89,10 +90,6 @@ export const facilitiesApi = baseApi.injectEndpoints({
 
     getFacilitiesDirectory: builder.query<FacilityRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_FACILITIES };
-        }
         const result = await baseQuery(serviceQuery('facilities', '/facilities'));
         if (result.error) return { data: MOCK_FACILITIES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -104,10 +101,6 @@ export const facilitiesApi = baseApi.injectEndpoints({
 
     getFacilitySpaces: builder.query<FacilitySpace[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_SPACES };
-        }
         const result = await baseQuery(serviceQuery('facilities', '/spaces'));
         if (result.error) return { data: MOCK_SPACES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -119,10 +112,6 @@ export const facilitiesApi = baseApi.injectEndpoints({
 
     getAvailableSpaces: builder.query<FacilitySpace[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_AVAILABLE_SPACES };
-        }
         const result = await baseQuery(serviceQuery('facilities', '/spaces/available'));
         if (result.error) return { data: MOCK_AVAILABLE_SPACES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -134,10 +123,6 @@ export const facilitiesApi = baseApi.injectEndpoints({
 
     getSpaceBookings: builder.query<SpaceBooking[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_BOOKINGS };
-        }
         const result = await baseQuery(serviceQuery('facilities', '/bookings?limit=50'));
         if (result.error) return { data: MOCK_BOOKINGS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -145,6 +130,77 @@ export const facilitiesApi = baseApi.injectEndpoints({
         return { data: items.map(mapBooking) };
       },
       providesTags: ['SpaceBookings'],
+    }),
+
+    getFacilityUtilities: builder.query<UtilityReading[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('facilities', '/utilities'));
+        if (result.error) return { data: MOCK_UTILITIES };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as UtilityReading[] };
+      },
+      providesTags: ['FacilityUtilities'],
+    }),
+
+    getFacilityInspections: builder.query<FacilityInspection[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('facilities', '/inspections'));
+        if (result.error) return { data: MOCK_INSPECTIONS };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as FacilityInspection[] };
+      },
+      providesTags: ['FacilityInspections'],
+    }),
+
+    getFacilityAccessZones: builder.query<AccessZone[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('facilities', '/access-zones'));
+        if (result.error) return { data: MOCK_ACCESS };
+        const raw = unwrapApiResponse<Record<string, unknown>[]>(result.data);
+        return { data: raw as unknown as AccessZone[] };
+      },
+      providesTags: ['FacilityAccess'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createFacilityType: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/types', { method: 'POST', body }),
+      invalidatesTags: ['FacilityTypes'],
+    }),
+
+    createFacility: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/facilities', { method: 'POST', body }),
+      invalidatesTags: ['FacilitiesDirectory'],
+    }),
+
+    createFacilitySpace: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/spaces', { method: 'POST', body }),
+      invalidatesTags: ['FacilitySpaces'],
+    }),
+
+    createSpaceBooking: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/bookings', { method: 'POST', body }),
+      invalidatesTags: ['SpaceBookings', 'FacilitySpaces'],
+    }),
+
+    createUtilityReading: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/utilities', { method: 'POST', body }),
+      invalidatesTags: ['FacilityUtilities'],
+    }),
+
+    createFacilityInspection: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/inspections', { method: 'POST', body }),
+      invalidatesTags: ['FacilityInspections'],
+    }),
+
+    createAccessZone: builder.mutation<void, any>({
+      query: (body) => serviceQuery('facilities', '/access-zones', { method: 'POST', body }),
+      invalidatesTags: ['FacilityAccess'],
+    }),
+
+    processSpaceBookingApproval: builder.mutation<void, { id: string; action: 'APPROVE' | 'REJECT' }>({
+      query: ({ id, action }) => serviceQuery('facilities', `/bookings/${id}/action`, { method: 'POST', body: { action } }),
+      invalidatesTags: ['SpaceBookings', 'FacilitySpaces'],
     }),
   }),
 });
@@ -155,4 +211,15 @@ export const {
   useGetFacilitySpacesQuery,
   useGetAvailableSpacesQuery,
   useGetSpaceBookingsQuery,
+  useGetFacilityUtilitiesQuery,
+  useGetFacilityInspectionsQuery,
+  useGetFacilityAccessZonesQuery,
+  useCreateFacilityTypeMutation,
+  useCreateFacilityMutation,
+  useCreateFacilitySpaceMutation,
+  useCreateSpaceBookingMutation,
+  useCreateUtilityReadingMutation,
+  useCreateFacilityInspectionMutation,
+  useCreateAccessZoneMutation,
+  useProcessSpaceBookingApprovalMutation,
 } = facilitiesApi;

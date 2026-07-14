@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FiPlus } from 'react-icons/fi';
 import { FacilitiesSubNav } from '../components/FacilitiesSubNav';
 import { FacilitiesStatusBadge } from '../components/FacilitiesStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -6,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetFacilitiesDirectoryQuery } from '../api/facilities.api';
 import type { FacilityRecord } from '../constants/facilities-data';
+import { CreateFacilityModal } from '../components/CreateFacilityModal';
 
 export function FacilitiesDirectoryPage() {
-  const { data: facilities = [] } = useGetFacilitiesDirectoryQuery();
+  const { data: facilities = [], isLoading } = useGetFacilitiesDirectoryQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<FacilityRecord>[] = [
     { key: 'id', header: 'ID', render: (r) => <span className="font-mono text-xs">{r.id}</span> },
@@ -28,9 +32,14 @@ export function FacilitiesDirectoryPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Facilities', path: '/facilities/dashboard' }, { label: 'Directory' }]} title="Facility Directory" description="Buildings and sites across the estate" />
+      <PageHeader breadcrumbs={[{ label: 'Facilities', path: '/facilities/dashboard' }, { label: 'Directory' }]} title="Facility Directory" description="Buildings and sites across the estate" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Add Facility</Button>} />
       <FacilitiesSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={facilities as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={facilities as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateFacilityModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

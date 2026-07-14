@@ -1,11 +1,18 @@
+import { useState } from 'react';
+import { FiPlus } from 'react-icons/fi';
 import { FacilitiesSubNav } from '../components/FacilitiesSubNav';
 import { FacilitiesStatusBadge } from '../components/FacilitiesStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
-import { Card, CardContent } from '@/components/ui';
-import { MOCK_UTILITIES, type UtilityReading } from '../constants/facilities-data';
+import { Button, Card, CardContent } from '@/components/ui';
+import { useGetFacilityUtilitiesQuery } from '../api/facilities.api';
+import type { UtilityReading } from '../constants/facilities-data';
+import { CreateUtilityReadingModal } from '../components/CreateUtilityReadingModal';
 
 export function FacilitiesUtilitiesPage() {
+  const { data: utilities = [], isLoading } = useGetFacilityUtilitiesQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<UtilityReading>[] = [
     { key: 'id', header: 'ID', render: (r) => <span className="font-mono text-xs">{r.id}</span> },
     { key: 'facility', header: 'Facility', render: (r) => <span className="font-medium">{r.facility}</span> },
@@ -18,9 +25,14 @@ export function FacilitiesUtilitiesPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Facilities', path: '/facilities/dashboard' }, { label: 'Utilities' }]} title="Utilities" description="Electricity, water, and other consumption readings" />
+      <PageHeader breadcrumbs={[{ label: 'Facilities', path: '/facilities/dashboard' }, { label: 'Utilities' }]} title="Utilities" description="Electricity, water, and other consumption readings" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Log Utility</Button>} />
       <FacilitiesSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_UTILITIES as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={utilities as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateUtilityReadingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
