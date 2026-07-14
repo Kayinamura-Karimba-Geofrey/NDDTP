@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FiPlus, FiPlay } from 'react-icons/fi';
 import { ReportingSubNav } from '../components/ReportingSubNav';
@@ -7,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetReportLibraryQuery } from '../api/reporting.api';
 import type { ReportDefinition } from '../constants/reporting-data';
+import { CreateReportDefinitionModal } from '../components/CreateReportDefinitionModal';
 
 export function ReportLibraryPage() {
-  const { data: reports = [] } = useGetReportLibraryQuery();
+  const { data: reports = [], isLoading } = useGetReportLibraryQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<ReportDefinition>[] = [
     { key: 'name', header: 'Report', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -28,9 +31,14 @@ export function ReportLibraryPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Reporting', path: '/reports/dashboard' }, { label: 'Library' }]} title="Report Library" description="Central repository — personnel, finance, fleet, training, procurement, medical, performance, audit, and executive reports" actions={<Button onClick={() => toast('Create report')}><FiPlus className="h-4 w-4" /> New Report</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Reporting', path: '/reports/dashboard' }, { label: 'Library' }]} title="Report Library" description="Central repository — personnel, finance, fleet, training, procurement, medical, performance, audit, and executive reports" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Report</Button>} />
       <ReportingSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={reports as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={reports as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateReportDefinitionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

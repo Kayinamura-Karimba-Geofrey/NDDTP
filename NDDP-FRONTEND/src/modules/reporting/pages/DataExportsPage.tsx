@@ -1,13 +1,19 @@
+import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { FiDownload } from 'react-icons/fi';
+import { FiPlus, FiDownload } from 'react-icons/fi';
 import { ReportingSubNav } from '../components/ReportingSubNav';
 import { ReportingStatusBadge } from '../components/ReportingStatusBadge';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
-import { MOCK_EXPORTS, type ExportJob } from '../constants/reporting-data';
+import { useGetExportJobsQuery } from '../api/reporting.api';
+import type { ExportJob } from '../constants/reporting-data';
+import { RequestExportModal } from '../components/RequestExportModal';
 
 export function DataExportsPage() {
+  const { data: exports = [], isLoading } = useGetExportJobsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: DataTableColumn<ExportJob>[] = [
     { key: 'id', header: 'Job ID', render: (r) => <span className="font-mono text-xs">{r.id}</span> },
     { key: 'name', header: 'Export', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -27,16 +33,14 @@ export function DataExportsPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Reporting', path: '/reports/dashboard' }, { label: 'Exports' }]} title="Data Exports" description="PDF, Excel, CSV, and JSON — large exports processed asynchronously" actions={
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => toast('Export PDF')}>PDF</Button>
-          <Button size="sm" variant="outline" onClick={() => toast('Export Excel')}>Excel</Button>
-          <Button size="sm" variant="outline" onClick={() => toast('Export CSV')}>CSV</Button>
-          <Button size="sm" variant="outline" onClick={() => toast('Export JSON')}>JSON</Button>
-        </div>
-      } />
+      <PageHeader breadcrumbs={[{ label: 'Reporting', path: '/reports/dashboard' }, { label: 'Exports' }]} title="Data Exports" description="PDF, Excel, CSV, and JSON — large exports processed asynchronously" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Request Export</Button>} />
       <ReportingSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={MOCK_EXPORTS as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={exports as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <RequestExportModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
