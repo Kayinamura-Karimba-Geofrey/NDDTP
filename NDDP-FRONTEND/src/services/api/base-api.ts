@@ -286,6 +286,8 @@ export const baseApi = createApi({
     'VisitorDirectory',
     'VisitRequests',
     'CheckInLogs',
+    'VisitorBlacklist',
+    'VisitorBadges',
     'MaintenanceCategories',
     'MaintenanceRequests',
     'WorkOrders',

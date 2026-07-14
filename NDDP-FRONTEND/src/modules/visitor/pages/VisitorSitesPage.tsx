@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { VisitorSubNav } from '../components/VisitorSubNav';
 import { VisitorStatusBadge } from '../components/VisitorStatusBadge';
@@ -7,9 +7,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetVisitSitesQuery } from '../api/visitor.api';
 import type { VisitSite } from '../constants/visitor-data';
+import { CreateVisitSiteModal } from '../components/CreateVisitSiteModal';
 
 export function VisitorSitesPage() {
-  const { data: sites = [] } = useGetVisitSitesQuery();
+  const { data: sites = [], isLoading } = useGetVisitSitesQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<VisitSite>[] = [
     { key: 'name', header: 'Site', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -22,9 +24,14 @@ export function VisitorSitesPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Visitors', path: '/visitors/dashboard' }, { label: 'Sites' }]} title="Visit Sites" description="Controlled entry points — HQ, bases, clinics, and warehouses" actions={<Button onClick={() => toast('Create site')}><FiPlus className="h-4 w-4" /> New Site</Button>} />
+      <PageHeader breadcrumbs={[{ label: 'Visitors', path: '/visitors/dashboard' }, { label: 'Sites' }]} title="Visit Sites" description="Controlled entry points — HQ, bases, clinics, and warehouses" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> New Site</Button>} />
       <VisitorSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={sites as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={sites as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateVisitSiteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

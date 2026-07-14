@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
 import { VisitorSubNav } from '../components/VisitorSubNav';
@@ -7,9 +8,11 @@ import { DataTable, type DataTableColumn } from '@/components/shared/DataTable';
 import { Button, Card, CardContent } from '@/components/ui';
 import { useGetVisitorDirectoryQuery } from '../api/visitor.api';
 import type { VisitorRecord } from '../constants/visitor-data';
+import { CreateVisitorModal } from '../components/CreateVisitorModal';
 
 export function VisitorDirectoryPage() {
-  const { data: visitors = [] } = useGetVisitorDirectoryQuery();
+  const { data: visitors = [], isLoading } = useGetVisitorDirectoryQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: DataTableColumn<VisitorRecord>[] = [
     { key: 'name', header: 'Visitor', render: (r) => <span className="font-medium">{r.name}</span> },
@@ -28,9 +31,14 @@ export function VisitorDirectoryPage() {
 
   return (
     <div>
-      <PageHeader breadcrumbs={[{ label: 'Visitors', path: '/visitors/dashboard' }, { label: 'Directory' }]} title="Visitor Directory" description="Registered visitors, ID documents, and visit history" actions={<Link to="/visitors/register"><Button><FiPlus className="h-4 w-4" /> Register Visitor</Button></Link>} />
+      <PageHeader breadcrumbs={[{ label: 'Visitors', path: '/visitors/dashboard' }, { label: 'Directory' }]} title="Visitor Directory" description="Registered visitors, ID documents, and visit history" actions={<Button onClick={() => setIsModalOpen(true)}><FiPlus className="h-4 w-4" /> Register Visitor</Button>} />
       <VisitorSubNav />
-      <Card><CardContent className="pt-6"><DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={visitors as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} /></CardContent></Card>
+      <Card><CardContent className="pt-6">
+        {isLoading ? <div className="data-table-empty">Loading...</div> : (
+          <DataTable columns={columns as unknown as DataTableColumn<Record<string, unknown>>[]} rows={visitors as unknown as Record<string, unknown>[]} rowKey={(r) => String(r.id)} />
+        )}
+      </CardContent></Card>
+      <CreateVisitorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

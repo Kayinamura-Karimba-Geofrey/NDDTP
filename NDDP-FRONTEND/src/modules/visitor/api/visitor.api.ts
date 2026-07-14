@@ -1,6 +1,4 @@
 import { baseApi, serviceQuery } from '@/services/api/base-api';
-import { mockDelay } from '@/utils/api-mock';
-import { ENABLE_MOCK_API } from '@/constants/app';
 import { unwrapApiResponse } from '@/utils/api-response';
 import type { PaginatedResponse } from '@/types';
 import {
@@ -9,10 +7,14 @@ import {
   MOCK_VISITS,
   MOCK_PENDING,
   MOCK_CHECKINS,
+  MOCK_BADGES,
+  MOCK_BLACKLIST,
   type VisitSite,
   type VisitorRecord,
   type VisitRequest,
   type CheckInLog,
+  type VisitorBadge,
+  type BlacklistEntry,
   type SiteType,
   type IdDocumentType,
   type VisitorModuleStatus,
@@ -62,12 +64,9 @@ function mapVisit(raw: Record<string, unknown>): VisitRequest {
 
 export const visitorApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ── QUERIES ──────────────────────────────────────────────────────────
     getVisitSites: builder.query<VisitSite[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_SITES };
-        }
         const result = await baseQuery(serviceQuery('visitor', '/sites'));
         if (result.error) return { data: MOCK_SITES };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -79,10 +78,6 @@ export const visitorApi = baseApi.injectEndpoints({
 
     getVisitorDirectory: builder.query<VisitorRecord[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_VISITORS };
-        }
         const result = await baseQuery(serviceQuery('visitor', '/visitors?limit=50'));
         if (result.error) return { data: MOCK_VISITORS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -94,10 +89,6 @@ export const visitorApi = baseApi.injectEndpoints({
 
     getVisitRequests: builder.query<VisitRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_VISITS };
-        }
         const result = await baseQuery(serviceQuery('visitor', '/visits?limit=50'));
         if (result.error) return { data: MOCK_VISITS };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -109,10 +100,6 @@ export const visitorApi = baseApi.injectEndpoints({
 
     getPendingVisits: builder.query<VisitRequest[], void>({
       queryFn: async (_arg, _a, _b, baseQuery) => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-          return { data: MOCK_PENDING };
-        }
         const result = await baseQuery(serviceQuery('visitor', '/visits/pending'));
         if (result.error) return { data: MOCK_PENDING };
         const raw = unwrapApiResponse<Record<string, unknown>[] | PaginatedResponse<Record<string, unknown>>>(result.data);
@@ -123,14 +110,79 @@ export const visitorApi = baseApi.injectEndpoints({
     }),
 
     getCheckInLogs: builder.query<CheckInLog[], void>({
-      queryFn: async () => {
-        if (ENABLE_MOCK_API) {
-          await mockDelay(200);
-        }
-        // Backend exposes per-visit logs; use mock aggregate until list API exists
-        return { data: MOCK_CHECKINS };
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('visitor', '/check-ins?limit=50'));
+        if (result.error) return { data: MOCK_CHECKINS };
+        const raw = unwrapApiResponse<CheckInLog[]>(result.data);
+        return { data: raw };
       },
       providesTags: ['CheckInLogs'],
+    }),
+
+    getVisitorBlacklist: builder.query<BlacklistEntry[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('visitor', '/blacklist'));
+        if (result.error) return { data: MOCK_BLACKLIST };
+        const raw = unwrapApiResponse<BlacklistEntry[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['VisitorBlacklist'],
+    }),
+
+    getVisitorBadges: builder.query<VisitorBadge[], void>({
+      queryFn: async (_arg, _a, _b, baseQuery) => {
+        const result = await baseQuery(serviceQuery('visitor', '/badges'));
+        if (result.error) return { data: MOCK_BADGES };
+        const raw = unwrapApiResponse<VisitorBadge[]>(result.data);
+        return { data: raw };
+      },
+      providesTags: ['VisitorBadges'],
+    }),
+
+    // ── MUTATIONS ─────────────────────────────────────────────────────────
+    createVisitSite: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/sites', { method: 'POST', body }),
+      invalidatesTags: ['VisitSites'],
+    }),
+
+    createVisitor: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/visitors', { method: 'POST', body }),
+      invalidatesTags: ['VisitorDirectory'],
+    }),
+
+    createVisitRequest: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/visits', { method: 'POST', body }),
+      invalidatesTags: ['VisitRequests'],
+    }),
+
+    processVisitApproval: builder.mutation<void, { id: string; action: 'APPROVE' | 'REJECT' }>({
+      query: ({ id, action }) => serviceQuery('visitor', `/visits/${id}/action`, { method: 'POST', body: { action } }),
+      invalidatesTags: ['VisitRequests'],
+    }),
+
+    recordCheckIn: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/check-ins', { method: 'POST', body }),
+      invalidatesTags: ['CheckInLogs', 'VisitRequests'],
+    }),
+
+    recordCheckOut: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('visitor', `/check-ins/${id}/checkout`, { method: 'POST' }),
+      invalidatesTags: ['CheckInLogs', 'VisitRequests'],
+    }),
+
+    blacklistVisitor: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/blacklist', { method: 'POST', body }),
+      invalidatesTags: ['VisitorBlacklist', 'VisitorDirectory'],
+    }),
+
+    unblacklistVisitor: builder.mutation<void, { id: string }>({
+      query: ({ id }) => serviceQuery('visitor', `/blacklist/${id}`, { method: 'DELETE' }),
+      invalidatesTags: ['VisitorBlacklist', 'VisitorDirectory'],
+    }),
+
+    issueBadge: builder.mutation<void, any>({
+      query: (body) => serviceQuery('visitor', '/badges', { method: 'POST', body }),
+      invalidatesTags: ['VisitorBadges'],
     }),
   }),
 });
@@ -141,4 +193,15 @@ export const {
   useGetVisitRequestsQuery,
   useGetPendingVisitsQuery,
   useGetCheckInLogsQuery,
+  useGetVisitorBlacklistQuery,
+  useGetVisitorBadgesQuery,
+  useCreateVisitSiteMutation,
+  useCreateVisitorMutation,
+  useCreateVisitRequestMutation,
+  useProcessVisitApprovalMutation,
+  useRecordCheckInMutation,
+  useRecordCheckOutMutation,
+  useBlacklistVisitorMutation,
+  useUnblacklistVisitorMutation,
+  useIssueBadgeMutation,
 } = visitorApi;
