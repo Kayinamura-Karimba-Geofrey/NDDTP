@@ -9,6 +9,6 @@ export function resolveService(key) {
 }
 export function upstreamBaseUrl(key) {
     const host = process.env.SERVICE_HOST || '127.0.0.1';
-    return `http://${host}:${MICROSERVICES[key].port}/api/v1`;
+    return `http://${host}:${MICROSERVICES[key].port}`;
 }
 //# sourceMappingURL=services.js.map
