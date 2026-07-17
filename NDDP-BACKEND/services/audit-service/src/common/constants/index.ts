@@ -27,6 +27,20 @@ export const EVENT_CATEGORY_MAP: Record<string, string> = {
   'user.': 'USER_MANAGEMENT',
   'notification.': 'NOTIFICATION',
   'audit.': 'SYSTEM',
+  'personnel.': 'DATA_ACCESS',
+  'welfare.': 'DATA_ACCESS',
+  'recruitment.': 'DATA_ACCESS',
+  'inventory.': 'DATA_ACCESS',
+  'procurement.': 'DATA_ACCESS',
+  'finance.': 'DATA_ACCESS',
+  'training.': 'DATA_ACCESS',
+  'medical.': 'DATA_ACCESS',
+  'workflow.': 'DATA_ACCESS',
+  'asset.': 'DATA_ACCESS',
+  'visitor.': 'DATA_ACCESS',
+  'maintenance.': 'DATA_ACCESS',
+  'fleet.': 'DATA_ACCESS',
+  'calendar.': 'DATA_ACCESS',
 };
 
 export const EVENT_ACTION_MAP: Record<string, string> = {

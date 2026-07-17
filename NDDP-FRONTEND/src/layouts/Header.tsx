@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
-  FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiMenu, FiCommand,
+  FiBell, FiSearch, FiUser, FiSettings, FiMenu, FiCommand,
   FiMessageSquare, FiCheckSquare, FiCalendar, FiHelpCircle, FiSun, FiMoon, FiGlobe, FiZap,
 } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { logout } from '@/store/slices/auth-slice';
 import { setSearchOpen } from '@/store/slices/search-slice';
 import { markAllRead } from '@/store/slices/notifications-slice';
 import { setTheme } from '@/store/slices/theme-slice';
-import { useLogoutMutation } from '@/modules/authentication/api/auth.api';
 import { Avatar, Button } from '@/components/ui';
 import { BRANDING } from '@/constants/branding';
 import { ROUTES } from '@/constants/app';
@@ -22,24 +20,11 @@ interface HeaderProps {
 
 export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const user = useAppSelector((s) => s.auth.user);
-  const tokens = useAppSelector((s) => s.auth.tokens);
   const { resolved } = useAppSelector((s) => s.theme);
   const unreadCount = useAppSelector((s) => s.notifications.unreadCount);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [logoutRequest] = useLogoutMutation();
-
-  const handleLogout = async () => {
-    try {
-      await logoutRequest({ refreshToken: tokens?.refreshToken }).unwrap();
-    } catch {
-      // Clear local session even if server logout fails.
-    }
-    dispatch(logout());
-    navigate(ROUTES.LOGIN);
-  };
 
   const lastLogin =
     sessionStorage.getItem('nddtp_display_last_login') ??
@@ -181,10 +166,6 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
                 <Link to="/settings" className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted" role="menuitem" onClick={() => setProfileOpen(false)}>
                   <FiSettings className="h-4 w-4 text-muted-foreground" /> Preferences
                 </Link>
-                <hr className="my-1 border-border" />
-                <button type="button" className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted" onClick={handleLogout} role="menuitem">
-                  <FiLogOut className="h-4 w-4 text-muted-foreground" /> Logout
-                </button>
               </div>
             </div>
           )}

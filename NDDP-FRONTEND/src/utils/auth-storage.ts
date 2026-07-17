@@ -48,8 +48,5 @@ export function sanitizeStoredAuth(): void {
 }
 
 export function redirectToSessionExpired(): void {
-  clearAuthStorage();
-  if (!window.location.pathname.startsWith('/auth/')) {
-    window.location.href = '/auth/session-expired';
-  }
+  console.warn('Session expired - auth is disabled on frontend');
 }

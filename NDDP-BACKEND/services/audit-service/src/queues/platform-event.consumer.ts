@@ -8,7 +8,7 @@ import { SecurityEventService } from '../modules/audit/security-event.service';
 import { EventMapperService } from '../modules/audit/event-mapper.service';
 import { AuditSeverity } from '../common/enums';
 
-const PLATFORM_BINDINGS = ['auth.#', 'user.#', 'authorization.#', 'notification.#'];
+const PLATFORM_BINDINGS = ['auth.#', 'user.#', 'authorization.#', 'notification.#', '#'];
 
 @Injectable()
 export class PlatformEventConsumer implements OnModuleInit, OnModuleDestroy {
