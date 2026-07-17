@@ -23,9 +23,7 @@ import { communicationNav } from './navigation/communication.nav';
 import { messagingNav } from './navigation/messaging.nav';
 import { searchNav } from './navigation/search.nav';
 import { aiAssistantNav } from './navigation/ai-assistant.nav';
-import { authenticationNav } from './navigation/authentication.nav';
 import { dmsNav } from './navigation/dms.nav';
-import { authorizationNav } from './navigation/authorization.nav';
 import { usersNav } from './navigation/users.nav';
 import { auditNav } from './navigation/audit.nav';
 import { profileNav } from './navigation/profile.nav';
@@ -58,9 +56,7 @@ export const MAIN_NAVIGATION: NavItem[] = [
   messagingNav,
   searchNav,
   aiAssistantNav,
-  authenticationNav,
   dmsNav,
-  authorizationNav,
   usersNav,
   auditNav,
   profileNav,

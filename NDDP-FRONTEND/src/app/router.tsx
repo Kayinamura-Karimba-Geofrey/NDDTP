@@ -7,8 +7,6 @@ import { administrationRoutes } from './routes/administration.routes';
 import { aiAssistantRoutes } from './routes/ai-assistant.routes';
 import { assetsRoutes } from './routes/assets.routes';
 import { auditRoutes } from './routes/audit.routes';
-import { authenticationRoutes } from './routes/authentication.routes';
-import { authorizationRoutes } from './routes/authorization.routes';
 import { calendarRoutes } from './routes/calendar.routes';
 import { cloudRoutes } from './routes/cloud.routes';
 import { dashboardRoutes } from './routes/dashboard.routes';
@@ -76,8 +74,6 @@ export const router = createBrowserRouter([
       ...aiAssistantRoutes,
       ...assetsRoutes,
       ...auditRoutes,
-      ...authenticationRoutes,
-      ...authorizationRoutes,
       ...calendarRoutes,
       ...cloudRoutes,
       ...dashboardRoutes,
