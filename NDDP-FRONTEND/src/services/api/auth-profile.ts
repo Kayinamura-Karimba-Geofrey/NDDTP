@@ -156,3 +156,15 @@ export async function verifyMfaRequest(
   const user = await buildAuthUser(tokens.accessToken);
   return { tokens, user };
 }
+
+export async function logoutRequest(accessToken: string, refreshToken: string): Promise<void> {
+  await fetch(`${API_SERVICE_BASE}/auth/auth/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      'X-Correlation-Id': crypto.randomUUID(),
+    },
+    body: JSON.stringify({ refreshToken }),
+  }).catch(() => {}); // Intentionally ignore network errors on logout
+}

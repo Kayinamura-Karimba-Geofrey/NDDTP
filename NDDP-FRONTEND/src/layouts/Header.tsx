@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiBell, FiSearch, FiUser, FiSettings, FiMenu, FiCommand,
-  FiMessageSquare, FiCheckSquare, FiCalendar, FiHelpCircle, FiSun, FiMoon, FiGlobe, FiZap,
+  FiMessageSquare, FiCheckSquare, FiCalendar, FiHelpCircle, FiSun, FiMoon, FiGlobe, FiZap, FiLogOut,
 } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { setSearchOpen } from '@/store/slices/search-slice';
 import { markAllRead } from '@/store/slices/notifications-slice';
 import { setTheme } from '@/store/slices/theme-slice';
+import { logout } from '@/store/slices/auth-slice';
 import { Avatar, Button } from '@/components/ui';
 import { BRANDING } from '@/constants/branding';
 import { ROUTES } from '@/constants/app';
+import { logoutRequest } from '@/services/api/auth-profile';
 import dayjs from 'dayjs';
 
 interface HeaderProps {
@@ -21,6 +23,7 @@ interface HeaderProps {
 export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
+  const tokens = useAppSelector((s) => s.auth.tokens);
   const { resolved } = useAppSelector((s) => s.theme);
   const unreadCount = useAppSelector((s) => s.notifications.unreadCount);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -30,6 +33,14 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
     sessionStorage.getItem('nddtp_display_last_login') ??
     localStorage.getItem('nddtp_last_login') ??
     new Date(Date.now() - 86_400_000).toISOString();
+
+  const handleLogout = async () => {
+    if (tokens?.accessToken && tokens?.refreshToken) {
+      await logoutRequest(tokens.accessToken, tokens.refreshToken);
+    }
+    dispatch(logout());
+    setProfileOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-card px-4 md:px-5">
@@ -166,6 +177,14 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
                 <Link to="/settings" className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted" role="menuitem" onClick={() => setProfileOpen(false)}>
                   <FiSettings className="h-4 w-4 text-muted-foreground" /> Preferences
                 </Link>
+                <div className="my-1 border-t border-border"></div>
+                <button 
+                  onClick={handleLogout} 
+                  className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10" 
+                  role="menuitem"
+                >
+                  <FiLogOut className="h-4 w-4" /> Sign out
+                </button>
               </div>
             </div>
           )}

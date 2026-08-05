@@ -44,9 +44,9 @@ async function seed(): Promise<void> {
   }
 
   const superAdmin = roleMap.get('SUPER_ADMIN')!;
-  const admin = roleMap.get('ADMIN')!;
-  const hrManager = roleMap.get('HR_MANAGER')!;
-  const recruiter = roleMap.get('RECRUITER')!;
+  const platformAdmin = roleMap.get('PLATFORM_ADMIN')!;
+  const deptManager = roleMap.get('DEPARTMENT_MANAGER')!;
+  const recruiter = roleMap.get('RECRUITMENT_OFFICER')!;
   const employee = roleMap.get('EMPLOYEE')!;
   const auditor = roleMap.get('AUDITOR')!;
 
@@ -57,56 +57,40 @@ async function seed(): Promise<void> {
     }
   };
 
-  await grantAll(superAdmin);
+  if (superAdmin) await grantAll(superAdmin);
 
-  const adminPerms = [
+  const grantPerms = async (role: Role | undefined, perms: string[]) => {
+    if (!role) return;
+    for (const code of perms) {
+      const perm = permissionMap.get(code);
+      if (perm) {
+        const exists = await rpRepo.findOne({ where: { roleId: role.id, permissionId: perm.id } });
+        if (!exists) await rpRepo.save(rpRepo.create({ roleId: role.id, permissionId: perm.id }));
+      }
+    }
+  };
+
+  const platformAdminPerms = [
     'authorization:manage:roles', 'authorization:manage:permissions', 'authorization:assign:roles',
-    'personnel:read:profile', 'personnel:write:profile', 'leave:read:requests', 'leave:approve:requests',
-    'recruitment:read:applications', 'recruitment:manage:applications',
+    'system:manage:tenants', 'system:manage:users', 'system:manage:settings', 'system:read:logs'
   ];
-  for (const code of adminPerms) {
-    const perm = permissionMap.get(code);
-    if (perm) {
-      const exists = await rpRepo.findOne({ where: { roleId: admin.id, permissionId: perm.id } });
-      if (!exists) await rpRepo.save(rpRepo.create({ roleId: admin.id, permissionId: perm.id }));
-    }
-  }
+  await grantPerms(platformAdmin, platformAdminPerms);
 
-  const hrPerms = ['personnel:read:profile', 'personnel:write:profile', 'leave:read:requests', 'leave:approve:requests'];
-  for (const code of hrPerms) {
-    const perm = permissionMap.get(code);
-    if (perm) {
-      const exists = await rpRepo.findOne({ where: { roleId: hrManager.id, permissionId: perm.id } });
-      if (!exists) await rpRepo.save(rpRepo.create({ roleId: hrManager.id, permissionId: perm.id }));
-    }
-  }
+  const deptManagerPerms = [
+    'personnel:read:records', 'personnel:create:records', 'personnel:update:records',
+    'personnel:approve:workflows', 'leave:read:requests', 'leave:approve:requests',
+    'leave:create:requests'
+  ];
+  await grantPerms(deptManager, deptManagerPerms);
 
-  const recruiterPerms = ['recruitment:read:applications', 'recruitment:manage:applications'];
-  for (const code of recruiterPerms) {
-    const perm = permissionMap.get(code);
-    if (perm) {
-      const exists = await rpRepo.findOne({ where: { roleId: recruiter.id, permissionId: perm.id } });
-      if (!exists) await rpRepo.save(rpRepo.create({ roleId: recruiter.id, permissionId: perm.id }));
-    }
-  }
+  const recruiterPerms = ['recruitment:read:applications', 'recruitment:manage:applications', 'recruitment:manage:vacancies'];
+  await grantPerms(recruiter, recruiterPerms);
 
-  const employeePerms = ['personnel:read:profile', 'leave:read:requests'];
-  for (const code of employeePerms) {
-    const perm = permissionMap.get(code);
-    if (perm) {
-      const exists = await rpRepo.findOne({ where: { roleId: employee.id, permissionId: perm.id } });
-      if (!exists) await rpRepo.save(rpRepo.create({ roleId: employee.id, permissionId: perm.id }));
-    }
-  }
+  const employeePerms = ['personnel:read:own', 'personnel:update:own', 'leave:create:requests', 'leave:read:requests'];
+  await grantPerms(employee, employeePerms);
 
-  const auditorPerms = ['audit:read:logs', 'authorization:read:audit'];
-  for (const code of auditorPerms) {
-    const perm = permissionMap.get(code);
-    if (perm) {
-      const exists = await rpRepo.findOne({ where: { roleId: auditor.id, permissionId: perm.id } });
-      if (!exists) await rpRepo.save(rpRepo.create({ roleId: auditor.id, permissionId: perm.id }));
-    }
-  }
+  const auditorPerms = ['audit:read:logs', 'authorization:read:audit', 'compliance:read:reports', 'reports:read:dashboards'];
+  await grantPerms(auditor, auditorPerms);
 
   const assignmentRepo = dataSource.getRepository(UserRoleAssignment);
   const adminUserId = DEMO_USERS[0].id;
