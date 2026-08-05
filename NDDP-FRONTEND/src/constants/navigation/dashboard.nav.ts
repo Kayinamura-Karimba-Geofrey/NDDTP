@@ -8,7 +8,9 @@ export const dashboardNav: NavItem = {
     module: 'dashboard',
     children: [
       { id: 'dashboard-home', label: 'Home Dashboard', path: '/dashboard', icon: 'FiHome', module: 'dashboard', roles: ['ADMIN', 'HR_MANAGER', 'RECRUITER'] },
+      { id: 'dashboard-tactical', label: 'C4ISR Tactical Map (COP)', path: '/tactical-map', icon: 'FiMapPin', module: 'dashboard' },
       { id: 'dashboard-executive', label: 'Executive Dashboard', path: '/dashboard', icon: 'FiBarChart2', module: 'dashboard', roles: ['SUPER_ADMIN'] },
       { id: 'dashboard-my', label: 'My Dashboard', path: '/dashboard', icon: 'FiUser', module: 'dashboard', roles: ['EMPLOYEE', 'SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'RECRUITER'] },
     ],
   };
+

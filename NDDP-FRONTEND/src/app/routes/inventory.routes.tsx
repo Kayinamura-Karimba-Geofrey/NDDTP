@@ -23,11 +23,14 @@ const InventorySuppliersPage = lazy(() => import('@/modules/inventory/pages/Inve
 const InventoryValuationPage = lazy(() => import('@/modules/inventory/pages/InventoryValuationPage').then((m) => ({ default: m.InventoryValuationPage })));
 const InventoryReportsPage = lazy(() => import('@/modules/inventory/pages/InventoryReportsPage').then((m) => ({ default: m.InventoryReportsPage })));
 const InventorySettingsPage = lazy(() => import('@/modules/inventory/pages/InventorySettingsPage').then((m) => ({ default: m.InventorySettingsPage })));
+const ArmoryView = lazy(() => import('@/components/inventory/ArmoryView').then((m) => ({ default: m.ArmoryView })));
 
 export const inventoryRoutes: RouteObject[] = [
   { path: 'inventory', element: <Navigate to="/inventory/dashboard" replace /> },
   { path: 'inventory/dashboard', element: wrap(<InventoryDashboardPage />) },
+  { path: 'inventory/armory', element: wrap(<ArmoryView />) },
   { path: 'inventory/warehouses', element: wrap(<WarehousesPage />) },
+
   { path: 'inventory/warehouses/:id', element: wrap(<WarehouseDetailPage />) },
   { path: 'inventory/locations', element: wrap(<WarehouseLocationsPage />) },
   { path: 'inventory/items', element: wrap(<InventoryItemsPage />) },

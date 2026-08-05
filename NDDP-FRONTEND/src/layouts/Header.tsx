@@ -15,6 +15,8 @@ import { ROUTES } from '@/constants/app';
 import { logoutRequest } from '@/services/api/auth-profile';
 import dayjs from 'dayjs';
 
+import { DefconTickerBar } from '@/components/common/DefconTickerBar';
+
 interface HeaderProps {
   onMenuClick: () => void;
   onCommandPalette: () => void;
@@ -43,7 +45,10 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-card px-4 md:px-5">
+    <div className="flex flex-col sticky top-0 z-20">
+      <DefconTickerBar />
+      <header className="flex h-16 items-center gap-3 border-b border-border bg-card px-4 md:px-5">
+
       <button
         type="button"
         className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden"
@@ -191,5 +196,7 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
         </div>
       </div>
     </header>
+    </div>
   );
 }
+

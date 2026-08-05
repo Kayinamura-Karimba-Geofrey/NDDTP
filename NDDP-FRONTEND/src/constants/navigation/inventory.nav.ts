@@ -9,7 +9,9 @@ export const inventoryNav: NavItem = {
     permissions: ['inventory:read:items'],
     children: [
       { id: 'inventory-dashboard', label: 'Dashboard', path: '/inventory/dashboard', icon: 'FiGrid', module: 'inventory' },
+      { id: 'inventory-armory', label: 'Defense Armory & Munitions', path: '/inventory/armory', icon: 'FiShield', module: 'inventory' },
       { id: 'inventory-warehouses', label: 'Warehouses', path: '/inventory/warehouses', icon: 'FiHome', module: 'inventory' },
+
       { id: 'inventory-items', label: 'Items', path: '/inventory/items', icon: 'FiList', module: 'inventory' },
       { id: 'inventory-stock', label: 'Stock Levels', path: '/inventory/stock-levels', icon: 'FiLayers', module: 'inventory' },
       { id: 'inventory-receipts', label: 'Goods Receipt', path: '/inventory/goods-receipt', icon: 'FiDownload', module: 'inventory' },

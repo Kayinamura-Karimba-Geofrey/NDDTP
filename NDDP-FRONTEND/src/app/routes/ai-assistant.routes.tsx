@@ -12,11 +12,14 @@ const AiAssistantNewConversationPage = lazy(() => import('@/modules/ai-assistant
 const AiAssistantConversationDetailPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantConversationDetailPage').then((m) => ({ default: m.AiAssistantConversationDetailPage })));
 const AiAssistantReportsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantReportsPage').then((m) => ({ default: m.AiAssistantReportsPage })));
 const AiAssistantSettingsPage = lazy(() => import('@/modules/ai-assistant/pages/AiAssistantSettingsPage').then((m) => ({ default: m.AiAssistantSettingsPage })));
+const DefenseAiCopilotView = lazy(() => import('@/components/ai/DefenseAiCopilotView').then((m) => ({ default: m.DefenseAiCopilotView })));
 
 export const aiAssistantRoutes: RouteObject[] = [
   { path: 'ai-assistant', element: <Navigate to="/ai-assistant/dashboard" replace /> },
   { path: 'ai-assistant/dashboard', element: wrap(<AiAssistantDashboardPage />) },
+  { path: 'ai-assistant/defense-copilot', element: wrap(<DefenseAiCopilotView />) },
   { path: 'ai-assistant/agents', element: wrap(<AiAssistantAgentsPage />) },
+
   { path: 'ai-assistant/agents/new', element: wrap(<AiAssistantCreateAgentPage />) },
   { path: 'ai-assistant/agents/:id', element: wrap(<AiAssistantAgentDetailPage />) },
   { path: 'ai-assistant/conversations', element: wrap(<AiAssistantConversationsPage />) },

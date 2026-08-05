@@ -9,7 +9,9 @@ export const aiAssistantNav: NavItem = {
     permissions: ['aiassistant:read:conversations'],
     children: [
       { id: 'ai-dashboard', label: 'Dashboard', path: '/ai-assistant/dashboard', icon: 'FiGrid', module: 'ai-assistant' },
+      { id: 'ai-defense-copilot', label: 'Defense SOP Intelligence Copilot', path: '/ai-assistant/defense-copilot', icon: 'FiShield', module: 'ai-assistant' },
       { id: 'ai-agents', label: 'Agents', path: '/ai-assistant/agents', icon: 'FiCpu', module: 'ai-assistant' },
+
       { id: 'ai-conversations', label: 'Conversations', path: '/ai-assistant/conversations', icon: 'FiMessageSquare', module: 'ai-assistant' },
       { id: 'ai-mine', label: 'My Chats', path: '/ai-assistant/conversations/mine', icon: 'FiInbox', module: 'ai-assistant' },
       { id: 'ai-reports', label: 'Reports', path: '/ai-assistant/reports', icon: 'FiBarChart2', module: 'ai-assistant' },
