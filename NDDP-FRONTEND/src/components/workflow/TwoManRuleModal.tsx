@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Key, ShieldAlert, CheckCircle2, UserCheck, Lock } from 'lucide-react';
+import { FiKey, FiAlertTriangle, FiCheckCircle, FiUserCheck, FiLock } from 'react-icons/fi';
+
 
 interface DualAuthModalProps {
   actionTitle: string;
@@ -35,7 +36,7 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 font-mono">
       <div className="bg-slate-900 border-2 border-red-800 p-6 rounded-lg w-full max-w-md space-y-4 shadow-2xl text-slate-100">
         <div className="flex items-center gap-3 border-b border-red-800/60 pb-3">
-          <Key className="w-7 h-7 text-red-500 animate-pulse" />
+          <FiKey className="w-7 h-7 text-red-500 animate-pulse" />
           <div>
             <h2 className="text-sm font-bold text-red-400">TWO-MAN RULE DUAL-AUTHORIZATION</h2>
             <p className="text-[10px] text-slate-400">MIL-STD SECURE HIGH-IMPACT COMMAND APPROVAL</p>
@@ -50,7 +51,7 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
         <form onSubmit={handleApprove} className="space-y-3 text-xs">
           <div>
             <label className="text-slate-400 flex items-center gap-1.5 mb-1">
-              <UserCheck className="w-3.5 h-3.5 text-blue-400" /> 1st Commanding Officer
+              <FiUserCheck className="w-3.5 h-3.5 text-blue-400" /> 1st Commanding Officer
             </label>
             <input
               type="text"
@@ -62,7 +63,7 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
 
           <div>
             <label className="text-slate-400 flex items-center gap-1.5 mb-1">
-              <UserCheck className="w-3.5 h-3.5 text-emerald-400" /> 2nd Authorizing Officer ID
+              <FiUserCheck className="w-3.5 h-3.5 text-emerald-400" /> 2nd Authorizing Officer ID
             </label>
             <input
               type="text"
@@ -75,7 +76,7 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
 
           <div>
             <label className="text-slate-400 flex items-center gap-1.5 mb-1">
-              <Lock className="w-3.5 h-3.5 text-red-400" /> 2nd Officer Security PIN
+              <FiLock className="w-3.5 h-3.5 text-red-400" /> 2nd Officer Security PIN
             </label>
             <input
               type="password"
@@ -88,7 +89,7 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
 
           {error && (
             <div className="p-2 bg-red-950/80 border border-red-800 text-red-400 rounded text-[11px] flex items-center gap-1.5">
-              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <FiAlertTriangle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -96,11 +97,12 @@ export const TwoManRuleModal: React.FC<DualAuthModalProps> = ({ actionTitle, onS
           <div className="flex gap-2 pt-2">
             <button type="button" onClick={onCancel} className="flex-1 py-2 bg-slate-800 text-slate-300 rounded font-bold hover:bg-slate-700">ABORT</button>
             <button type="submit" className="flex-1 py-2 bg-red-700 hover:bg-red-600 text-white rounded font-bold flex items-center justify-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4" /> AUTHORIZE
+              <FiCheckCircle className="w-4 h-4" /> AUTHORIZE
             </button>
           </div>
         </form>
       </div>
     </div>
+
   );
 };

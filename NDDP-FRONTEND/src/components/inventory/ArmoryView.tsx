@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, Box, AlertOctagon, FileText, CheckCircle, RefreshCw, Search } from 'lucide-react';
+import { FiShield, FiAlertOctagon, FiFileText, FiRefreshCw, FiSearch } from 'react-icons/fi';
+
 import type { OrdnanceItem, ExpenditureLog } from '../../../../shared/inventory/armory.types';
 
 const INITIAL_ARMORY: OrdnanceItem[] = [
@@ -99,7 +100,7 @@ export const ArmoryView: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-lg">
         <div className="flex items-center gap-3">
-          <Shield className="w-8 h-8 text-amber-500" />
+          <FiShield className="w-8 h-8 text-amber-500" />
           <div>
             <h1 className="text-xl font-bold tracking-wide text-white">DEFENSE ARMORY & ORDNANCE INVENTORY</h1>
             <p className="text-xs text-slate-400">Military Hardware, Munitions Vaults & Expenditure Logs</p>
@@ -110,14 +111,14 @@ export const ArmoryView: React.FC = () => {
           onClick={() => setShowLogModal(true)}
           className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded transition flex items-center gap-2"
         >
-          <FileText className="w-4 h-4" /> RECORD AMMO EXPENDITURE
+          <FiFileText className="w-4 h-4" /> RECORD AMMO EXPENDITURE
         </button>
       </div>
 
       {/* Inventory Grid & Controls */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+          <FiSearch className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
           <input
             type="text"
             placeholder="Search serial number, weapon name, or caliber..."
@@ -153,7 +154,7 @@ export const ArmoryView: React.FC = () => {
                   <td className="p-3 font-bold">
                     <span className={isLow ? 'text-red-400 font-bold flex items-center gap-1' : 'text-emerald-400'}>
                       {item.quantityOnHand.toLocaleString()}{' '}
-                      {isLow && <AlertOctagon className="w-3.5 h-3.5" />}
+                      {isLow && <FiAlertOctagon className="w-3.5 h-3.5" />}
                     </span>
                   </td>
                   <td className="p-3">
@@ -171,8 +172,9 @@ export const ArmoryView: React.FC = () => {
       {/* Recent Expenditures */}
       <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 space-y-3">
         <h2 className="text-sm font-bold text-white flex items-center gap-2">
-          <RefreshCw className="w-4 h-4 text-amber-400" /> RECENT EXPENDITURE AUDIT LOGS
+          <FiRefreshCw className="w-4 h-4 text-amber-400" /> RECENT EXPENDITURE AUDIT LOGS
         </h2>
+
         <div className="space-y-2">
           {expenditures.map((log) => (
             <div key={log.id} className="flex items-center justify-between bg-slate-950 p-3 rounded border border-slate-800 text-xs">

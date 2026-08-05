@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AlertTriangle, Radio } from 'lucide-react';
+import { FiRadio } from 'react-icons/fi';
+
 
 export type DefconLevel = 5 | 4 | 3 | 2 | 1;
 
@@ -27,8 +28,9 @@ export const DefconTickerBar: React.FC = () => {
     <div className={`flex items-center justify-between px-4 py-1.5 border-b text-xs font-mono transition-colors duration-500 ${activeDefcon.bg}`}>
       <div className="flex items-center gap-3 overflow-hidden">
         <div className="flex items-center gap-1.5 font-bold tracking-wider">
-          <Radio className={`w-4 h-4 ${activeDefcon.color}`} />
+          <FiRadio className={`w-4 h-4 ${activeDefcon.color}`} />
           <span className={`px-2 py-0.5 rounded font-black border border-current ${activeDefcon.color}`}>
+
             {activeDefcon.name}
           </span>
         </div>

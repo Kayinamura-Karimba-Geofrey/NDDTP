@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, MapPin, Compass, AlertTriangle, Eye, Activity } from 'lucide-react';
+import { FiShield, FiMapPin, FiCompass, FiAlertTriangle, FiEye, FiActivity } from 'react-icons/fi';
+
 
 interface TacticalUnit {
   id: string;
@@ -87,14 +88,14 @@ export const TacticalMapView: React.FC = () => {
       {/* Tactical Header */}
       <div className="flex items-center justify-between px-6 py-3 bg-slate-900 border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <Shield className="w-6 h-6 text-blue-400" />
+          <FiShield className="w-6 h-6 text-blue-400" />
           <h1 className="text-lg font-bold tracking-wider text-blue-400">
             C4ISR MIL-STD-2525D COP (COMMON OPERATIONAL PICTURE)
           </h1>
         </div>
         <div className="flex items-center gap-4 text-xs">
           <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-950/60 text-emerald-400 border border-emerald-800 rounded">
-            <Activity className="w-3.5 h-3.5 animate-pulse" />
+            <FiActivity className="w-3.5 h-3.5 animate-pulse" />
             GRID LINK: ONLINE
           </span>
           <span className="px-3 py-1 bg-amber-950/60 text-amber-400 border border-amber-800 rounded">
@@ -196,7 +197,7 @@ export const TacticalMapView: React.FC = () => {
               <div className="space-y-3 text-xs">
                 <div className="flex justify-between py-1.5 border-b border-slate-800/60">
                   <span className="text-slate-400 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-blue-400" /> Coordinates
+                    <FiMapPin className="w-3.5 h-3.5 text-blue-400" /> Coordinates
                   </span>
                   <span className="text-slate-200">
                     {selectedUnit.coordinates.lat.toFixed(4)}, {selectedUnit.coordinates.lng.toFixed(4)}
@@ -205,7 +206,7 @@ export const TacticalMapView: React.FC = () => {
 
                 <div className="flex justify-between py-1.5 border-b border-slate-800/60">
                   <span className="text-slate-400 flex items-center gap-1.5">
-                    <Compass className="w-3.5 h-3.5 text-blue-400" /> Heading / Speed
+                    <FiCompass className="w-3.5 h-3.5 text-blue-400" /> Heading / Speed
                   </span>
                   <span className="text-slate-200">
                     {selectedUnit.heading}° @ {selectedUnit.speed}
@@ -214,14 +215,14 @@ export const TacticalMapView: React.FC = () => {
 
                 <div className="flex justify-between py-1.5 border-b border-slate-800/60">
                   <span className="text-slate-400 flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 text-amber-400" /> Clearance Level
+                    <FiShield className="w-3.5 h-3.5 text-amber-400" /> Clearance Level
                   </span>
                   <span className="text-amber-400 font-bold">{selectedUnit.clearance}</span>
                 </div>
 
                 <div className="flex justify-between py-1.5 border-b border-slate-800/60">
                   <span className="text-slate-400 flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 text-emerald-400" /> Readiness Status
+                    <FiAlertTriangle className="w-3.5 h-3.5 text-emerald-400" /> Readiness Status
                   </span>
                   <span className="text-emerald-400 font-bold">{selectedUnit.status}</span>
                 </div>
@@ -229,11 +230,12 @@ export const TacticalMapView: React.FC = () => {
             </div>
 
             <button className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded transition flex items-center justify-center gap-2">
-              <Eye className="w-4 h-4" /> LOCK CAMERA & TRACK
+              <FiEye className="w-4 h-4" /> LOCK CAMERA & TRACK
             </button>
           </div>
         )}
       </div>
+
     </div>
   );
 };

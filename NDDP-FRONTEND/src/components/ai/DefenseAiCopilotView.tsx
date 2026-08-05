@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bot, Send, ShieldCheck, FileText, Cpu } from 'lucide-react';
+import { FiCpu, FiSend, FiFileText } from 'react-icons/fi';
+
 
 interface ChatMessage {
   id: string;
@@ -67,14 +68,14 @@ export const DefenseAiCopilotView: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-3 bg-slate-900 border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <Bot className="w-6 h-6 text-purple-400" />
+          <FiCpu className="w-6 h-6 text-purple-400" />
           <h1 className="text-sm font-bold tracking-wider text-purple-400">
             AIR-GAPPED DEFENSE SOP INTELLIGENCE COPILOT (VECTOR RAG)
           </h1>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <span className="px-2.5 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded flex items-center gap-1">
-            <Cpu className="w-3.5 h-3.5" /> MODEL: LOCAL DEFENSE LLM 3.8B
+            <FiCpu className="w-3.5 h-3.5" /> MODEL: LOCAL DEFENSE LLM 3.8B
           </span>
         </div>
       </div>
@@ -96,7 +97,7 @@ export const DefenseAiCopilotView: React.FC = () => {
                   <span>{isUser ? 'COMMANDER' : 'DEFENSE AI COPILOT'}</span>
                   {msg.sopReference && (
                     <span className="text-amber-400 flex items-center gap-1 font-bold">
-                      <FileText className="w-3 h-3" /> REF: {msg.sopReference}
+                      <FiFileText className="w-3 h-3" /> REF: {msg.sopReference}
                     </span>
                   )}
                 </div>
@@ -107,7 +108,7 @@ export const DefenseAiCopilotView: React.FC = () => {
         })}
         {loading && (
           <div className="text-xs text-purple-400 animate-pulse flex items-center gap-2">
-            <Cpu className="w-4 h-4" /> Vector RAG search in progress...
+            <FiCpu className="w-4 h-4" /> Vector RAG search in progress...
           </div>
         )}
       </div>
@@ -122,9 +123,10 @@ export const DefenseAiCopilotView: React.FC = () => {
           className="flex-1 bg-slate-950 border border-slate-800 rounded px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
         />
         <button type="submit" className="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded transition flex items-center gap-2">
-          <Send className="w-4 h-4" /> ASK SOP
+          <FiSend className="w-4 h-4" /> ASK SOP
         </button>
       </form>
+
     </div>
   );
 };
