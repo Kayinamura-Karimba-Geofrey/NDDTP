@@ -12,6 +12,7 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "prepare": "husky",
     "install:deps": "node scripts/install-platform-core.mjs",
     "standardize": "node scripts/standardize-services.mjs",
     "build:all": "node scripts/build-all-services.mjs",
@@ -31,7 +32,17 @@
   "engines": {
     "node": ">=20"
   },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
     "turbo": "^2.10.12"
   }
 }
