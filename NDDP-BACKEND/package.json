@@ -9,6 +9,9 @@
   ],
   "scripts": {
     "build:platform": "npm run build -w @nddtp/platform-core",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
     "install:deps": "node scripts/install-platform-core.mjs",
     "standardize": "node scripts/standardize-services.mjs",
     "build:all": "node scripts/build-all-services.mjs",
@@ -27,5 +30,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.12"
   }
 }
