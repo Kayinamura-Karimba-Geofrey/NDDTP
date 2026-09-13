@@ -25,12 +25,17 @@ export class TransformResponseInterceptor<T>
     const correlationId = request.correlationId || request.headers['x-correlation-id'];
 
     return next.handle().pipe(
-      map((data) => ({
-        success: true,
-        data,
-        timestamp: new Date().toISOString(),
-        correlationId,
-      })),
+      map((data) => {
+        if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+          return { ...data, correlationId };
+        }
+        return {
+          success: true,
+          data,
+          timestamp: new Date().toISOString(),
+          correlationId,
+        };
+      }),
     );
   }
 }
