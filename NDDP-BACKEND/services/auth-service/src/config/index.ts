@@ -7,6 +7,8 @@ import securityConfig from './security.config';
 import loggingConfig from './logging.config';
 import authorizationConfig from './authorization.config';
 
+import { envValidationSchema } from './env.schema';
+
 export const configuration = [
   appConfig,
   databaseConfig,
@@ -26,4 +28,6 @@ export {
   jwtConfig,
   securityConfig,
   loggingConfig,
+  envValidationSchema,
 };
+

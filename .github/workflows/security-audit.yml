@@ -1,0 +1,44 @@
+name: Security & Backdoor Audit
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  security-audit:
+    name: Security & Lockfile Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'NDDP-BACKEND/package-lock.json'
+
+      - name: Verify Lockfile Integrity & Clean Install
+        run: |
+          cd NDDP-BACKEND
+          npm ci --ignore-scripts
+
+      - name: Run Dependency Vulnerability Audit
+        run: |
+          cd NDDP-BACKEND
+          npm audit --audit-level=high
+
+      - name: Scan for Backdoor & Script Vectors
+        run: |
+          echo "Scanning for executable script extensions..."
+          FOUND=$(find . -type f \( -name "*.cmd" -o -name "*.ps1" -o -name "*.vbs" -o -name "*.bat" \) -not -path "*/node_modules/*")
+          if [ -n "$FOUND" ]; then
+            echo "ERROR: Suspicious script vectors detected:"
+            echo "$FOUND"
+            exit 1
+          fi
+          echo "Scan completed cleanly. No suspicious script vectors detected."

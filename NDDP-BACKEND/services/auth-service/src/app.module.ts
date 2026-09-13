@@ -22,6 +22,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     ConfigModule.forRoot({
       isGlobal: true,
       load: configuration,
+      validationSchema: envValidationSchema,
       envFilePath: ['.env', '.env.local'],
     }),
     WinstonModule.forRoot(winstonConfig),
