@@ -34,9 +34,10 @@ import {
         ],
         synchronize: configService.get<string>('app.nodeEnv') === 'development',
         logging: configService.get<boolean>('database.logging'),
-        ssl: configService.get<string>('app.nodeEnv') === 'production' || configService.get<boolean>('database.ssl')
-          ? { rejectUnauthorized: false }
-          : false,
+        ssl:
+          configService.get<string>('app.nodeEnv') === 'production' || configService.get<boolean>('database.ssl')
+            ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' }
+            : false,
         extra: {
           max: configService.get<number>('database.poolSize'),
         },
