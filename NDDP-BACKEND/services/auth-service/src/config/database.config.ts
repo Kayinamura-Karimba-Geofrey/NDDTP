@@ -10,12 +10,15 @@ export default registerAs('database', () => {
 
   if (dbUrl) {
     try {
-      const parsed = new URL(dbUrl);
-      parsedHost = parsed.hostname;
-      parsedPort = parseInt(parsed.port || '5432', 10);
-      parsedUser = parsed.username;
-      parsedPass = parsed.password;
-      parsedDb = parsed.pathname.replace('/', '') || parsedDb;
+      // Handle postgres:// or postgresql:// connection strings
+      const match = dbUrl.match(/postgres(?:ql)?:\/\/([^:]+):([^@]+)@([^:/]+)(?::(\d+))?\/(.+)/);
+      if (match) {
+        parsedUser = decodeURIComponent(match[1]);
+        parsedPass = decodeURIComponent(match[2]);
+        parsedHost = match[3];
+        parsedPort = match[4] ? parseInt(match[4], 10) : 5432;
+        parsedDb = match[5].split('?')[0];
+      }
     } catch {
       // Fallback
     }
