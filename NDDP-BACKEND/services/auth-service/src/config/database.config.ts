@@ -21,6 +21,7 @@ export default registerAs('database', () => {
   }
 
   return {
+    url: process.env.DATABASE_URL || undefined,
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'nddtp_auth',
