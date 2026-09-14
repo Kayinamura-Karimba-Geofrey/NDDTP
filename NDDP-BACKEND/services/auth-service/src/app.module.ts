@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
-import { configuration } from './config';
+import { configuration, envValidationSchema } from './config';
 import { winstonConfig } from './config/winston.config';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './modules/cache/redis.module';

@@ -5,7 +5,7 @@ import { AuthCredential } from '../entities/auth-credential.entity';
 import { MfaSetting } from '../entities/mfa-setting.entity';
 import { MfaBackupCode } from '../entities/mfa-backup-code.entity';
 import { AccountStatus, MfaMethod, MfaStatus } from '../../common/enums';
-import { DEMO_USERS, DEMO_PASSWORD, DEMO_MFA_OTP } from '../../../../../shared-seeds/demo-users';
+import { DEMO_USERS, DEMO_PASSWORD, DEMO_MFA_OTP } from '../../shared-seeds/demo-users';
 
 function hashBackupCode(code: string): string {
   return createHash('sha256').update(code).digest('hex');
