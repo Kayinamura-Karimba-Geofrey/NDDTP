@@ -30,6 +30,36 @@ services:
         generateValue: true
       - key: JWT_REFRESH_SECRET
         generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: nddtp-postgres
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: nddtp-postgres
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: nddtp-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nddtp-postgres
+          property: password
+      - key: DB_DATABASE
+        fromDatabase:
+          name: nddtp-postgres
+          property: database
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: nddtp-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: nddtp-redis
+          property: port
 
   # 3. Enterprise Frontend (Static Site)
   - type: web
@@ -41,5 +71,20 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+
+  # 4. Redis Cache & Session Store
+  - type: redis
+    name: nddtp-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  # 5. PostgreSQL Database
+  - name: nddtp-postgres
+    databaseName: nddtp_auth
+    user: nddtp_user
+    plan: free
+    region: oregon
+
 
 
