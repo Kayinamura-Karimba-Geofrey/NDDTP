@@ -64,21 +64,30 @@ export class RedisService implements OnModuleDestroy {
       provide: REDIS_CLIENT,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
+        const host = configService.get<string>('redis.host') || 'localhost';
+        const port = configService.get<number>('redis.port') || 6379;
+
         const client = new Redis({
-          host: configService.get<string>('redis.host'),
-          port: configService.get<number>('redis.port'),
+          host,
+          port,
           password: configService.get<string>('redis.password'),
           db: configService.get<number>('redis.db'),
-          retryStrategy: (times: number) => Math.min(times * 50, 2000),
-          maxRetriesPerRequest: 3,
+          enableOfflineQueue: false,
+          retryStrategy: (times: number) => {
+            if (times > 3) {
+              return null; // Stop retrying if Redis server is down
+            }
+            return Math.min(times * 200, 1000);
+          },
+          maxRetriesPerRequest: 1,
         });
 
         client.on('connect', () => {
-          Logger.log('Redis connected', 'RedisModule');
+          Logger.log(`Redis connected to ${host}:${port}`, 'RedisModule');
         });
 
         client.on('error', (err) => {
-          Logger.error(`Redis error: ${err.message}`, 'RedisModule');
+          Logger.warn(`Redis connection unavailable: ${err.message}`, 'RedisModule');
         });
 
         return client;

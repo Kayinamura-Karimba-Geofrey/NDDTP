@@ -5,7 +5,7 @@ export default registerAs('database', () => ({
   port: parseInt(process.env.DB_PORT || '5432', 10),
   username: process.env.DB_USERNAME || 'nddtp_auth',
   password: process.env.DB_PASSWORD || '',
-  name: process.env.DB_NAME || 'nddtp_auth',
+  name: process.env.DB_DATABASE || process.env.DB_NAME || 'nddtp_auth',
   ssl: process.env.DB_SSL === 'true',
   logging: process.env.DB_LOGGING === 'true',
   poolSize: parseInt(process.env.DB_POOL_SIZE || '10', 10),
