@@ -19,6 +19,9 @@ ENV NODE_ENV=production
 COPY --chown=node:node package.json package-lock.json* ./
 RUN npm ci --omit=dev
 
+# Create logs directory with node user ownership
+RUN mkdir -p /app/logs && chown -R node:node /app/logs
+
 # Security: Switch to non-root user after npm install
 USER node
 

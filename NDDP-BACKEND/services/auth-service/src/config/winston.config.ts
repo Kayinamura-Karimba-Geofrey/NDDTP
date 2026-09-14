@@ -1,14 +1,19 @@
 import { transports, format } from 'winston';
 
-export const winstonConfig = {
-  transports: [
-    new transports.Console({
-      format: format.combine(
-        format.timestamp(),
-        format.errors({ stack: true }),
-        format.json(),
-      ),
-    }),
+const enableFileLogs = process.env.ENABLE_FILE_LOGS === 'true';
+
+const activeTransports: Array<transports.ConsoleTransportInstance | transports.FileTransportInstance> = [
+  new transports.Console({
+    format: format.combine(
+      format.timestamp(),
+      format.errors({ stack: true }),
+      format.json(),
+    ),
+  }),
+];
+
+if (enableFileLogs) {
+  activeTransports.push(
     new transports.File({
       filename: 'logs/error.log',
       level: 'error',
@@ -27,5 +32,9 @@ export const winstonConfig = {
         format.json(),
       ),
     }),
-  ],
+  );
+}
+
+export const winstonConfig = {
+  transports: activeTransports,
 };
