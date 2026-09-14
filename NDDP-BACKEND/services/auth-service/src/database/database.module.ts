@@ -34,8 +34,9 @@ import {
         ],
         synchronize: configService.get<string>('app.nodeEnv') === 'development',
         logging: configService.get<boolean>('database.logging'),
-        retryAttempts: 10,
-        retryDelay: 3000,
+        retryAttempts: 3,
+        retryDelay: 2000,
+        autoLoadEntities: true,
         ssl:
           configService.get<string>('app.nodeEnv') === 'production' || configService.get<boolean>('database.ssl')
             ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' }
