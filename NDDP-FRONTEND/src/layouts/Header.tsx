@@ -7,7 +7,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store';
 import { setSearchOpen } from '@/store/slices/search-slice';
 import { markAllRead } from '@/store/slices/notifications-slice';
-import { setTheme } from '@/store/slices/theme-slice';
+import { setTheme, toggleSidebar } from '@/store/slices/theme-slice';
 import { logout } from '@/store/slices/auth-slice';
 import { Avatar, Button } from '@/components/ui';
 import { BRANDING } from '@/constants/branding';
@@ -53,7 +53,17 @@ export function Header({ onMenuClick, onCommandPalette }: HeaderProps) {
         type="button"
         className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden"
         onClick={onMenuClick}
-        aria-label="Open menu"
+        aria-label="Open mobile menu"
+      >
+        <FiMenu className="h-5 w-5" />
+      </button>
+
+      <button
+        type="button"
+        className="hidden rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"
+        onClick={() => dispatch(toggleSidebar())}
+        aria-label="Toggle sidebar"
+        title="Toggle sidebar collapse"
       >
         <FiMenu className="h-5 w-5" />
       </button>

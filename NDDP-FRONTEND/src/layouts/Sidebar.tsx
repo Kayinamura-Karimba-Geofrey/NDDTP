@@ -79,21 +79,32 @@ export function Sidebar() {
       )}
       aria-label="Main navigation"
     >
-      <div className="flex h-16 items-center gap-3 border-b border-border px-4">
-        <img
-          src={BRANDING.logoUrl}
-          alt={`${BRANDING.forceName} logo`}
-          className="h-9 w-9 rounded-lg object-cover ring-1 ring-border"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
-        {!collapsed && (
-          <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-foreground">{BRANDING.platformAcronym}</p>
-            <p className="truncate text-xs text-muted-foreground">{BRANDING.shortName}</p>
-          </div>
-        )}
+      <div className="flex h-16 items-center justify-between border-b border-border px-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <img
+            src={BRANDING.logoUrl}
+            alt={`${BRANDING.forceName} logo`}
+            className="h-9 w-9 rounded-lg object-cover ring-1 ring-border shrink-0"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-foreground">{BRANDING.platformAcronym}</p>
+              <p className="truncate text-xs text-muted-foreground">{BRANDING.shortName}</p>
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => dispatch(toggleSidebar())}
+          className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <FiIcons.FiChevronLeft className={cn('h-5 w-5 transition-transform', collapsed && 'rotate-180')} />
+        </button>
       </div>
 
       <nav className="flex-1 space-y-6 overflow-y-auto p-3">
