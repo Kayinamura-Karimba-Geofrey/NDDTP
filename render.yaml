@@ -49,7 +49,7 @@ services:
   - type: web
     name: nddtp-frontend
     runtime: static
-    buildCommand: cd NDDP-FRONTEND && npm ci && npm run build
+    buildCommand: cd NDDP-FRONTEND && npm install && npm run build
     staticPublishPath: NDDP-FRONTEND/dist
     routes:
       - type: rewrite
