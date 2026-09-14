@@ -1,0 +1,44 @@
+services:
+  # 1. API Gateway Service
+  - type: web
+    name: nddtp-api-gateway
+    env: docker
+    dockerfilePath: NDDP-BACKEND/api-gateway/Dockerfile
+    dockerContext: NDDP-BACKEND/api-gateway
+    plan: free
+    region: oregon
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+
+  # 2. Authentication Microservice
+  - type: web
+    name: nddtp-auth-service
+    env: docker
+    dockerfilePath: NDDP-BACKEND/services/auth-service/Dockerfile
+    dockerContext: NDDP-BACKEND/services/auth-service
+    plan: free
+    region: oregon
+    envVars:
+      - key: APP_PORT
+        value: 3001
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+
+  # 3. Enterprise Frontend (Static Web Site)
+  - type: web
+    name: nddtp-frontend
+    env: static
+    buildCommand: cd NDDP-FRONTEND && npm ci && npm run build
+    staticPublishPath: NDDP-FRONTEND/dist
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
