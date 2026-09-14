@@ -11,7 +11,7 @@ export default registerAs('database', () => {
   if (dbUrl) {
     try {
       // Handle postgres:// or postgresql:// connection strings
-      const match = dbUrl.match(/postgres(?:ql)?:\/\/([^:]+):([^@]+)@([^:/]+)(?::(\d+))?\/(.+)/);
+      const match = dbUrl.match(/postgres(?:ql)?:\/\/([^:]+):([^@]+)@([^\/:]+)(?::(\d+))?\/(.+)/);
       if (match) {
         parsedUser = decodeURIComponent(match[1]);
         parsedPass = decodeURIComponent(match[2]);
