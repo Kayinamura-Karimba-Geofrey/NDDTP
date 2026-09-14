@@ -34,7 +34,7 @@ import {
         ],
         synchronize: configService.get<string>('app.nodeEnv') === 'development',
         logging: configService.get<boolean>('database.logging'),
-        ssl: configService.get<boolean>('database.ssl')
+        ssl: configService.get<string>('app.nodeEnv') === 'production' || configService.get<boolean>('database.ssl')
           ? { rejectUnauthorized: false }
           : false,
         extra: {
