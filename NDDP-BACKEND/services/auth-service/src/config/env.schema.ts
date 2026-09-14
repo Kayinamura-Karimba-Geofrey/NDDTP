@@ -10,6 +10,7 @@ export const envValidationSchema = Joi.object({
   CORS_ORIGINS: Joi.string().default('http://localhost:3000'),
 
   // Database
+  DATABASE_URL: Joi.string().optional(),
   DB_HOST: Joi.string().default('localhost'),
   DB_PORT: Joi.number().port().default(5432),
   DB_USERNAME: Joi.string().default('postgres'),
