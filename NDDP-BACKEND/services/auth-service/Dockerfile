@@ -16,11 +16,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Security: Run as non-root user
-USER node
-
 COPY --chown=node:node package.json package-lock.json* ./
 RUN npm ci --omit=dev
+
+# Security: Switch to non-root user after npm install
+USER node
 
 COPY --chown=node:node --from=builder /app/dist ./dist
 
