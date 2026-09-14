@@ -18,15 +18,11 @@ import {
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres' as const,
-        ...(configService.get<string>('database.url')
-          ? { url: configService.get<string>('database.url') }
-          : {
-              host: configService.get<string>('database.host'),
-              port: configService.get<number>('database.port'),
-              username: configService.get<string>('database.username'),
-              password: configService.get<string>('database.password'),
-              database: configService.get<string>('database.name'),
-            }),
+        host: configService.get<string>('database.host'),
+        port: configService.get<number>('database.port'),
+        username: configService.get<string>('database.username'),
+        password: configService.get<string>('database.password'),
+        database: configService.get<string>('database.name'),
         entities: [
           AuthCredential,
           UserSession,
