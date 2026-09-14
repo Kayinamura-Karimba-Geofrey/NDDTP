@@ -23,8 +23,9 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
   return (
     <Link
       to={item.path}
+      title={collapsed ? item.label : undefined}
       className={cn(
-        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+        'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
         isActive
           ? 'bg-primary text-primary-foreground shadow-sm'
           : 'text-muted-foreground hover:bg-muted hover:text-foreground',
@@ -32,7 +33,7 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       aria-current={isActive ? 'page' : undefined}
     >
       <NavIcon name={item.icon} />
-      {!collapsed && (
+      {!collapsed ? (
         <>
           <span className="flex-1 truncate">{item.label}</span>
           {item.badge !== undefined && (
@@ -41,6 +42,10 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
             </span>
           )}
         </>
+      ) : (
+        <span className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap rounded-md bg-popover px-2.5 py-1.5 text-xs font-semibold text-popover-foreground shadow-md ring-1 ring-border group-hover:block z-50">
+          {item.label}
+        </span>
       )}
     </Link>
   );
