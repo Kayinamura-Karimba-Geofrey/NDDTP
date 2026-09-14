@@ -32,12 +32,14 @@ services:
         generateValue: true
 
   # 3. Enterprise Frontend (Static Site)
-  - type: static
+  - type: web
     name: nddtp-frontend
+    runtime: static
     buildCommand: cd NDDP-FRONTEND && npm ci && npm run build
     staticPublishPath: NDDP-FRONTEND/dist
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
 
