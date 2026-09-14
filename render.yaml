@@ -64,6 +64,8 @@ services:
           type: redis
           name: nddtp-redis
           property: port
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: "false"
 
   # 3. Enterprise Frontend (Static Site)
   - type: web
