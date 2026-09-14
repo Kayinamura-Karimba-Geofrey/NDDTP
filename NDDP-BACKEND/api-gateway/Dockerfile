@@ -1,16 +1,17 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json* ./
+COPY NDDP-BACKEND/api-gateway/package.json NDDP-BACKEND/api-gateway/package-lock.json* ./
 RUN npm ci
-COPY tsconfig.json ./
-COPY src ./src
+COPY shared /shared
+COPY NDDP-BACKEND/api-gateway/tsconfig.json ./
+COPY NDDP-BACKEND/api-gateway/src ./src
 RUN npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --chown=node:node package.json package-lock.json* ./
+COPY --chown=node:node NDDP-BACKEND/api-gateway/package.json NDDP-BACKEND/api-gateway/package-lock.json* ./
 RUN npm ci --omit=dev
 
 # Security: Switch to non-root user after npm install

@@ -4,7 +4,7 @@ services:
     name: nddtp-api-gateway
     runtime: docker
     dockerfilePath: NDDP-BACKEND/api-gateway/Dockerfile
-    dockerContext: NDDP-BACKEND/api-gateway
+    dockerContext: .
     plan: free
     region: oregon
     envVars:
