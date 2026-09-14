@@ -1,4 +1,4 @@
-import registry from '../../../shared/service-registry.json' with { type: 'json' };
+import registry from './shared/service-registry.json' with { type: 'json' };
 
 export const MICROSERVICES = registry as Record<string, { port: number; label: string }>;
 
