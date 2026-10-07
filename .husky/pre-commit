@@ -1,4 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-cd NDDP-BACKEND && npx lint-staged
+# Format and lint staged files in each app (configs live in each package.json)
+(cd NDDP-BACKEND && npx lint-staged)
+(cd NDDP-FRONTEND && npx lint-staged)
