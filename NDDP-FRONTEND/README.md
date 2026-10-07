@@ -17,7 +17,10 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173)
 
-### Demo Login (pre-filled on sign-in page)
+### Demo Login (development builds only)
+
+Pre-filled on the sign-in page in `npm run dev`. Production builds strip these values unless
+`VITE_ENABLE_DEMO_LOGIN=true` — never enable that for a real deployment.
 
 | Account | Email | Password |
 |---------|-------|----------|
