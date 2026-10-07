@@ -17,10 +17,13 @@ export const envValidationSchema = Joi.object({
   DB_PASSWORD: Joi.string().allow('').default('postgres'),
   DB_DATABASE: Joi.string().default('nddtp_auth'),
 
-  // JWT Security (Fatal crash if weak or missing)
-  JWT_SECRET: Joi.string().min(16).default('super-secret-default-jwt-key-change-in-prod'),
+  // JWT Security — production must supply strong secrets; dev falls back to jwt.config defaults
+  JWT_ACCESS_SECRET: Joi.string().min(32).optional(),
+  JWT_SECRET: Joi.string().min(32).optional(),
   JWT_EXPIRES_IN: Joi.string().default('15m'),
-  JWT_REFRESH_SECRET: Joi.string().min(16).default('super-secret-default-refresh-key-change-in-prod'),
+  JWT_REFRESH_SECRET: Joi.string()
+    .min(32)
+    .when('NODE_ENV', { is: 'production', then: Joi.required(), otherwise: Joi.optional() }),
   JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
 
   // Redis & Rate Limiting
