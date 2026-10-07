@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test src/*.test.ts",
     "health": "node -e \"fetch('http://localhost:3000/health').then(r=>r.json()).then(console.log).catch(console.error)\""
   },
   "engines": {
