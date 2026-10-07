@@ -31,7 +31,7 @@ services:
         value: "3001"
       - key: NODE_ENV
         value: production
-      - key: JWT_SECRET
+      - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
         generateValue: true
