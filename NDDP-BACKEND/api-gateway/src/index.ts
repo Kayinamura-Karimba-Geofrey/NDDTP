@@ -1,13 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { createProxyMiddleware, type Options } from 'http-proxy-middleware';
+import { rateLimit } from 'express-rate-limit';
+import { createProxyMiddleware, type Options, type RequestHandler } from 'http-proxy-middleware';
 import { config } from './config.js';
 import { MICROSERVICES, resolveService, upstreamBaseUrl, type ServiceKey } from './services.js';
 
 const app = express();
 
-app.use(helmet({ contentSecurityPolicy: false }));
+// Behind Render's load balancer: trust the proxy so rate limiting keys on the real client IP.
+app.set('trust proxy', config.trustProxy);
+app.use(helmet());
 app.use(
   cors({
     origin: config.corsOrigins,
@@ -21,6 +24,27 @@ app.use(
 
 // Proxy routes only — do not use express.json() here; it consumes POST bodies before forwarding.
 
+app.use(
+  rateLimit({
+    windowMs: config.rateLimitWindowMs,
+    limit: config.rateLimitMax,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    skip: (req) => req.path === '/health',
+    message: { statusCode: 429, message: 'Too many requests, please try again later.', error: 'TooManyRequests' },
+  }),
+);
+
+// Bodies are streamed to upstreams unparsed, so enforce the size limit from Content-Length.
+app.use((req, res, next) => {
+  const length = Number(req.headers['content-length'] || 0);
+  if (length > config.maxBodyBytes) {
+    res.status(413).json({ statusCode: 413, message: 'Request body too large', error: 'PayloadTooLarge' });
+    return;
+  }
+  next();
+});
+
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
@@ -32,10 +56,9 @@ app.get('/health', (_req, res) => {
 });
 
 app.get('/health/services', async (_req, res) => {
-  const host = process.env.SERVICE_HOST || '127.0.0.1';
   const checks = await Promise.all(
     Object.entries(MICROSERVICES).map(async ([key, { port, label }]) => {
-      const healthUrl = `http://${host}:${port}/api/v1/health/live`;
+      const healthUrl = `${upstreamBaseUrl(key)}/${config.apiPrefix}/health/live`;
       try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 3000);
@@ -101,6 +124,11 @@ function createServiceProxy(serviceKey: ServiceKey): Options {
   };
 }
 
+// Build each proxy once at startup; creating one per request leaks sockets and listeners.
+const proxies = new Map<ServiceKey, RequestHandler>(
+  (Object.keys(MICROSERVICES) as ServiceKey[]).map((key) => [key, createProxyMiddleware(createServiceProxy(key))]),
+);
+
 const serviceProxyRouter = express.Router({ mergeParams: true });
 
 serviceProxyRouter.use((req, res, next) => {
@@ -114,7 +142,7 @@ serviceProxyRouter.use((req, res, next) => {
     });
     return;
   }
-  createProxyMiddleware(createServiceProxy(resolved.key))(req, res, next);
+  proxies.get(resolved.key)!(req, res, next);
 });
 
 app.use(`/${config.servicePrefix}/:serviceKey`, serviceProxyRouter);
