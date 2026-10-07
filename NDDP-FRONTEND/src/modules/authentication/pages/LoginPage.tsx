@@ -13,7 +13,12 @@ import { AuthSplitLayout } from '../components/AuthSplitLayout';
 import { PasswordField } from '../components/PasswordField';
 import { Button, Input, Alert } from '@/components/ui';
 import { ROUTES } from '@/constants/app';
-import { DEFAULT_LOGIN_EMAIL, DEFAULT_LOGIN_PASSWORD, SEED_CREDENTIALS } from '@/constants/seed-credentials';
+import {
+  DEFAULT_LOGIN_EMAIL,
+  DEFAULT_LOGIN_PASSWORD,
+  SEED_CREDENTIALS,
+  SHOW_DEMO_CREDENTIALS,
+} from '@/constants/seed-credentials';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 function getLoginErrorMessage(error: unknown): { message: string; lockedUntil?: string } {
@@ -141,18 +146,20 @@ export function LoginPage() {
         </Button>
       </form>
 
-      <Alert variant="info" className="mt-6" title="Demo credentials (pre-filled)">
-        <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-          <li>
-            <strong className="text-foreground">{SEED_CREDENTIALS.admin.label}:</strong>{' '}
-            <code>{SEED_CREDENTIALS.admin.email}</code>
-          </li>
-          <li>
-            <strong className="text-foreground">{SEED_CREDENTIALS.mfa.label}:</strong> OTP{' '}
-            <code>{SEED_CREDENTIALS.mfa.otp}</code>
-          </li>
-        </ul>
-      </Alert>
+      {SHOW_DEMO_CREDENTIALS && (
+        <Alert variant="info" className="mt-6" title="Demo credentials (pre-filled)">
+          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+            <li>
+              <strong className="text-foreground">{SEED_CREDENTIALS.admin.label}:</strong>{' '}
+              <code>{SEED_CREDENTIALS.admin.email}</code>
+            </li>
+            <li>
+              <strong className="text-foreground">{SEED_CREDENTIALS.mfa.label}:</strong> OTP{' '}
+              <code>{SEED_CREDENTIALS.mfa.otp}</code>
+            </li>
+          </ul>
+        </Alert>
+      )}
     </AuthSplitLayout>
   );
 }
