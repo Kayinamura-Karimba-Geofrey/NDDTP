@@ -12,7 +12,7 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "prepare": "husky",
+    "prepare": "cd .. && husky",
     "install:deps": "node scripts/install-platform-core.mjs",
     "standardize": "node scripts/standardize-services.mjs",
     "build:all": "node scripts/build-all-services.mjs",
@@ -67,6 +67,7 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
+    "prettier": "^3.9.9",
     "turbo": "^2.10.12"
   }
 }
