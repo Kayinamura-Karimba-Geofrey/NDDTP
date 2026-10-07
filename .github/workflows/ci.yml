@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auth-service:
+    name: Backend — auth-service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: NDDP-BACKEND
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: NDDP-BACKEND/package-lock.json
+      - run: npm ci --ignore-scripts && npm rebuild bcrypt
+      - name: Typecheck
+        run: npx tsc --noEmit -p services/auth-service/tsconfig.json
+      - name: Unit tests
+        run: npm test -w @nddtp/auth-service -- --ci
+      - name: Build
+        run: npm run build -w @nddtp/auth-service
+      - name: Docker image builds (same path Render uses)
+        run: docker build -t nddtp-auth-service services/auth-service
+
+  api-gateway:
+    name: Backend — API gateway
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: NDDP-BACKEND/api-gateway
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: NDDP-BACKEND/api-gateway/package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Docker image builds
+        run: docker build -t nddtp-api-gateway .
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: NDDP-FRONTEND
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: NDDP-FRONTEND/package-lock.json
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Tests
+        run: npx vitest run
+      - name: Typecheck + build
+        run: npm run build
+      - name: Demo credentials must not ship in production bundle
+        run: |
+          if grep -rq "Nddtp@Mod2026" dist; then
+            echo "::error::Demo password found in production build output"
+            exit 1
+          fi
