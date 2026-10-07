@@ -10,5 +10,9 @@ export const config = {
     .map((o) => o.trim())
     .filter(Boolean),
   requestTimeoutMs: Number(process.env.REQUEST_TIMEOUT_MS || 30000),
+  rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 300),
+  maxBodyBytes: Number(process.env.MAX_BODY_BYTES || 10 * 1024 * 1024),
+  trustProxy: Number(process.env.TRUST_PROXY_HOPS || 1),
   logLevel: process.env.LOG_LEVEL || 'info',
 } as const;
