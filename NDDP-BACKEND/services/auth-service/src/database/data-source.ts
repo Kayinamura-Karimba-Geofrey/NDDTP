@@ -14,6 +14,7 @@ config();
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
+  url: process.env.DATABASE_URL || undefined,
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432', 10),
   username: process.env.DB_USERNAME || 'nddtp_auth',
@@ -31,7 +32,10 @@ export const dataSourceOptions: DataSourceOptions = {
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   synchronize: false,
   logging: process.env.DB_LOGGING === 'true',
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+  ssl:
+    process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
+      : false,
 };
 
 const dataSource = new DataSource(dataSourceOptions);
