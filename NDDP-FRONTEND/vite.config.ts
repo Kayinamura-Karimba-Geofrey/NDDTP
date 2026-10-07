@@ -34,7 +34,8 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true,
+    // Source maps embed the original source; only emit them when explicitly requested.
+    sourcemap: process.env.BUILD_SOURCEMAP === 'true',
     rollupOptions: {
       output: {
         manualChunks(id) {
