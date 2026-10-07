@@ -32,14 +32,17 @@ import {
           LoginAttempt,
           PasswordResetToken,
         ],
-        synchronize: configService.get<string>('app.nodeEnv') === 'development',
+        // Schema changes go through migrations only, so dev and prod cannot drift apart.
+        synchronize: false,
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: process.env.DB_RUN_MIGRATIONS === 'true',
         logging: configService.get<boolean>('database.logging'),
         retryAttempts: 10,
         retryDelay: 5000,
         autoLoadEntities: true,
         ssl:
           configService.get<string>('app.nodeEnv') === 'production' || configService.get<boolean>('database.ssl')
-            ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' }
+            ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
             : false,
         extra: {
           max: configService.get<number>('database.poolSize'),
