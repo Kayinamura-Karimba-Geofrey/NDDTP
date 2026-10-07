@@ -11,6 +11,7 @@ import { TokenService } from '../../src/modules/tokens/token.service';
 import { MfaService } from '../../src/modules/mfa/mfa.service';
 import { EventPublisherService } from '../../src/events/event-publisher.service';
 import { RedisService } from '../../src/modules/cache/redis.module';
+import { AuthorizationLookupService } from '../../src/modules/auth/authorization-lookup.service';
 import { DataSource } from 'typeorm';
 import { AccountStatus } from '../../src/common/enums';
 import { DuplicateEmailException } from '../../src/common/exceptions/auth.exceptions';
@@ -131,6 +132,12 @@ describe('AuthService', () => {
           provide: DataSource,
           useValue: {
             transaction: jest.fn((cb) => cb()),
+          },
+        },
+        {
+          provide: AuthorizationLookupService,
+          useValue: {
+            getEffectivePermissions: jest.fn().mockResolvedValue({ roles: [], permissions: [] }),
           },
         },
       ],
