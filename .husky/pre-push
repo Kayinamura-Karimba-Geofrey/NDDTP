@@ -1,0 +1,4 @@
+# Typecheck before pushing so CI does not fail on trivial type errors
+(cd NDDP-FRONTEND && npx tsc -b)
+(cd NDDP-BACKEND/services/auth-service && npx tsc --noEmit -p tsconfig.json)
+(cd NDDP-BACKEND/api-gateway && npx tsc --noEmit)
