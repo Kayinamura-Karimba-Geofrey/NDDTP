@@ -31,7 +31,7 @@ services:
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: DATABASE_URL
-        value: postgresql://neondb_owner:npg_mJ6L3icWpbut@ep-super-wildflower-a54qsb0e-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require
+        sync: false # set in the Render dashboard — never commit credentials
       - key: REDIS_HOST
         fromService:
           type: redis
@@ -42,8 +42,6 @@ services:
           type: redis
           name: nddtp-redis
           property: port
-      - key: DB_SSL_REJECT_UNAUTHORIZED
-        value: "false"
 
   # 3. Enterprise Frontend (Static Site)
   - type: web
