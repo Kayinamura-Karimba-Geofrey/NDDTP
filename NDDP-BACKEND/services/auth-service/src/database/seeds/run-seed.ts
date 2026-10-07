@@ -12,6 +12,11 @@ function hashBackupCode(code: string): string {
 }
 
 async function seed(): Promise<void> {
+  // Demo accounts share a public password and a fixed MFA backup code — never seed them into production.
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_DEMO_SEED !== 'true') {
+    throw new Error('Refusing to seed demo users with NODE_ENV=production (set ALLOW_DEMO_SEED=true to override).');
+  }
+
   await dataSource.initialize();
   const credentialRepo = dataSource.getRepository(AuthCredential);
   const mfaRepo = dataSource.getRepository(MfaSetting);
