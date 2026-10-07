@@ -12,6 +12,11 @@ services:
         value: "3000"
       - key: NODE_ENV
         value: production
+      # Public URL of the auth service, e.g. https://nddtp-auth-service.onrender.com
+      - key: SERVICE_URL_AUTH
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
 
   # 2. Authentication Microservice
   - type: web
