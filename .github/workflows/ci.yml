@@ -64,6 +64,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Typecheck
         run: npx tsc --noEmit
+      - name: Tests
+        run: npm test
       - name: Docker image builds
         run: docker build -t nddtp-api-gateway .
 
