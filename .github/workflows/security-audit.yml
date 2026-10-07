@@ -27,10 +27,28 @@ jobs:
           cd NDDP-BACKEND
           npm ci --ignore-scripts
 
-      - name: Run Dependency Vulnerability Audit
+      # Production dependencies only. Level is "critical" until auth-service moves to NestJS 11
+      # (GHSA-36xv-jgw5-4q75 in @nestjs/core <=11.1.17 has no fix on the v10 line) and braces
+      # ships a fix for GHSA-vfj7-8cjw-p6xm. Raise to "high" once those are resolved.
+      - name: Audit backend workspace (production deps)
         run: |
           cd NDDP-BACKEND
-          npm audit --audit-level=high
+          npm audit --omit=dev --audit-level=critical
+
+      - name: Audit auth-service Docker lockfile (production deps)
+        run: |
+          cd NDDP-BACKEND/services/auth-service
+          npm audit --omit=dev --audit-level=critical --workspaces=false
+
+      - name: Audit API gateway (production deps)
+        run: |
+          cd NDDP-BACKEND/api-gateway
+          npm audit --omit=dev --audit-level=critical
+
+      - name: Audit frontend (production deps)
+        run: |
+          cd NDDP-FRONTEND
+          npm audit --omit=dev --audit-level=high
 
       - name: Scan for Backdoor & Script Vectors
         run: |
